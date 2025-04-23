@@ -10,12 +10,12 @@ permalink: /fyzika/myli-se-galileo-i-einstein.html
 Nastal už čas ukázat, že pánové Galileo a Einstein neměli tak úplně pravdu a teorie jimi vytvořené zcela přesně neplatí? Všechna naše dosavadní experimenty odpovídají jejich předpokladům; ale co se stane, když začneme měřit ještě mnohem přesněji?
 
 ## Začal to Galileo
-<div>
+::: {.border}
 ![Údajný Galileův experiment na šikmé věži v Pise](http://techblog.srubar.net/images/galileo-vez-pisa.jpg)
 Údajný Galileův experiment  
 na šikmé věži v Pise  
 Credit: NASA
-</div>
+:::
 
 Populární je historka o tom, že [házel z šikmé věže](http://physicsweb.org/article/world/16/2/2) v Pise různé předměty a měřil, za jak dlouho dopadnou na zem. Ve skutečnosti měřil, jak dlouho se koule z různých materiálů kutálejí po nakloněné rovině. Bylo to hlavně pohodlnější. Představte si, že desetkrát denně lezete nahoru na šikmou věž. :-)
 
