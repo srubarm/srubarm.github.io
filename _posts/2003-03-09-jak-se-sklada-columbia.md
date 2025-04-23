@@ -1,5 +1,6 @@
 ---
 layout: post
+title: Jak se skládá Columbia?
 categories: [Kosmonautika]
 permalink: /kosmonautika/jak-se-sklada-columbia.html
 ---

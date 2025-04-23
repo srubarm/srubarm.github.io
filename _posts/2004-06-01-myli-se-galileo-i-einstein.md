@@ -1,5 +1,6 @@
 ---
 layout: post
+title: Mýlí se Galileo i Einstein?
 categories: [Fyzika]
 permalink: /fyzika/myli-se-galileo-i-einstein.html
 ---
