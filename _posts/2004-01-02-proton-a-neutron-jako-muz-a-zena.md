@@ -4,7 +4,7 @@ title: Proton a neutron jako muž a žena
 categories: [Fyzika]
 permalink: cz/fyzika/proton-a-neutron-jako-muz-a-zena.html
 ---
-        # Proton a neutron jako muž a žena
+# Proton a neutron jako muž a žena
 
 Dalo by se říct, že jsme objevili původ lásky i dalších problémů ve vztazích mezi mužem a ženou. Nachází se ve vlastnostech elementárních částic. :-)
 

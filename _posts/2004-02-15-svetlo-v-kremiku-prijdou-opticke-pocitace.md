@@ -4,7 +4,7 @@ title: Světlo v křemíku – přijdou optické počítače
 categories: [Fyzika]
 permalink: cz/fyzika/svetlo-v-kremiku-prijdou-opticke-pocitace.html
 ---
-        # Světlo v křemíku – přijdou optické počítače
+# Světlo v křemíku – přijdou optické počítače
 
 V poslední době bylo prezentováno několik výsledků bádání, které naznačují, že do deseti let by mohly nastoupit počítače, v nichž by hlavní roli nehrály elektrony, nýbrž fotony. To znamená, že data by počítačem netekla jako elektřina, ale jako světlo. Možná je to odvážná myšlenka a nechal jsem se zbytečně vyprovokovat optimizmem "popsci" článků. Jistější uplatnění objevy získají v optické komunikaci. Co mě k těmto názorům dovedlo…
 

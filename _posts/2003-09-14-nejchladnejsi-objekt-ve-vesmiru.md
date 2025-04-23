@@ -1,10 +1,9 @@
 ---
 layout: post
-title: Nejchladnější objekt ve vesmíru
 categories: [Fyzika]
-permalink: cz/fyzika/nejchladnejsi-objekt-ve-vesmiru.html
+permalink: /fyzika/nejchladnejsi-objekt-ve-vesmiru.html
 ---
-        # Nejchladnější objekt ve vesmíru
+# Nejchladnější objekt ve vesmíru
 
 2500 atomů sodíku se podařilo ochladit na teplotu půl miliardtiny stupně (0,5 nK) nad absolutní nulu. Starý rekord měl hodnotu 3 nK. Sodík se udržuje na magnetickém polštáři a je ochlazován (částice jsou zpomalovány) zásahy laserem.
 
