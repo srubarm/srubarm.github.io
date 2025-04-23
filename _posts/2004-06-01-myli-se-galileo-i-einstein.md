@@ -1,9 +1,10 @@
 ---
 layout: post
-title: Mýlí se Galileo i Einstein?
 categories: [Fyzika]
 permalink: /fyzika/myli-se-galileo-i-einstein.html
 ---
+
+# Mýlí se Galileo i Einstein?
 
 Nastal už čas ukázat, že pánové Galileo a Einstein neměli tak úplně pravdu a teorie jimi vytvořené zcela přesně neplatí? Všechna naše dosavadní experimenty odpovídají jejich předpokladům; ale co se stane, když začneme měřit ještě mnohem přesněji?
 
