@@ -27,3 +27,12 @@ This is a plug-and-play Jekyll theme which you can use on GitHub Pages without e
 - In-built sitemap
 
 Learn more about it [here](https://github.com/amitmerchant1990/reverie) on how to get started.
+
+{% for post in site.posts %}
+  {% if post.categories contains 'Fyzika' %}
+    
+#### [{{post.title}}]({{post.url}})<br/><small>{{ post.date | date_to_long_string }}</small>
+By: {{post.author}}
+    
+  {% endif %}
+{% endfor %}
