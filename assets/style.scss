@@ -301,10 +301,13 @@ p > img {
 }
 
 .site-info {
-  float: left;
-
+  float: right;
+  font-weight: bold;
+  margin: 20px 10px 0 0;
+  
   @include mobile {
-    float: none;
+    float: left;
+	width: 100%;
     display: block;
     margin: 0 auto;
   }
@@ -336,10 +339,10 @@ p > img {
 }
 
 nav {
-  float: right;
-  margin-top: 23px; // @TODO: Vertically middle align
+  float: left;
+  margin-top: 0px;
   font-family: $helveticaNeue;
-  font-size: 18px;
+  font-size: 16px;
 
   @include mobile {
     float: none;
@@ -1160,10 +1163,9 @@ Modules - reusable parts of our design
 
 #logo {
 position: relative;
-    width: 25em;
+    width: 23em;
     height: 5em;
     float: left;
-    margin-bottom: 3px;
     background: url(/images/logo1.gif) left center no-repeat;
     z-index: 9;
 }
