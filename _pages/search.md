@@ -1,11 +1,11 @@
 ---
 layout: page
-title: Search
-permalink: /search/
+title: Vyhledávání v Techblogu
+permalink: /search.html
 ---
 
 <div id="search-container">
-    <input type="text" id="search-input" placeholder="Search through the blog posts...">
+    <input type="text" id="search-input" placeholder="Hledej v Techblogu...">
     <ul id="results-container"></ul>
 </div>
 
