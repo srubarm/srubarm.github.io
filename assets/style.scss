@@ -1158,6 +1158,27 @@ Modules - reusable parts of our design
     font-size: 11px;
 }
 
+#logo {
+position: relative;
+    width: 25em;
+    height: 5em;
+    float: left;
+    margin-bottom: 3px;
+    background: url(/images/logo1.gif) left center no-repeat;
+    z-index: 9;
+}
+
+#logo a {
+    display: block;margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#logo h1 {
+    display:none;
+}
+
 // Settled on moving the import of syntax highlighting to the bottom of the CSS
 // ... Otherwise it really bloats up the top of the CSS file and makes it difficult to find the start
 //@import "highlights";
