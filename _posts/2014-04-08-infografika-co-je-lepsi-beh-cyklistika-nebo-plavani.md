@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Infografika – Co je lepší: běh, cyklistika, nebo plavání?
+title: Infografika – Co je lepší? běh, cyklistika, nebo plavání?
 categories: [Ostatní věda]
 permalink: /veda/infografika-co-je-lepsi-beh-cyklistika-nebo-plavani.html
 ---
