@@ -23,11 +23,9 @@ I když běháte nějakou dobu, tak je pravděpodobné, že stále používáte 
 
 Dále budu brát v úvahu pouze vytrvalostní běhání, nikoliv sprinty. Jsou tři základní druhy běhání, které se člení podle druhu dopadu na chodidlo při běhu:
 
-1\. Dopad na paty
-
-2\. Dopad na střed chodila
-
-3\. Dopad na špičky
+1. Dopad na paty
+2. Dopad na střed chodila
+3. Dopad na špičky
 
 Zhruba 75% lidí, pokud běhají přirozeně a bez instruktáže, dopadají při vytrvalostních bězích na paty. Zbývajících 25% dopadá převážně na střed chodidla a málokdo přirozeně dopadá na špičky. Tato čísla nejsou nijak přesná. Jsou založena na vzorku běžců ze studií, které zkoumaly běhání na boso. Způsob naší chůze a běhu však může být ovlivněn tím, v jakých botách chodíme každodenně. Skoro všechny boty mají patu výše než špičku, což nás nutí došlápnout nejdříve na paty. Nevím, jak to bylo ve vašich hodinách tělesné výchovy, ale v těch mých se běžeckému stylu mnoho času nevěnovalo, a když už se o něm hovořilo, tak pro dálkové běhy se doporučovalo došlapovat na paty.
 
