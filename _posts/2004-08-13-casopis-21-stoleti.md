@@ -66,7 +66,11 @@ Další názory na časopis 21. století:
 <div class="commentssection" markdown=1>
 
 <div class='commentsheader'>Komentáře</div>        
-<div class='comment-item-header'>[Filip Rožánek](mailto:rozanek@seznam.cz) &ndash; [WWW](http://blok.rozanek.cz/) &ndash; 29.8.2004</div>
+<div class='comment-item-header'>
+
+[Filip Rožánek](mailto:rozanek@seznam.cz) &ndash; [WWW](http://blok.rozanek.cz/) &ndash; 29.8.2004
+
+</div>
 
 Hm, a co VTM?
 
