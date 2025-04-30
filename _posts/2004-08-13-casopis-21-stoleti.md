@@ -66,7 +66,7 @@ Další názory na časopis 21. století:
 <div class="commentssection" markdown=1>
 
 <div class='commentsheader'>Komentáře</div>        
-<div class='comment-item-header'>
+<div class='comment-item-header' markdown=1>
 
 [Filip Rožánek](mailto:rozanek@seznam.cz) &ndash; [WWW](http://blok.rozanek.cz/) &ndash; 29.8.2004
 
