@@ -62,3 +62,128 @@ Další názory na časopis 21. století:
 
 
 
+
+
+<div class='comments' markdown='1'>
+<div class='commentsheader'>Komentáře</div>
+[Filip Rožánek](mailto:rozanek@seznam.cz) [WWW](http://blok.rozanek.cz/) &ndash; 29.8.2004
+29.8.2004
+
+Martin [WWW](http://techblog.srubar.net/) &ndash; 29.8.2004
+29.8.2004
+
+[Luyza](mailto:luyza@centrum.cz)  &ndash; 27.9.2004
+27.9.2004
+
+kerim  &ndash; 20.12.2004
+20.12.2004
+
+[Petr Ježek](mailto:pje@centrum.cz)  &ndash; 22.1.2005
+22.1.2005
+
+[Martin Petrásek](mailto:martin[at]petrasek[dot]tk) [WWW](http://www.petrasek.tk) &ndash; 18.2.2005
+18.2.2005
+
+[Dave](mailto:david.hamr@bluetone.cz)  &ndash; 11.3.2005
+11.3.2005
+
+Martin [WWW](http://techblog.srubar.net/) &ndash; 11.3.2005
+11.3.2005
+
+[Dave](mailto:david.hamr@bluetone.cz)  &ndash; 11.3.2005
+11.3.2005
+
+[Werness](mailto:werness@seznam.cz)  &ndash; 25.3.2005
+25.3.2005
+
+Cecil  &ndash; 29.3.2005
+29.3.2005
+
+Jan Látal  &ndash; 4.4.2005
+4.4.2005
+
+[jirka](mailto:mnate@avonet.cz) [WWW](http://www.mwm.cz) &ndash; 30.8.2005
+30.8.2005
+
+luyza  &ndash; 6.10.2005
+6.10.2005
+
+luyza  &ndash; 6.10.2005
+6.10.2005
+
+Proxymus [WWW](http://proxymus.wz.cz) &ndash; 8.11.2005
+8.11.2005
+
+Martin [WWW](http://techblog.srubar.net/) &ndash; 9.11.2005
+9.11.2005
+
+[Sonic X](mailto:sonicx10&seznam.cz)  &ndash; 30.12.2005
+30.12.2005
+
+Prokop Hapala  &ndash; 18.1.2006
+18.1.2006
+
+Martin [WWW](http://techblog.srubar.net/) &ndash; 18.1.2006
+18.1.2006
+
+Honza  &ndash; 15.2.2006
+15.2.2006
+
+Martin [WWW](http://techblog.srubar.net/) &ndash; 15.2.2006
+15.2.2006
+
+b.v  &ndash; 24.2.2006
+24.2.2006
+
+Martin [WWW](http://techblog.srubar.net/) &ndash; 24.2.2006
+24.2.2006
+
+Martin  &ndash; 3.3.2006
+3.3.2006
+
+Ales  &ndash; 10.3.2006
+10.3.2006
+
+mori  &ndash; 11.3.2006
+11.3.2006
+
+[miky](mailto:behounek@mssch.cz)  &ndash; 30.5.2006
+30.5.2006
+
+[Honza](mailto:honzanov@seznam.cz)  &ndash; 21.6.2006
+21.6.2006
+
+[Mirek](mailto:mkomin@seznam.cz)  &ndash; 15.8.2006
+15.8.2006
+
+Károš  &ndash; 6.10.2006
+6.10.2006
+
+Kap.r  &ndash; 18.10.2006
+18.10.2006
+
+Kap.r  &ndash; 18.10.2006
+18.10.2006
+
+vd  &ndash; 13.11.2006
+13.11.2006
+
+[Navrátil Josef](mailto:j_navratil@volny.cz)  &ndash; 23.12.2006
+23.12.2006
+
+Mark  &ndash; 28.3.2007
+28.3.2007
+
+Unknow  &ndash; 24.9.2007
+24.9.2007
+
+al-ash  &ndash; 21.11.2007
+21.11.2007
+
+krakhen  &ndash; 17.6.2008
+17.6.2008
+
+[albert](mailto:albert@albert-sd.cz) [WWW](http://albert-sd.cz) &ndash; 3.6.2013
+3.6.2013
+
+</div>
