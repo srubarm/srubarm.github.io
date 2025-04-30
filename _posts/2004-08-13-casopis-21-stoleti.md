@@ -63,7 +63,7 @@ Další názory na časopis 21. století:
 
 
 
-<div class='test' markdown="1">
+<div class='test2' markdown="1">
 <section id='comments-section'>
 <div class='commentsheader'>Komentáře</div>        
 <div class='comment-item-header'>[Filip Rožánek](mailto:rozanek@seznam.cz) &ndash; [WWW](http://blok.rozanek.cz/) &ndash; 29.8.2004</div>
@@ -226,4 +226,5 @@ Je to pravda ten článek. Někdy si říkám, &#65533;e jde o takový Blesk mez
 
 21.století byl svého času zajímavý časopis, do kterého jsem měl možnost též přispívat. Postupem času se z něj stal obrázkový časopis s množstvím balastu, jež často nesměřuje k podstatě věci. Proto jsem přesedlal na wm magazin
 
-</section></div>
+</section>
+</div>
