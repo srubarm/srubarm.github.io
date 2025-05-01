@@ -14,3 +14,13 @@ Testy budou pokračovat na opravdových zubech napadených zubním kazem a prý 
 
 Zdroj: [Infrared light detects tooth decay](http://optics.org/articles/news/9/9/12/1)
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Pavlik  &ndash; 8.4.2006
+</div>
+
+Počkáme ako bude postupovať výzkum a potom až to môžeme hodnotiť. Ja by som bol vďačný za každú metódu, ktora ma ušetrí od vŕtania zubu alebo iných bolestvých zákrokov
+
+</section>

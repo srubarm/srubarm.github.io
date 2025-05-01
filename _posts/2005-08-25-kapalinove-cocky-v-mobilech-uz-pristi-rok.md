@@ -47,3 +47,25 @@ Co myslíte, bude vám pětinásobný zoom v mobilu stačit?
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Pavel](mailto:ja@tady.cz)  &ndash; 25.8.2005
+</div>
+
+A proč by nešla konkávní čočka? Což takhle válec napněný kapalinou s velkým indexem lomu uzavřený na (každé) straně pružnou membránou. Pak čerpáním kapaliny do válce nebo z něj dostanu rozptylku s proměnnou ohniskovou vzdáleností, dokonce můžu mít podle potřeby jednou spojku a podruhé rozptylku. Neměl bych si to nechat patentovat?
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 25.8.2005
+</div>
+
+Máš naprostou pravdu. Určitě to půjde. Příliš jsem se omezil v přemýšlení.Patentovat si to nechej. Do konce života bys pak nemusel hnout prstem a milióny by se Ti sypaly. :)
+
+<div class='comment-item-header' markdown=1>
+pjotr &ndash; [WWW](http://sietook.druskova.sk) &ndash; 25.8.2005
+</div>
+
+Kvapalinová šošovka bude mať podľa mňa postupné tendencie zlepšovať sa. Veď s každým vynálezom to tak bolo vždy, nie..? Žiarovka, motory.. nakoniec i počítač bol kedysi veľký ako tenisové ihrisko a len robil kalkulačku. Dnes sa nám to zmestí do vrecka. O týchto šošovkách je to to isté..
+
+</section>

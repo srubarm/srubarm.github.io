@@ -26,3 +26,31 @@ Tento výzkum je skutečně velmi zajímavý, už proto, že turbulence je všud
 
 Myslím, že o turbulenci se na Techblogu ještě zmíním a to už do toho zkusím zamotat nějaké to Reynoldsovo číslo.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Pavel](mailto:ja@tady.cz)  &ndash; 15.9.2004
+</div>
+
+Nedá mi to, musím článku vytknout jednu podstatnou chybu (která možná vznila příličným zjednodušením). Rovnice pro pohyb kapaliny mají nestabilní řešení, ale to neznamená, že při stejném zadaní dají různé výsledky. Při stejném zadání vyjde samozřejmě totéž. Problém je v tom, že už nepatrná změna zadání může způsobit velkou změnu ve výsledku - to je (zjednodušeně) definice nestabilního řešení. A ta nepatrná změna může být i různé zaokrouhlení při numerickýách výpočtech. Z toho možná vyplynulo původní tvrzení, že při stejném zadání vyjdou různé výsledky.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 15.9.2004
+</div>
+
+Děkuji za opravu. Bohužel tato chyba nevznikla z přílišného zjednodušení, ale z toho, že jsem si nevzpoměl na hodiny numerické matematiky. :-) A tak jsem si dokonce myslel, že výsledkem zmiňovaných rovnic bude dokonce nějaká periodická funkce času.Ale jakto, že jim nakonec vypočet dobře odpovídá s naměřenými hodnotami? U takového nestabilního řešení by to měla být spíše náhoda.
+
+<div class='comment-item-header' markdown=1>
+[Alex](mailto:zephir@atlas.cz)  &ndash; 25.12.2004
+</div>
+
+Simulovat turbulenci s dnešními počítači není příliš obtížné a omezeném souboru dat má zcela deterministický průběh.http://193.85.233.106/home/SRNKA/fluid.htm
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net) &ndash; 26.12.2004
+</div>
+
+Díky za doplnění. Jenže v podmínkách praxe rozhodně nemáme omezený soubor dat a těžko postihneme kompletně podmínky, ve kterých proudění probíhá. Ale je pravda, že v tomto modelovém případě to mohli všechno zahrnout do výpočtového modelu, takže ten jejích výpočet nemusí být až takovým úspěchem.
+
+</section>

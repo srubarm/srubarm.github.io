@@ -44,3 +44,43 @@ Přenosem nových článků do průmyslového sektoru, by nastal nový boom vyu�
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Prokop Hapala](mailto:0254@seznam.cz) &ndash; [WWW](http://part.wz.cz) &ndash; 2.9.2005
+</div>
+
+popravde nerozumim (nebo neverim) vyhodam tohoto reseni. Hmotnostni zlomek vodiku v NaBH4+2H20 a je stejny jako v alternativnim methanolu CH3OH + H20, nehlede na hlinikovy pridavek. Navic je li clanek neprenosny ma smysl uvazovat jako konkureta uz odskousene palivove clanky na uhlovodiky nebo zemni plyn ktere sou jeste podstatne rentabilnejsi nez methanol.Predevsim mne ale dost udivuje odhad 1$ za kilo NaBH4. Protoze recyklace uvedena na http://www.eere.energy.gov/hydrogenandfuelcells/pdfs/review04/st_5p_wu.pdfje velice energeticky narocna, rozhodne nemuzeme hovorit o smysluplnem energeticke reseni pokud na 4 moly H2 vyelekrolizujem 4 moly Na a spalime 2moly CH4.pokud se ma jednat o reseni pro mobilni elektroniku..pak by mela byt vyzadovana mnohem vetsi mobilita, pokud jde o soucast velkoobemove vodikove energetiky pak nechapu jak by mohl byt rentabilni.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 2.9.2005
+</div>
+
+[1] Díky za velmi zajímavý komentář. Nejde ani tak o to, kolik tam vodíku je, ale kolik se ho z látek při praktickém použití podaří dostat. Netvrdím, že neexistují jiné možnosti, pouze upozorňuji na jednu novou.Doufám, že jsem tento palivový článek nepopsal jako nepřenosný, jeho rozměry by měly být malé, pro stacionární využití existují mnohem efektivnější metody.Docela jsi mě překvapil s energetickou náročností recyklace. Při pročítán informací okolo tohoto tématu jsem právě narazil na to (Wikipedia o NaBH4), že existují také techniky recyklace boraxu, které nejsou tak energeticky náročné, jako Tebou uváděná. Uznávám, že to není zcela spolehlivý zdroj informací.
+
+<div class='comment-item-header' markdown=1>
+[Prokop Hapala](mailto:0254@seznam.cz) &ndash; [WWW](http://part.wz.cz) &ndash; 3.9.2005
+</div>
+
+[2] Stou neprenosnosti jsem to asi spatne pochopil (myslel sem ze clanek ma fungovat jako dobijecka)Co se tyce te recyklace, take jsem se nejdrive dival na wikipedii pod heslem Sodium Borohydride sem nasel  pdobne udaje jako v tomto clanku, ale ne konkretni navrhy recyklaceMyslel sem ze to pdf predstavuje prave onu technologi kvuli nadpisu Low Cost Regeneration of Sodium Borohydrate a kvuli tomu ze se tyka take Fuel Cell programu. Tedy je mozne ze je to nejaka starsi verze a existuji novejsi, za link bych byl vdecny.jinak v beru li tohle jako nahrazku napr akumulatoru do notebooku tak samozdrejme neni energeticka ucinost priliz dulezita.
+
+<div class='comment-item-header' markdown=1>
+[Petr Dlouhý](mailto:petr_dlouhy@centrum.cz)  &ndash; 5.4.2006
+</div>
+
+dobry dendovolil bych si par komentaru k vasemu clanku:1. predne se dle citovanych zdroju  nejedna o novy typ palivoveho clanku, ale pouze o zpusob uskladneni vodiku, cely clanek je pak timto negativne poznamenan.2. zobrazeny palivovy clanek je typu PEM, obecne mame 6 typu a slovu bezny bych se tedy radeji vyhnul. 3.ucinnost vyroby vodiku je zcela neco jineho, nez co citujete, zrejme mate na mysli hmotnostni kapacitu (anglicani tomu rikaji gravimetric density, udava se obvykle v % kgH2/kgvseho*100[%hm])4.je znacne zavadejici uvadet hmotnostni kapacitu samotne latky, tedy bez systemu pro uskladneni a produkci H2 (stlačeny a kapalny vodík ma 100 %hm, to je dobry, ale ejhle v kompozitovy flasce uz nam to leze pod 5 % a z toho uz nikdo nejasa) samotny NaBH4 ma teoreticku az 10,4 %hm, 5. pro soucasne aplikace je limitujici spise objemova hustota (anglicky to zni lip - volumetric density, ta uvadi hmotnost H2 v nejakem objemu materiálu, korektneji opet systemu)6.dobre vykonove navrzene DMFC i PEM dokazi spolehlive primo napajet elektronicka zarizeni (reakce je rizena odberem proudu), jediny v cem muze byt u popisovaneho reseni problem je prisun vodiku do FC. vede zdar Petr
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 5.4.2006
+</div>
+
+[4] Velmi děkuji za opravu mých nepřesností.
+
+<div class='comment-item-header' markdown=1>
+[Petr Dlouhý](mailto:petr_dlouhy@centrum.cz)  &ndash; 6.4.2006
+</div>
+
+[5] do budoucna rad pomuzu s korekturou na podobne tema (palivove clanky, vyroba a skladovani vodiku, proste vse kolem vodiku)zdar Petr
+
+</section>

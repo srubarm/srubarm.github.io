@@ -57,3 +57,49 @@ Pasivní radary mají velkou budoucnost, protože většina států světa jejic
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+sweet &ndash; [WWW](http://shucon.org) &ndash; 26.8.2005
+</div>
+
+A já bych ještě doplnil několik vět o pasivním radaru z Ruska SDR (stancija dalnoj razvedky). Sklada se ze tri aut, jeden je dieslovy agregator vyrábějící elektriku, druhý pak přívěs co nese anténu a třetí auto pak všechny přístroje na vyhodnocení. Anténa ve složeném stavu připomíná sloní chobot.SDR je schpná zachytit letištní radary, meteoradary, radary na vozidlech protivzdušné obrany (Hawk) a taky některé radary na letadlech (E3A Sentry:Avacs, Hercules). Její dosah se udává něco kolem 400 km, využívá odrazu signálu z radaru od ionosféry (nebo stratosféry?).Na správné vyhodnocení musí být SDRky 2, každá umístěná jinde, protože dokáže jen určit směr signálu. Na vyhodnocení nepoužívaly kdysi žádné počítače, naměřené údaje (počet otáček, opakovací frekvence) podle tabulek, zkušenější pak určovali cíle z paměti. Později se do SDR dávali počítače, které pomáhali měřit a vyhodnocovat. Tomu se říkalo NATAŠA. Některé SDR měli i jednotku automatického nastavení antény (JANA), ale její význam neznám.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 26.8.2005
+</div>
+
+Díky za zajímavé doplnění. Škoda, že jsem včera o tom při hledání podkladů pro příspěvek nic nenašel. S tím ručním vyhodnocováním je to velmi zajímavé.
+
+<div class='comment-item-header' markdown=1>
+[Stanley_B707](mailto:info@nal.sk) &ndash; [WWW](http://www.nal.sk) &ndash; 26.8.2005
+</div>
+
+Pokiaľ sa pamätám, tak prvým pasívnym zameriavačom (RADAR je akronym RAdio Detection And Ranging) bol ešte pred Ramonou, KOPÁČ.KOPÁČ bola skratka pre klorelačný pátrač, čo vysveľuje princíp jeho fungovania. Ženské mená sa začali používať až od Ramony.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 26.8.2005
+</div>
+
+Také děkuji za doplnění. O Kopáčovi jsem vůbec nevěděl. Taky jsem se setkal s tvrzeními, že pro pasivní radiolokátory by se nemělo používat označení radar. Ale radiolokátor se používal v běžném tisku, zatímco radar v odbornějších článcích, tak jsem použil tuto zkratku. Nechápu, jak pasivní radiolokátor odporuje zkratce radar.
+
+<div class='comment-item-header' markdown=1>
+[Jarda](mailto:hlinda@volny.cz)  &ndash; 5.10.2005
+</div>
+
+Kopáč - korelační pátrač,jinak PRP 1(Přesný Radiotechnický Pátrač)byl první z této řady.Už v letech 1965-? v Českém lese prokazoval (na svou dobu)tehdy ještě nedoceněné fantastické výsledky.
+
+<div class='comment-item-header' markdown=1>
+[S.Leinweber](mailto:S.Leinweber@seznam.cz)  &ndash; 12.2.2011
+</div>
+
+Pasivní radar SDR měla i pátrací rota Aš-Pata.Radar nebyl přímo v objektu,ten sloužil je jako kasárna.Radar byl 0,5km od kasáren severovýchodně.
+
+<div class='comment-item-header' markdown=1>
+[S.Leinweber](mailto:S.Leinweber@seznam.cz)  &ndash; 12.2.2011
+</div>
+
+Aš-Pata,útvar sovětské armády na nejbližším místě železné opony.Zcela organizačně samostatný útvar.V noci,tajně,si jezdili pro maso a pečivo přímo auty do masny a pekárny.Například.Radiolokátor sloužil jako odposlech telefonů a prostoru NSR.
+
+</section>

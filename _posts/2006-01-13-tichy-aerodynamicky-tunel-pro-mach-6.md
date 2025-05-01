@@ -36,3 +36,19 @@ Není mi jasné, jak chtějí vědci testovat části budoucích hypersonických
 
 Další etapou v letectví po nadzvukových letounech budou letadla hypersonická schopná překonat rychlost zvuku více než pětkrát. Taková se již vyvíjejí. Příkladem může [X-43A](http://techblog.srubar.net/kosmonautika/x-43a-prekonal-mach-10.html), které při testování překonalo úspěšně rychlost zvuku desetinásobně. S takovou rychlostí byste se na druhý konec zeměkoule dostali za pouhé dvě a půl hodiny. Jde zatím pouze o miniaturu s rozpětím křídel 2,5 m, ale pro praktické nasazení se počítá s rozměrnějšími stroji. Ty by mohly vynášet vesmírné lodě na okraj vesmíru, tím výrazně ušetřit jejich palivo, a tak snížit náklady na start. Na to si budeme muset počkat ještě několik desetiletí.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[matus](mailto:matus@mujmail.cz)  &ndash; 28.12.2006
+</div>
+
+Mozno prave preto potrebuju tunel s takou vysokou rychlostou zvuku -- Reynoldsovo cislo zavisi nielen od viskozity, ale aj od rychlosti. Ak bude lietadlo N-krat mensie a rychlost vzduchu N-krat vacsia, Reynoldsovo cislo (a teda aj obtekanie) by mali byt rovnake (ak tomu dobre rozumiem :).
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz/) &ndash; 31.12.2006
+</div>
+
+[1] Máš pravdu asi to taky bude v tom, ale předpokládám, že větší vliv bude mít vyšší tlak  a hustota (a tím nižší kinematická vizkozita) než zvýšená rychlost. Protože tlak (stagnační - za nulové rychlosti) můžeme celkem jednoduše udělat stonásobně vyšší než je ve velkých výškách atmosféry, s rychlostí si už tak snadno hrát nemůžeme. I když u takových vysokých rychlostí si momentálně moc jistý nejsem, i když jsem se na to koukal do skript.
+
+</section>

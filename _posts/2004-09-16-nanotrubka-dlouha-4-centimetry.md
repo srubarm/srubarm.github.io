@@ -22,3 +22,25 @@ Neodpustím si poznámku ke zdrojům informací tohoto spotu. Tato zpráva je st
   *[LANL]: Los Alamos National Laboratory
   *[PR]: Public Relation
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Tokugawa &ndash; [WWW](http://blog.zbroj.info) &ndash; 17.9.2004
+</div>
+
+Když si zde pročítám jednotlivé články, připadám si úplně jako ve hře Alpha Centauri :o)
+
+<div class='comment-item-header' markdown=1>
+Dalibor Šrámek &ndash; [WWW](http://www.transhumanismus.cz/blog.php) &ndash; 18.9.2004
+</div>
+
+Článek s několika zajímavostmi k tématu:http://www.lamonitor.com/articles/2004/09/17/headline_news/news03.txtCitují mimo jiné našeho oblíbeného výtaháře Edwardse, že nit z UNT unese auto ;-)
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 19.9.2004
+</div>
+
+Dík za link. Edwards by měl už pomalu vázat nanotrubky. :-) Škoda, že se nikde nepíše, jestli náhodou ty nanotrubky nejsou křehké - jestli se snadno nelámou. I když vzhledem k tomu, že jsou tak tenounké, by s tím nemusely mít problémy. :-)
+
+</section>

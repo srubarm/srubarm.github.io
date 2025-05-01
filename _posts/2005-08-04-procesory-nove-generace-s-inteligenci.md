@@ -28,3 +28,19 @@ Intel již od roku 1998 uvažuje o tom, [jak by využil nanotrubky](http://www.e
 
 Většího nasazení produktu nanotechnologického průmyslu bychom se mohli dočkat kolem roku 2020, kdy dojde současným metodám dech. Zdá se, že [Moorův zákon](http://www.aldebaran.cz/glossary/print.php?id=456) zůstane neporušen a to ani směrem k rychlejším procesorům. Otázkou je, jak by s ním zahýbaly "inteligentní" procesory. Svatým grálem elektrotechniky stále zůstáva [jednoelektronový tranzistor](http://physicsweb.org/articles/world/11/9/7/1). Ten by přinesl skutečnou revoluci.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Jirka &ndash; [WWW](http://www.jirkacech.com/) &ndash; 5.8.2005
+</div>
+
+Nejpravdepodobnejsi pouziti uhlikovych nanotub v dnesni kremikove technologii je na takzvane Vias and Interconects, tedy jako nahrada vertikalnich vodicu. Nanotuby umoznuji vyssi proudove hustoty, nizsi odpor a tim mensi ohrev pri pruchodu proudu a hlavne nepodlehaji elekromigraci, tedy cestovani iontu kovu vlivem elektrickeho pole. Vulgarne receno, pri soucastnych proudovych hustotach by se kovove atomy vodice u nynejsich vodicu zmensenych na polovinu samy rozutekly a oddifundovaly by do kremiku. Oproti tomu, uhlikove atomy SWCNT jsou kovaletne=pevne vazane a podobne nebezpeci nehrozi. V soucastnosti se jiz vyrabeji v Bavorsku utajene prototypy podobnych CPU, treba ve firme Infineon, coz je dcerinna spolecnost Siemens. Na tomto vyzkumu se podili i Max Planck Institut ve Stuttgartu. Evropske divize firmy AMD maji o vysledky eminentni zajem (vyjadreno v penezich: nabizeji miliony EUR za odpovidajici Itelectual Property)
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 5.8.2005
+</div>
+
+Díky za velmi zajímavé informace.
+
+</section>

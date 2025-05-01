@@ -46,3 +46,73 @@ Rada českých poslanců Bushovi: "Přidej těžbu ropy na Aljašce do zákonu o
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+selda &ndash; [WWW](http://seldik.com) &ndash; 15.8.2005
+</div>
+
+Nevim, jak jsi prisel na to, ze "tam moc nezdraží benzín", protoze ve statech se benzin zdrazuje celkem dost. Za posledni dva tydny se cena zvyslila, v miste kde bydlim, o 40 centu (10 korun)
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 15.8.2005
+</div>
+
+Jde mi o zdražení v dlouhodobějším horizontu. Tím, že se začne víc těžit, neporoste cena ropy celosvětově tak prudce. Protože kdyby se deklarovalo, že se na Aljašce těžit nebude, mohla by cena ropy stoupnout mnohem víc než dnes. Ale i z krátkodobého hlediska je lepší než snižování ceny ropy vyšší těžbou snížení nížší poptávkou. Myslím, že se na spotřebu aut v USA nehledí tak jako v Evropě.To zdražení je dost velké. Nám tu benzín zdrahnul o něco přes dvě koruny na litr, jestli uvádíš zdražení na galon, je to přibližně stejně.
+
+<div class='comment-item-header' markdown=1>
+[Pavel](mailto:ja@tady.cz)  &ndash; 15.8.2005
+</div>
+
+Možná jsem naivní, ale povolení k težbě ještě není zahájení težby. I kdyby si US chtěli nachat zásoby na Aljašce jako rezervu, musí si napřed tuto těžbu ošetřit legislativně a připravit pro ni infrastrukturu. US má strategické zásoby na 2 měsíce až půl roku, pokud by chtěli řešit povolení těžby až v okamžiku kdy budou od zdrojů ropy odříznuti, tak by půl roku zabral jen legislativní proces, a další měsíce ne-li roky vybudování nezbytných těžařských kapacit.
+
+<div class='comment-item-header' markdown=1>
+al-ash &ndash; [WWW](http://alash.wz.cz) &ndash; 15.8.2005
+</div>
+
+Jenže tím že budou těžit už nyní na Aljašce ,získají dost peněz...sice by třeba za 30 let měla ropa vyšší cenu..jenže by si v zemi ležela bez jakéhokoliv užitku...a takhle,když se vytěží ropa na aljašce, může USA za peníze které ušetří(rozdíl cen mezi aljašskou ropou a dovozovou)už dnes rozjet nějaké projekty které rozhodně za 30 let budou produkovat více peněz...mnohem lepší řešení než něco nevyužívat a čekat až to nabere za několik let na ceně jako nedostatkové zboží..ad ta krajní cena za barel(zde uvádíš 200$)http://www.ceskaenergetika.cz/ce/view.php?cisloclanku=2005081103-tady je 85$
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 15.8.2005
+</div>
+
+[3] Máš pravdu, kdyby se o těžbě rozhodovalo o až na základě toho, že by byli odříznuti od ropy, tak by to nejspíš nestihli rozjet. Ale náznaky vyhrocení situace jsou často vidět dlouho dopředu, i když existují výjimky. Ale ona velikost zásob na půl roku asi nebude určena náhodně a bude asi možné v té době zvýšit těžbu i ve stávajících nalezištích.[4] To je velmi zajímavý pohled. Já vycházím z toho, že nejefektivnější palivo pro bojové prostředky je "benzín." Tudíž považuji ropu za strategicky hodnotnou. Ty ji považuješ za potenciální aktivum, které může přinést nové strategické výhody. Tvůj pohled je progresivnější a můj konzervativnější. Pokud by všechny peníze z výnosu ropy šly do výzkumu alternativních pohonů, šel bych určitě směrem, který jsi naznačil Ty. Ve skutečnosti to bude složitější.200 dolarů je mnou vymyšlená hodnota. Kvalifikovaný odhad v odkazovaném článku je sice hodnotnější, ale vzhledem k tomu, že při $60 za barel spotřeba stále stoupá, $85 není určitě ta skutečná hranice.
+
+<div class='comment-item-header' markdown=1>
+selda &ndash; [WWW](http://seldik.com) &ndash; 16.8.2005
+</div>
+
+Myslel jsem na galon.Ja si nemyslim, ze soucasnou cenu ropy muze jeji nedostatek, ale spis olejove spolecnoti, ktere si chteji prividelat nejaky ten billion dolaru za den
+
+<div class='comment-item-header' markdown=1>
+[Prokop Hapala](mailto:0254@seznam.cz) &ndash; [WWW](http://part.wz.cz) &ndash; 11.9.2005
+</div>
+
+co se tyce strategickeho (vojenskeho) vyznamu ropy - z bezpecnostnich duvodu, kvuli spolehlivosti... se benzin skoro nepouziva..ale to je detailNemecko ani jizni afrika nemely nejak strasne problemy nahrazovat ropu pro tyto ucely uhlim(teda nemecko melo ale to hlavne kvuli naletum na chemicky)navic moderni palivo je natolik rafinovane krakovanim reformovanim, ciklizaci a rozvetvovanim (hlavne teda letecke) ze rozdil v cenach zpracovani uhli a ropy na motorove palivo se dost snizuje, hlavne kdyz ropa stoji kolik stoji//co znamena "pamatuj si me" vtom formulari pro komentar? :)
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 12.9.2005
+</div>
+
+[7] Díky za připomínku. S tím strategickým významem jsem to moc nedomyslel. Vzpomínám si, že Němci byli rádi, že měli proudové Messerschmitty 262, kterým vyhovoval nízkooktanový benzín produkovaný z uhlí. Ale nafta, která má delší molekuly, se používá, pokud se nepletu, v téměř veškeré pozemní vojenské technice. I když o jejím strategickém významu bychom si mohli myslet své.
+
+<div class='comment-item-header' markdown=1>
+fyschy  &ndash; 8.1.2006
+</div>
+
+Všechny příspěvky co tady čtu se převážně zaměřují na snížení cenny benzinu, ale nikoho z vas ani nenapadne pomyslel na přírodu. Těžba ropy by Aljašku jedině zrujnovala!
+
+<div class='comment-item-header' markdown=1>
+[edgar](mailto:xukol@seznam.cz)  &ndash; 3.6.2008
+</div>
+
+Zásoby na Aljašce 10 mld barelů. Spotřeba USA 20 mil barelů denně. Tudíž je spotřeba USA pokryta ropou z Aljašky na 6 let (?).To jsou mi tedy počty...
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz) &ndash; 3.6.2008
+</div>
+
+[10] No, v článku jsou zmíněny roky tři, ale i to je špatně. Správně by bylo něco kolem jeden a půl roku.
+
+</section>

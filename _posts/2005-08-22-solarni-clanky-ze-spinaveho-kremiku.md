@@ -36,3 +36,19 @@ Nějak se mi nezdá, že by toto vylepšení zpracování křemíku bylo novým 
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Stanley_B707](mailto:info@nal.sk) &ndash; [WWW](http://www.nal.sk) &ndash; 23.8.2005
+</div>
+
+Nedochádza ku žiadnej ignorancii, myslím že na tomto princípe je založené čistenie kremíku predovšetkým.Pri zonálnej tavbe sa tie nečistoty dokonca udržujú v miestach kde je kremík stále roztavený a ako zóna tavenia postupuje, tak sa presúvajú aj nečistoty a kryštalizuje vysoko čistý kremík.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 23.8.2005
+</div>
+
+Postup čištění křemíku, který zmiňuješ, je právě jeden z těch nákladných. Surovinou pro něj je právě ten znečištěný křemík. Ten se musí zahřát až na teplotu tání a dlouho se na ní udržet, což je nesmírně energetický náročné.Při použití špinavého křemíku by právě tento postup odpadnul a ušetřilo by se velké množsví energie. Původní polotovar by se jen ochlazoval z taveniny výrazně pomaleji než dnes a to není z daleka tak nákladné jako tavit celý blok křemíku znovu.Ale nejsem profesionál, tak je možné, že se mýlím.
+
+</section>

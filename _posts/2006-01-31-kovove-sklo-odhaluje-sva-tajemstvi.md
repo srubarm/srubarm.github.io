@@ -40,3 +40,55 @@ Kovová skla se v dohledné budoucnosti dostanou do centra pozornosti materiálo
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Pavel  &ndash; 1.2.2006
+</div>
+
+Pokud vím, tak kovová skla je vyrábějí (ve formě tenké pásky dlouhé i několik kilometrů) už asi dvacet let a používají se třeba v hlavičkách magnetofonů.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 1.2.2006
+</div>
+
+Zajímavé. Takže ne hi-end mp3 přehrávač, ale už staré magnetofony. Teď se snad dostameme k tomu, že budeme vyrábět i větší objemy kovového skla, které se uplatní jako konstrukční materiál a ne pouze jako ochranná vrstva.
+
+<div class='comment-item-header' markdown=1>
+Prokop Hapala  &ndash; 1.2.2006
+</div>
+
+co se tyce vodivost - pravdepodobne to sni nebude az tak sptane vzhledem k tomu ze jak sem videl z obrazku jsou kovova skla docela dost reflexivni -musi mit tedy velkou imaginarni slozku indexu lomu spusobeou vodivosti aby mely dostatecne velky fresneluv odraz, coz je umerne odmocnine z vodivosti  pri dane frekvenci. Neocekavam ze by vodivost pri nizzsich frekvencich mohla byt nizsi. I kdyz tohle asi vypovida jen o vodivosti na malych rozmerech , takze treba metrovy drat by mozna priliz vodivy nebyl. Hodne me prekvapuje ta velka pevnost. A hlavne si vubec neumim vysvetlit ten velky koeficient elasticke restituce
+
+<div class='comment-item-header' markdown=1>
+Prokop Hapala  &ndash; 1.2.2006
+</div>
+
+omlouvam se - asi to byla trochu scestna uvaha. Vodivost kovu pri vysokych frekvenci je obecne mnohem nizsi nez pri nizkych. Ackoli tedy muze mit kovove sklo slusnou vodivost vzhledem k kristalickym kovum pri vysoke frekvenci, nemusi to znamenat ze tomu tak je i pri nizke, protze krivna poklesu vodivosti muze byt proste jen pozvolnejsi nez u krystalu.osobne bych samozdrejme taky cekal ze budou mnohem mene vodiva nez krystal
+
+<div class='comment-item-header' markdown=1>
+[milan](mailto:kosutm@host.sk) &ndash; [WWW](http://www.milankosut.host.sk) &ndash; 6.10.2006
+</div>
+
+Nie som z fachu, ale technika ma zaujíma. Aký je rozdiel medzi starými spekanými karbidmi a novým kovovým sklom?
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz/) &ndash; 6.10.2006
+</div>
+
+[5] Spékané karbidy jsou spečené kousky krystalického materiálu (s uspořádanými molekulami jako v kovech atp.) a nové kovové sklo jsou spečené kousky amorfního materiálu (s neuspořádanými molekulami obdobně jako v plastech nebo sklu). Co se chemického složení týče, rozdíl tam velký nebude, ale strukturní rozdíl je zásadní.
+
+<div class='comment-item-header' markdown=1>
+[Mimoxx](mailto:mimoxx@post.sk)  &ndash; 11.10.2006
+</div>
+
+Zaujimavy material, ale pred rokmi som cital, ze ked prisli prvi Spanieli do Ameriky, tak neviem ci to boli Mayovia, alebo Aztekovia, ale pouzivali na mece velmi tvrdy a pruzny kov, ktory sa vlasnostami podoba kovovemu sklu! Zeby sme objavili uz objavene??
+
+<div class='comment-item-header' markdown=1>
+Ostap Bender  &ndash; 6.1.2008
+</div>
+
+[7] Sice jdu dávno s křížkem po funuse, ale nedá mi to: Mayové v době rozkvětu své říše (zaniklé několik set let před příchodem Španělů) v podstatě neznali kov vůbec, stejně jako sklo. Aztékové, kteří vládli ve střední Americe v době příchodu Španělů, znali, pokud vím, jen zlato, stříbro a měď. Proto se mi zdroj, který jste - podle vašich slov - četl před několika lety, zdá řekněme poněkud nevěrohodný.
+
+</section>

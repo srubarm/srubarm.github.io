@@ -57,3 +57,31 @@ Experiment Gravity Probe-B asi dopadne nejednoznačně.Z počátku budou naměř
 LATOR je mým favoritem. Neočekávám žádné problémy. Drobné nepřesnosti zahladí obrovské vzdálenosti a dostatečně silné gravitační pole Slunce. A jak to dopadne? Nakonec se potvrdí, že **Einstein měl opět pravdu.**
   *[ISS]: International Space Station
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Jiří Johan](mailto:johan@sps-pi.cz) &ndash; [WWW](http://www.volny.cz/jednooko/main/gpc/htm) &ndash; 25.11.2007
+</div>
+
+Zaujala mne otázka Mýlí se Galileo i Einstein ?Chceme-li na ní odpovědět alespoň částečně, je předem nutné si ujasnit takovou triviální věc jako je čas. V tom neměl jasno ani Galileo ani Einstein, neboť oba pokud se nějak vyjadřovali o čase, pak pouze jako o samostatném parametru, čtvrtém rozměru.Nemá v tom jasno každý, kdo si myslí, že čas plyne, a někde se zkracuje (prodlužuje).Čas samostatně neexistuje, je nedílnou součástí prostoročasu. Prostoročas se musí neustále vyrábět. Není to nějaké zakřivené prostěradlo, po které sklouzávají vesmírná tělesa.K výrobě prostoročasů jsou tzv. generátory prostoročasů. Einstein chápal čas odděleně od prostoru, proto si mohl mylně myslet, že čas může dilatovat. Ani plynutí, ani dilatace času nelze prokázat. V tom se Einstein skutečně mýlil.Přesnější je dynamická definice času popsaná v teorii o generátorech prostoročasů, které jsou jediným spojovacím článkem všeho, co je ve vesmíru.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz) &ndash; 27.11.2007
+</div>
+
+[1] Děkuji za velmi zajímavý komentář. Máte k dispozici zdroje (publikace v odborných časopisech), které hovoří o této teorii? Mi se bohužel žádné informace o generátorech prostoročasů v důvěryhodných zdrojích nepodařilo zaznamenat.
+
+<div class='comment-item-header' markdown=1>
+JN  &ndash; 21.2.2008
+</div>
+
+http://www.hypothesis-of-universe.com/index.php?nav=m
+
+<div class='comment-item-header' markdown=1>
+[já](mailto:já@seznam.cz)  &ndash; 23.1.2010
+</div>
+
+Mýlil se nejen Enstein,jestliže čas plyne,běží,zastavuje se,dilatuje,pak se snad pohyboval,o čem to tedy mluvíme,o čase nebo o pohybu.Co se vlastně zastavuje při rychlosti c? Celý vesmír? Nebo vnímání pozorovatele?Jaký čas?Co to vlastně je? Nebo snad pojem pohyb a čas je to samé? Nějak nám tu Velký chytrolín Enstein zapoměl ke svým blábolům zanechat DEFINICI ČASU.
+
+</section>

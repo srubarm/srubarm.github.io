@@ -26,3 +26,31 @@ Nyní už se vědci budou moci soustředit na to, aby zjistili, jak využít ani
 
 Zajímal-li by se někdo o toto téma hlouběji, může se přečíst [celý článek](http://www.lbl.gov/Science-Articles/Archive/assets/images/2004/Jul-28/nmat1177-revised.pdf) (pdf 415 kB). Strojaři (zejména "materialisté") si určitě připomenou [Millerovy indexy](http://www.xray.cz/kurs/krystal.htm) směrů a rovin.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Hugo  &ndash; 6.8.2004
+</div>
+
+LiAlO2 = Hlinitan lithný
+
+<div class='comment-item-header' markdown=1>
+Martin - Techblog &ndash; [WWW](http://techblog.srubar.net/) &ndash; 6.8.2004
+</div>
+
+Díky. Když všude psali přímo o oxidu, nenapadlo mě, že by to mohl být hlinitan. :-)
+
+<div class='comment-item-header' markdown=1>
+Hugo  &ndash; 9.8.2004
+</div>
+
+Ve skutecnosti je to podvojny oxid (spinelova struktura), protoze hlinitanovy anion se ve strukture nenachazi, ale nazvoslovne by se mel oznacovat jako hlinitan (aspon myslim).
+
+<div class='comment-item-header' markdown=1>
+[leo](mailto:leok@email.cz)  &ndash; 30.8.2004
+</div>
+
+Oxid hlinito lithný- hliník je trojmocný a lithium jednomocné. Podle našeho názvosloví tedy tak, jak jsem napsal.L.
+
+</section>

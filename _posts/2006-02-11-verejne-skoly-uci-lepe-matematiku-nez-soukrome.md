@@ -34,3 +34,13 @@ Výjimku tvoří skutečně kvalitní soukromé školy, kde se platí školené 
 
 V USA proběhnul experiment, ve kterém bylo žákům řečeno, že je bude učit výjimečně kvalitní učitel a učiteli bylo sděleno, že bude učit výjimečně nadané žáky. Hodina proběhla a výzkumníci se ptali na dojmy učitele i žáků. Všichni byli nadšeni tím, jak příjemná hodina byla a kolik se toho naučili. Přitom jak žáci tak učitel byli průměrní. Psychologie a vůbec ochota a nadšení pro učení jak na straně žáků tak učitele hraje nejdůležitější roli ve vzdělání. S dobrým přístupem na obou stranách lze dosáhnout mnohem více v jakýchkoliv podmínkách. Musíme doufat, že s postupem času a výrazné platové diferenciace více a méně vzdělaných a **vzdělávatelných** , si žáci i učitelé uvědomí důležitost vzdělání a vzdělávání a tomu přizpůsobí svůj přístup. Teprve potom se nám otevřou dveře ke skutečné prosperitě.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Martin](mailto:Vrsoun@seznam.cz)  &ndash; 2.5.2006
+</div>
+
+Zdá se mi, že srovnáváte dvě rozdílné věci. Ohledně USA se zaměřujete pravděpodobně na elementary a middle school (1-9). Kvalitu českého školství s odkazem na výši odměn učitelů mi připadá jako aplikace na české soukromé střední školství. Učím na soukromé základní (1-9)škole a kvalita výuky, přístup i výsledky jsou daleko vyšší než na drtivé většině státních škol.
+
+</section>

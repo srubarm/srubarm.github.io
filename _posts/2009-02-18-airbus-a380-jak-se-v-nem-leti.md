@@ -30,3 +30,19 @@ Při dosedání na Londýnském Heathrow mi připadalo, že letoun přistává s
 
 Už se těším, až uvidím létat Airbus A380 nad našimi hlavami častěji. Přinese více pohodlí cestujícím a více ekologickou leteckou dopravu nám všem.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Mytom  &ndash; 27.7.2009
+</div>
+
+A380 má větší lopatky v motoru, tak proto menší vibrace a hluk. Jinak srovnávat ho se 40 let starým 747 není moc fér ;-)
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz/) &ndash; 27.7.2009
+</div>
+
+To je pravda, nevím, jak hlučné byly první verze 747, ale u těch modernějších mohl Boeing na odhlučnění zapracovat. :-) Poznámku jsem myslel obecně, protože taková A320 je tišší než moderní 737 NG a stará A330 je jen o málo hlučnější než moderní 777.
+
+</section>

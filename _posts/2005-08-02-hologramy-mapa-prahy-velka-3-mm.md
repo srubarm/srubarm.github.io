@@ -28,3 +28,13 @@ Nebudu se příliš zabývat jejím popisem. Udělali to už dobře jiní. Zvlá
 
 Nedávno se vědcům [podařil mistrovský kousek](http://www.trnmag.com/Stories/2005/060105/Camera_sees_behind_objects_060105.html) ve zpracování obrazu. Natočili kartu (srdcového krále) rubem ke kameře a lícem ke knize, kterou kamera zaznamenávala. Scénu různými způsoby osvětlovali a ze získaných dat byli schopni zrekonstruovat obraz líce karty. Co na tom, že to trvalo týden. Určitě se dočkáme toho, že vojáci budou moci snadno vidět za roh chodby. Ideální pro boj s teroristy v budovách.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[jiří](mailto:jirkadj@seznam.cz)  &ndash; 18.4.2011
+</div>
+
+tak to je dobrej FAKE " :)vidět za roh jen kamerou a osvětlovacími technikami, leda snad kdyby se použil nejaký rentgen , či nějaký ,,magneto-spektrický systém , ale v tomhle úhllu nevím?!
+
+</section>

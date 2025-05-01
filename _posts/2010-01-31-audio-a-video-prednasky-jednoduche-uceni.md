@@ -28,3 +28,37 @@ Pokud se vám nákup profesionálních kurzů nezamlouvá, je tady [Google Video
 
 Nepřetržité vzdělávání je nutností, ať už pracujete v jakémkoliv oboru. Rozšiřování obzorů i v oblastech, o kterých jsem nic nevěděl, mi přineslo mnoho užitečného a určitě v tom budu pokračovat. Trénink mozku je náročný a dlouhotrvající proces. Když se mu budu věnovat každý den trochu, věřím že výsledky v podobě dobrého přehledu a lepšího porozumění světa se dostaví. Ale někdy je třeba odstoupit od video přednášek a přistoupit ke knihám a dalším tištěným publikacím, které stále jako jediné zachycují skutečnou hloubku současné vědy a lidského poznání.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Satai](mailto:ondra@nekola.cz) &ndash; [WWW](http://www.nekola.cz) &ndash; 31.1.2010
+</div>
+
+Pred par dny jsem s nadsenim objevil http://academicearth.org/ Jsou tam zaznamy prednasek z prednich US univerzit. Mnozstvi je zatim male, ale i tak to stoji minimalne za obhlednuti. Zrovna si lebedim u legendarniho "The Structure and Interpretation of Computer Programs" (mimochodem - na strankach prednasejiciho jsou i handouty, cviceni...).
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz/) &ndash; 31.1.2010
+</div>
+
+Díky moc za výborný tip. Přednášky, které tam mají vypadají hodně zajímavě.
+
+<div class='comment-item-header' markdown=1>
+[Satai](mailto:ondra@nekola.cz) &ndash; [WWW](http://www.nekola.cz) &ndash; 3.2.2010
+</div>
+
+Nejlepsi zdroj asi bude iTunes U. Az se mi taji dech, jaky potencial to ma v kombinaci s iPadem.
+
+<div class='comment-item-header' markdown=1>
+TS  &ndash; 22.10.2010
+</div>
+
+zkuste se podívat na http://media.bloguje.cz/tema-5-prednasky.php
+
+<div class='comment-item-header' markdown=1>
+[Videopřednášky](mailto:nopedro93@gmail.com) &ndash; [WWW](http://mladypodnikatel.cz/videoprednasky) &ndash; 17.5.2012
+</div>
+
+Dneska jsem videopřednášky hledal a našel jsem jich dost na http://mladypodnikatel.cz/videoprednasky Zkuste to :)
+
+</section>

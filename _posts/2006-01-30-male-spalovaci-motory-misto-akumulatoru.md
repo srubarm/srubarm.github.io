@@ -64,3 +64,61 @@ Dnes to vypadá tak, že v dohledné budoucnosti si budou konkurovat akumulátor
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+jirka  &ndash; 30.1.2006
+</div>
+
+zajmavy. jen se mi nejak nezda predstava iPodu na benzin...
+
+<div class='comment-item-header' markdown=1>
+Prokop Hapala  &ndash; 31.1.2006
+</div>
+
+Super, hlavne jsem rad za rozbor specifik pri malych rozmerech. Ocekaval bych ze problemy s viskozitou a rychlym odvodem tepla budou vetsi.
+
+<div class='comment-item-header' markdown=1>
+dmiba &ndash; [WWW](http://dmiba.blog.sk) &ndash; 2.2.2006
+</div>
+
+No dalsim dolezitym faktorom nasadenia v armade bude asi aj hlucnost. Neviem si predstavit paragana zamaskovaneho a pri tom uciaceho ako motocykel Pionier v tyle nepriatela.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 2.2.2006
+</div>
+
+[3] To je pravda, určitě to bude důležité. Myslím, že mikromotory budou nasazeny spíše u běžných vojáků v poli, kde na hlučnosti až tak nesejde nebo jako zdroj pro dobíjení akumulátorů v "klidné chvilce".
+
+<div class='comment-item-header' markdown=1>
+[Stanley_B707](mailto:info@nal.sk) &ndash; [WWW](http://www.nal.sk) &ndash; 4.2.2006
+</div>
+
+alebo zabalene v hrsti peria a tym zvukovo aj tepelne odizolovane?
+
+<div class='comment-item-header' markdown=1>
+[Milan](mailto:mlian.stetina@seznam.zc)  &ndash; 6.2.2006
+</div>
+
+Hlučnost problám nebude. Při výkonu motoru v řádu jednotek wattů (spíše méně) nemůže produkovat stovky miliwatů hluku. A při hluku jednotek miliwattů to je srovnatelné s "rámusem" ve sluchátku od vysílačky, co má ten paragán v uchu.
+
+<div class='comment-item-header' markdown=1>
+Prokop Hapala  &ndash; 16.2.2006
+</div>
+
+navic pokud budici frekvnece ocilatoru je 40Khz (otacky motoru) a rezonator je tak titerny z tvrdeho kovu (ma tedy i vysokou vlastni rezonancni frekvenci) asi toho moc v slysitelne oblasti nebude
+
+<div class='comment-item-header' markdown=1>
+ptr  &ndash; 17.3.2006
+</div>
+
+Nějak se mi nezdá ta rozměrová úvaha: vždyť přece poměr plochy a objemu je při malých rozměrech lepší? Tzn. malý motor má mnohem LEPŠÍ podmínky pro odvod tepla, než motor velký. Nebo snad ne???Mj. to je také důvod toho, že proto, aby si udržela více tepla, jsou zvířátka v polárních podmínkách větší (a také "kulatější" - ale to souvisí spíše s geometrií - koule má min povrch).
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 17.3.2006
+</div>
+
+[8] Ano, zcela souhlasím. To je ovšem ten problém. Malý motor odvádí příliš tepla, a proto v něm nejsou dobré podmínky pro spalování směsi.
+
+</section>

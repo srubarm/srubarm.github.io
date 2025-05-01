@@ -12,3 +12,13 @@ Dnes jsem natrefil na článek [Scientists Find What Type Of Genes Affect Longev
 
 Doufám, že se zdvojnásobení života nepodaří jen u červů, ale také u lidí. Loni 22. 2. 2002 jsme se bavili s kamarády, jestli ještě budou v dohledné době podobná pěkná data. Já jsem jen skromně prohlásil, že se těším na datum 22. 2. 2222. Taky se těšíte?
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Bednář  &ndash; 15.7.2010
+</div>
+
+Jo jo, to budou zlatý časy! Škoda, že se jich už nemůžu dožít. To víte, cukrovku mám už 30 let a dva orgány po nějakým adrenalinovým motorkáři v těle navíc. Představa, že budu muset na pracák ještě ve stodvaceti mě docela děsí... Nebo že mi invalidní vezmou...Víte, von pan primář Nývlt (chudák už se té vaší longevity revolution nedožil, protože ho zkosil problém naší vysoce rozvinuté konzumní olečnosti, totiž rak) mi na dialýze vždycky říkal: Víte, vono je vždycky něco za něco. Pochopil jsem ho úplně až teď, když už jsem si s transplantáty ledasco užil. A pochopil jsem, že to jeho "vono" platí i obecně.
+
+</section>

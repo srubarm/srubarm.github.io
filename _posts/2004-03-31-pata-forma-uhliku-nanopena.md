@@ -16,3 +16,13 @@ Tyto vlastnosti by údajně mohly být vhodně využity v medicíně. Vstříknu
 
 Je docela zajímavé, že s přesunem našeho zkoumání do malého měřítka objevujeme dost nových forem nám známých materiálů. U uhlíků jsou to již tři. Co nám mohou nachystat materiály, o které se zatím příliš nezajímáme?
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Nikz &ndash; [WWW](http://www.continue.cz) &ndash; 6.4.2004
+</div>
+
+Vykasli se na psani o nejake pěně a radeji uz pridej muj skvely weblog do seznamu Oblibenych ;-), jak uz slibujes pul roku... :-)
+
+</section>

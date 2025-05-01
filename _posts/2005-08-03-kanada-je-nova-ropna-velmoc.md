@@ -46,3 +46,55 @@ Dokud někdo nevymyslí způsob skladování vodíku za stejných nákladu jako 
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Jirka &ndash; [WWW](http://www.jirkacech.com/) &ndash; 4.8.2005
+</div>
+
+Pekne, techblog po dlouhem spanku ted docela jede. Bravo Martine!
+
+<div class='comment-item-header' markdown=1>
+Ramsoft &ndash; [WWW](http://www.ramsoft.borec.cz) &ndash; 4.8.2005
+</div>
+
+jojo velmi zajímavé čtivo. Nevíte jak je to s projektem http://www.autonavzduch.cz/ ?
+
+<div class='comment-item-header' markdown=1>
+Jamesek  &ndash; 4.8.2005
+</div>
+
+Pěkné ...jen dotaz: "Náklady na výrobu jednoho barelu ropy tímto způsobem jsou asi jen 10 dolarů". pro jeden barel ropy, je nutné vytěžit 2 tuny bitumenunení to nějaké levné?
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 4.8.2005
+</div>
+
+[1] To víš, snažím se vytvořit důstojné prostředí pro publikaci Tvého špičkového článku.[2] Auto na vzduch je sice zajímavý projekt, ale neřeší problematiku nedostatku energetických zdrojů. Slačený vzduch, kterým má být toto auto poháněno se musí stlačit s využitím klasicky vyrobené energie, ale je to také řešení, když budeme elektřinu získávat z jaderných elektráren a obnovitelných zdrojů.[3] Je to málo, ale když tuna uhlí stojí ještě méně, tak to určitě není nerálné. Část informací (včetně této) jsem čerpal z NG červen 2OO4. http://www.national-geographic.cz/detail.asp?id=613#tem4
+
+<div class='comment-item-header' markdown=1>
+Petr  &ndash; 13.11.2005
+</div>
+
+Zdravím, dost dobře nechápu, jaký je smysl tohoto článku. Vždyť se tyto informace dají najít skoro všude, samozřejmě hovořím o zahraničních webech. Tak jaký je důvod? Cvičíte si překlady z angličtiny? Navíc některé z informací byly v době psaní tohoto článku až dva roky zastaralé, což je docela dlouhá doba, když vezmete v úvahu, že těžba z živičných písků jde v Albertě právě v posledních dvou až třech letech prudce nahoru. Ale jinak se to dá číst.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 13.11.2005
+</div>
+
+[5] Smyslem článku je přinášet informace čtenářům tohoto webu. Ne každý umí anglicky a i ten, kdo umí, si raději přečte výtah toho nejzajímavějšího z několika článků, než aby to sám hledal.Je mi líto, že Vám článek nic nepřinesl.
+
+<div class='comment-item-header' markdown=1>
+[Michala](mailto:neřeknu)  &ndash; 10.10.2006
+</div>
+
+no tak me se tenhle članek docela libi ,protože ten kdo chce v něm najde docela zajimavo i ja jsem v nem našla to co sem chtela vedet takže dik
+
+<div class='comment-item-header' markdown=1>
+[Eda 13](mailto:drasar@atlas.cz)  &ndash; 31.7.2008
+</div>
+
+Martine děláš to dobře. Já jsem např. právník, ale původně jsem vystudoval techniku. Vyhovují mě stručné výtahy z technických temat. Udržuji si tak alespoň průřezově přehled o postupech v různých technických disciplínách nebo problematikách. Přesto, že jsem již x let profesně zaměřen mimo technickou oblast, domnívám se, že aktuální seriozní informovanost o průběhu probíhajícího technického /a nejen technického/ rozvoje je součástí průběžného vzdělávání. Takže ještě jednou: Velice Ti Martine děkuji. Přál bych si, aby mladých mužů tvého typu, /kteří vědí co chtějí a pokouší se to skutky, nikoliv kecáním, realizovat/ bylo v tomto státě čím dál tím více. Ať se Ti daří!
+
+</section>

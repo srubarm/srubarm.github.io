@@ -34,3 +34,91 @@ Vývoj solárních článků jde rychle dopředu. Nedávno jsem psal o [solárn�
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+BranoD  &ndash; 17.10.2005
+</div>
+
+No neviem, solarne clanky so svojou ucinnostou su slepa vetva, ktora je vhodna len na male vykony pri instalaciach kde je obmedzeny pristup. Ako napriklad druzice, vedecke stanice v odlahlych uzemiach a podobne.Buducnost patri systemom zalozenym na Stirlingovom motore.http://www.stirlingenergy.com/http://peswiki.com/index.php/Directory:Stirling_Energy_SystemsV Californii bezi elektraren s vykonom 500 MegaWatt. Pritom Stirling Engine je vec stara tusim uz 200 rokov a ako zdroj energie sa da pouzit cokolvek co vykazuje teplotne rozdiely v radoch jednotiek stupnov celzia. Napriklad geotermalne vrty s nizkou teplotou ktore sa v sucastnosti pouzivaju len na vykurovanie, nakolko teplota nestaci na pohon turbiny. Mimochodom ucinnost sucasnych Stirlingovych motorov je porovnatelna s dieslom. Porovnatelne su aj vyrobne naklady, teda ziadny hitech len bezna strojarina. Skoda len, ze nezijem niekde juznejsie inak by som ich uz mal rozostavane po zahrade ;-)
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 17.10.2005
+</div>
+
+Díky za zajímavý komentář. Je pěkné, že Stirlingův motor má dobrou tepelnou účinnost, ale solární články mají dobrou účinnost pro výrobě elektrické energie. Ale i tak mají nejlepší dieselové motory účinnost maximálně 30 % a v laboratorních podmínkách dosahují nejlepší keramické tepelné motory stěží k padesáti procentům. Když chceme vyrobit elektřinu v malém, tak se s účinností dostaneme asi maximálně na 80 % a dohromady je to horší než dnešní nejlepšní solární články.Využití geotermální energie je však jistě perspektivní. Například kombinace tepelných čerpadel, kterým energii dodávají solární články je velmi ekologická varianta vytápění.
+
+<div class='comment-item-header' markdown=1>
+Andrej  &ndash; 18.10.2005
+</div>
+
+> Když chceme vyrobit elektřinu v malém,> tak se s účinností dostaneme asi maximálně> na 80 % a dohromady je to horší než dnešní> nejlepšní solární články.tomuto nerozumiem
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 18.10.2005
+</div>
+
+Myslím tím, že malé alternátory pro výrobu elektřiny z mechanické energie mají účinnost maximálně 80 %, zatímco velké alternátory v elektrárnách mají přes 90 %.
+
+<div class='comment-item-header' markdown=1>
+Jirka Cech &ndash; [WWW](http://www.jirkacech.com/) &ndash; 19.10.2005
+</div>
+
+Rad bych upozornil na nove vysledky mych kolegu z WFU (Wake Forrest University) a NMSU (New Mexico State Universtity) kteri pred par dny na konferenci v Santa Fe, NM publikovali nove, vysoce efektivni fotovolaticke clanky s efektivitou pres 5.2% Vyuzivaji Fullereny, polymer a CNT.Jsou polymer based, a zatim prekonavaji vse, co kdo na polymerech publikoval a navic je perspektiva k dalsimu zlepseni...odkazy:http://www.nanotech-now.com/news.cgi?story_id=11898
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 19.10.2005
+</div>
+
+[5] Díky, škoda, že jsem dříve ten článek nezaregistroval.
+
+<div class='comment-item-header' markdown=1>
+Jirka Cech &ndash; [WWW](http://www.jirkacech.com/) &ndash; 19.10.2005
+</div>
+
+No, ono to taky do 4.10. bylo tajne, mluvili o tom az na te konferenci a nechtej vedet jak jsme to s nima vecer po tom slavili :))Oba (Seamus Curran z NMSU i David Carroll z WFU) jsou byvali studenti myho sefa, jehoz jmenu byla ta konference venovana, melo to pro nej byt prekvapko...Jirka
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 19.10.2005
+</div>
+
+[7] To jo, ale článek je ze sedmého, a tak se divím, že proklouzl mou RSS čtečkou.
+
+<div class='comment-item-header' markdown=1>
+[Míra](mailto:konopasekmiroslav@centrum.cz)  &ndash; 6.1.2006
+</div>
+
+tedko nekde chteji stavet "slunecni" vez na cca 35ha Ale pokud bys treba na jizni strane svahu kopce udelal tereni zarez a vyuzil prirodnich vetrů (rozdilu teplot svahu) a nahore udelat vetrnou elektrarnu, tak ma slusnou ucinnost
+
+<div class='comment-item-header' markdown=1>
+Lada &ndash; [WWW](http://www.hitechsolar.cz) &ndash; 27.1.2006
+</div>
+
+Divím se, jak se nekteré mýty opakují stále dokola. Větu z článku "Jejich výroba je obvykle drahá a spotřebuje se jí zhruba stejně energie, jako jí za svou životnost vyrobí." slyším stále dokola, ikdyž platila tak před 20 lety.http://www.hitechsolar.cz/fotovoltaicke-systemy.php?kategorie=1060&sekce=1005Pokud započítáte, že panel zapojený do sítě vyrábí výhradně energii v energetických špičkách, které jsou dnes hlavně v horkých slunečních dnech tak se energie vložená vráti velmi rychle.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 27.1.2006
+</div>
+
+[10] Děkuji za zajímavou informaci.
+
+<div class='comment-item-header' markdown=1>
+x  &ndash; 11.2.2008
+</div>
+
+"Jejich výroba je obvykle drahá a spotřebuje se jí zhruba stejně energie, jako jí za svou životnost vyrobí." slyším stále dokola, ikdyž platila tak před 20 lety."Pravdepodobne nejsou zapocitany veskere energeticke naklady - je nutne pripocitat i energeticke naklady na ziskani vstupnich surovin a to vcetne recyklace doslouzilych - pokud vim tak se rovnez montuji na podklad a ten zase vyrabi nekdo jiny tudiz i spotreba energie jeho vcetne dopravy.
+
+<div class='comment-item-header' markdown=1>
+[milan](mailto:cm@seznam.cz)  &ndash; 25.12.2008
+</div>
+
+tak z toho jsem jelen. Mám pěkný pozemek u lesa, ohraničuje ho potok, idylka, daleko široko nic. Zahrával, jsem si s možností umístit tam stavební buňku k rekreaci. Ale chce to trochu posvítit a aspoň chvíli zprávy na malém televizorku.. Na stránkách výrobce (SOLARTEC) mi to ale vyhodilo výslednou částku přes 100 tis Kč.. což je zcela neschůdné. Tak jak je to s cenou?
+
+<div class='comment-item-header' markdown=1>
+[Josef](mailto:repe@atlas.cz)  &ndash; 6.12.2010
+</div>
+
+Dnes jsou již vyvinuty colární články s účinností až 24%. Dosahují toho díky specielní optice integrované na čipu, která dokáže zajistit lepší využití světla dopadajícího na plochu FV panelu.Malá FV elektrárna na chatu s víkendovým provozem vystačí s 20W panelem za 2500,-Kč, starým akumulátorem z auta, který se může připojit bez nabíječky přímo k panelu se jmenovitým napětím 17V/20W, protože maximální proud tohoto panelu (1,7A) nemůže akumulátor přebít. Pak ještě měnič 300W za cca 1000-Kč. Tímto systémem určitě vystačíte na malou TV i na úspornou žárovku nebo rádio, notes a podobné spotřebiče. Pokud tím nechcete občas napájet i vrtačku, stačí i měnič na menší výkon.
+
+</section>

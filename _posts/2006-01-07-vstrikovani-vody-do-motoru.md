@@ -60,3 +60,67 @@ Nevím o tom, že by se systém vstřikování vody do válce v současnosti mas
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Stanley_B707](mailto:info@nal.sk) &ndash; [WWW](http://www.nal.sk) &ndash; 7.1.2006
+</div>
+
+Na vstrekovaní vody do valcov naozaj nieje nič nové. Staručké Tatry boli schopné spaľovať zmes vody a nafty (určitý plán B pri nedostatku paliva) aj niekoľko stoviek km bez poškodenia motora (avšak s nižším výkonom, lebo nešli na plný plyn).Čo sa týka leteckej techniky, tak tu by som videl hlavne dva dôvody (ako je v článku uvedené):1. zlepšenie chladenia pri maximálnom výkone2. zabránenie neefektívnemu detonačnému horeniu zmesi.Toto sa bežne využívalo pri štartoch obrích hydroplánov na začiatku explózie leteckej dopravy (min. storočie). Boli to zväčša drevené konštrukcie a pri štarte z hladiny prekonávali väčší odpor prostredia. Kým takéto kolosy nabrali rýchlosť mali problémy s chladením vzduchom chladených motorov, za bežného letu motory nejdú na plný plyn a aj odpor prostredia je o poznanie nižší (čo je asi hlavný dôvod).
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 7.1.2006
+</div>
+
+[1] Děkuji za doplnění.
+
+<div class='comment-item-header' markdown=1>
+Prokop Hapala  &ndash; 12.1.2006
+</div>
+
+Pride mi ale jako velky rozdil jestli ta voda je uz v palivu nebo jestli se strikuje v prubehu/v nejake fazi tepelneho cyklu. Hlavne tedy kdyz odmyslim slozite vychytavky motoru, chemii spalovani a zustanu u elementarni termodynamiky.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 12.1.2006
+</div>
+
+[3] Všude, kde byla data podrobnější, jsem se dočetl, že se voda přidává do směsi. I když se někdy výslovně hovoří o vstřikování vody případně směsi vody a etanolu do válce.
+
+<div class='comment-item-header' markdown=1>
+[Karel](mailto:carlosrandes@seznam.cz)  &ndash; 15.1.2006
+</div>
+
+Zase o krok pozadu... A přitom stačilo sledovat zprávy z konce roku 2005, kdy se objevila novinka z Kanady - tzv.inovační vodíková řešení (IHS). Bylo by asi větším přínosem přeložit nějaké nové materiály pro běžné čtenáře namísto hledání v archivech. Jde totiž o jednoduché zařízení, které lze využít nejen u běžných osobních automobilů, ale už bylo odzkoušeno i u těžkých nákladních vozů (tahačů). Toto zařízení rozkládá vodu na směs plynů (zjednodušeně na kyslík + vodík), v žádném případě tedy nevstřikuje do motoru vodu! A ekonomické výhody tohoto "H2 N-gen" ? Je snad málo onen již u vody zvyšovaný výkon motoru (přitom motor zde není vůbec třeba upravovat)a nižší spotřeba? Je úspora až 30% pohonných hmot málo ? Pro představu,pokud např. běžně natankuji do svého auta 60 litrů pohonných hmot, ušetřím, díky H2 N-gen až 18 litrů ! ! ! A ještě je možné montovat takovéto jednoduché kity asi tak, jako vám dnes namontuje například firma RapidOil HAKO z Ostravy k vašemu dieslovému motoru kit, který vám umoždí lít do nádrže obyčejný rostlinný olej.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 15.1.2006
+</div>
+
+[5] Děkuji za doplnění. K řešení, o kterém píšeš jsem zprávy nezaznamenal a na internetu se mi podařilo naléz pouze Tvou zmínku na Marigoldu a následně tiskovou zprávu o IHSPro ostatní čtenáře doplním, že se nejedná o pohon na vodík, ale pouze o malou příměs vodíku do palivové směsi.Osobně mi tento způsob zvýšení účinnosti chodu motoru nepřipadá z různých důvodů příliš perspektivní.Tato diskuze nepatří pod tento článek, ale je spíše doplněním ke komentáři pod článkem o vodíkovém pohonu.
+
+<div class='comment-item-header' markdown=1>
+[Pavel Francirek](mailto:pavel@toplist.cz)  &ndash; 3.5.2006
+</div>
+
+Jestli si dobre pamatuju (ty knizky jsem cetl pred nejakymi 15. lety :)), tak se vstrikovani vody do motoru pouzivalo (minimalne u stihacek) pouze jako kratkodobe (radove minuty) zvyseni vykonu (WEP - war emergency power) behem boje. A to za cenu naopak snizeni zivotnosti motoru.S tim by mi zaroven nesedelo to pouziti k vyhrivani nabeznych hran. Jiste slozity system by se asi nedelal kvuli par minutam a pouzilo by se jine reseni (voda k chlazeni motoru nebo elektricke odmrazovani).
+
+<div class='comment-item-header' markdown=1>
+b  &ndash; 9.8.2006
+</div>
+
+O vstřikování vody do motoru se hodně psalo před 20-30 lety. Záporným důvodem byla zvýšená koroze motoru. Litinové pístní kroužky, vložky válců, atd.
+
+<div class='comment-item-header' markdown=1>
+Standa &ndash; [WWW](http://www.ekocesty.info) &ndash; 13.4.2008
+</div>
+
+Vstrikovani vody do motoru se pouziva u zavodnich aut. Anglicka firma Aquamist tyto zarizeni prodava. Voda se vstrikuje pod velkym trakem 150 psi do sani motoru.http://www.aquamist.co.ukKrome zvyseni vykonu motoru a snizeni teploty je take lepsi horeni coz ma pozitivni vliv na snizeni emisi hlavne NoX. Kdyz jsem se zacal zajimat o tuto problematuku, tak jsme narazil na radu lidi kteri bezne pouzivali nasavani vody do sani u skodovek a to bez vetsich problemu. Efekt je podoby jako kdyz jezdite v desti - motor jede lepe. V pripade, ze je voda dobre rozprasena, tak by to nemelo mit negativni vliv na zivotnost motoru. Hledam nekoho kdy by mi pomohl neco podobneho sestavit pro muj fiat Ducato 2.8 TD. Auto mam prestavene na pohon pouzitym rostlnnym olejem a fungujeto vlelmi dobre - jiz jsme najezidil na pouzity rostlinny olej vice jak 50.000 km. vice informaci o mem eko aute a eko cestach na http://www.ekcoesty.infonebo na http://www.ecoauto.info
+
+<div class='comment-item-header' markdown=1>
+LOi  &ndash; 5.7.2008
+</div>
+
+jenom jednu poznámku k těm bio palivám v poslední době můžeme pozorovat že nefungují protože neúměrně zvyšují cenu potravin. A to se dá pozorovat sto ho že do toho benzínu a nafty začalo přimíchávat jen určité malé procento a už ceny obílí letí strmě vzhůru.
+
+</section>

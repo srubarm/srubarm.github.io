@@ -30,3 +30,13 @@ Unikátní stavby vyžaduje i unikátní stavební postup. Jádro budovy bude tv
 
 Mrakodrap bude široce využíván. Ve Fordham Spire budou bytové rezidence, kancelářské prostory a také pětihvězdičkové hotely. Stavba by měla začít příští rok a dokončena by měla být nejdříve v roce 2009. Náklady na ni se odhadují na 500 miliónů dolarů.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[Kubajz](mailto:kub_ajz@yahoo.com)  &ndash; 12.9.2006
+</div>
+
+hroznej kýč, si zase koledujou že jim tu budovu někdo sestřelí.
+
+</section>

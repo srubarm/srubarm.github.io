@@ -57,3 +57,61 @@ Doprava ve městech by se obešla bez trolejového vedení a místo toho by pouz
 
 
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+[VV](mailto:vaclav at vancura dot org) &ndash; [WWW](http://vaclav.vancura.org) &ndash; 29.12.2006
+</div>
+
+Musim Vas upozornit na jeden fakt ohledne elektromagnetickeho zareni VVN:For some time, a theory circulated in the media and among the public that exposure to electromagnetic fields could be one of the causes of leukemia. Both everyday electrical appliances and power lines generate electromagnetism. Clinical investigations have not indicated that exposure to electromagnetism is a significant risk.(http://www.about-leukemia.com/html/causes.php3)Nedelam to rad, uz proto, ze jsem take rad siril zarucene informace, ze zareni z VVN velmi skodi, rad jsem uvadel priklad Radia Vatican, jehoz anteny ve tvaru krizu zari na cele okoli a zpusobuji leukemii. Az tak, ze se predni vatikansti biskupove diky soudnimu narizeni musi na tydny stehovat k antenam, aby okusili, jake to je pro tamni obyvatelstvo. Zase musim vyskrtnout jednu milou urban legend :]
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz/) &ndash; 31.12.2006
+</div>
+
+[1] Děkuji za upřesnění. Četl jsem kdysi nějakou zprávu, která vliv vedení VVN zpochybňovala, ale nechtělo se mi to dohledávat. Proto jsem to také napsal velmi neurčitě. Děkuji za odkaz.
+
+<div class='comment-item-header' markdown=1>
+Jirka  &ndash; 2.1.2007
+</div>
+
+Nedovedu si představit kdo zaplatí energii pro zářič pokud jsou např. dvě kanceláře různých firam vedle sebe a jedna má zářič a druhá na přesto si z něho nabíjí svá zařízení (přes zeď...).
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz/) &ndash; 2.1.2007
+</div>
+
+[3] Narazil jsi na zajímavý problém. Bude možné zařídit, aby spotřebiče brali energii jen ze zdroje, který jim to povolí? Otevře se tak možnost pro podnikání, že v restauracích a kavárnách budou nabízet elektřinu pro notebooky za poplatek? Uvidíme, každopádně to bude zajímavé.
+
+<div class='comment-item-header' markdown=1>
+[Prokop](mailto:0254@seznam.cz)  &ndash; 19.3.2007
+</div>
+
+Nemuzu rici ze bych sireni energie pomoci evanescentnich vln nejak detailne rozumel, ale z toho co znam napr. z optiky jsem skepticky ze dvou duvodu.1)Jejich energie klesa se vzdalenosti priblizne exponencialne takze jednak pasmo ve kterem budou ucine bude velmi uzke a nerovnomerne a jednak v blizkosti zdroje musi byt pole velmi silne.2)To ze tyto vlny intereaguji pouze s onim reoznancnim obvodem bych rekl je prave jednou z nepresnosti o kterych se mluvi na wikipedii, stejne jako v pripade inducke v bliskosti zdroje je realne elektricke a magneticke pole ktere se projevuje jako kazde jine. Prezto je fakt ze pri vysokych frekvencich a uzke spektralni care je rezonantni vazba mezi dvema vlnovody nesrovnatelne  silnejsi nez nerezonancni vazba, to se vsak v nicem nelisi od klasickeho vysilace elektromagnetickeho vlneni - takze byd v blizkosti evanenscentni dobijecky na vysokych frekvenci nese stejne (nejspis zanedbatelne) zdravotni rizika jako byt v bliskoti radioveho vysilace. Jinak v opticke se vazby evanenscentnych vln vyuziva bezne v optoelektronickych prvcich, vlaknovych laserech atd.  napr. v spatnem optickem vlakne se cast energie straci prave utlumem evanescentnich vln v plasti kde jde o vazbu nerezonantni, takze je videt ze evanescentni vlny na sve okoli pusobi i kdyz snim nejsou v rezonanci.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz/) &ndash; 19.3.2007
+</div>
+
+[5] Děkuji za zajímavý odborný komentář. Jsem si jistý, že vědci o těchto problémech věděli, ale pochopitelně je nezveřejňovali, aby na sebe lépe upoutali pozornost. Tak už to chodí. Jsem rád, že jsi aspoň čtenářům Techblogu sundal růžové brýle.
+
+<div class='comment-item-header' markdown=1>
+[krakonos](mailto:tomaskrakonos@seznam.cz)  &ndash; 2.8.2008
+</div>
+
+Ahoj,tento článek je celkem působivý,ale jako elektrotechnik musím říci,že to je směs polopravd a blábolů.Už v minulé století tento problém řešil pan Tesla (doporučuji prostudovat). Podobný žánr produkuje jakýsi "Magazín MW" , to je taky taková mystifikace něco jako Jára Cimrman . PS.ten to ale už žejmě dávno vyřešil
+
+<div class='comment-item-header' markdown=1>
+[Vojtěch Fišer](mailto:fiser.v@trspce.cz)  &ndash; 3.11.2009
+</div>
+
+Jsem starý radiotechnik a nyní mně přišlo řešit efektivní bezdrátové nabíjení jakýchsi ovladačů s 3Ah Li Pol. Článek, který zde čtu je 2 roky starý ale podle mého hledání na net(u) jsem našel nabídky na bezdrátové nebo bezkontaktní nabíjení klamavé. Byly to v podstatě marketingové lsti nebo lži. Bezdrátové to třeba bylo ale jednalo se o chytře rozmístěné a nenápadné kontakty. Jedno skutečně bezdrátové s magnetickou vazbou se chlubilo výzkumem v Cambridge a dálněvýchodní realizací. Na pokus zakoupit reagovali odkazem na evropské distributory, ti buď neexistovali nebo nekomunikovali. Výrobce sám sliboval uvedení na trh letos. Pominu-li nabíjení holicích strojků a zubních kartáčků s několikaminutovým denním provozem a celodenním nabíjením je jistě efektivní nabíjení za dobu 3-5hodin a aku nad 2Ah problém. Plyne z fyziky elektromagnetického pole. To popsal Maxwell ve 4+4 rovnicích a nejspíše to nemůže změnit, byť byl geniální by to asi neudělal ani za svého života. I obcházení problémů ziskem zářičů stále podléhá Maxwelovi a energetická hustota pole se vzdáleností na kterou se nabíjí klesá dramaticky jak učí ty rovnice. Nabíjet určitě lze bezdrátově ale účinnost a hygienická omezení jdou proti efektivnímu technickému řešení příliš tvrdě.
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://www.techblog.cz/) &ndash; 4.11.2009
+</div>
+
+[8] Dekuji za zajimavy a fundovany komentar.
+
+</section>

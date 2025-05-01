@@ -28,3 +28,25 @@ Samozřejmě nejlepším zcela prokázaným zdravotním přínosem kávy je navo
 
 Asi bych měl někoho pozvat na kávu.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+Medhi &ndash; [WWW](http://fotoblog.blueboard.cz) &ndash; 1.9.2005
+</div>
+
+Ten graf tedy podle mě nic neříká, když nevím poměry mezi vypitím kávy a spotřebou třeba té zeleniny na hlavu. Mnohem zajímavější by možná byl graf ukazující množství antioxidantů v určitém objemu komodity. Hned by bylo vidět, zda jich má káva více než zelenina. Nebo jsem to špatně pochopil?
+
+<div class='comment-item-header' markdown=1>
+Martin &ndash; [WWW](http://techblog.srubar.net/) &ndash; 1.9.2005
+</div>
+
+[1] Je to přesně tak, jak říkáš. Právě proto jsem upozorňoval na to, že nadpis může být trochu zavádějící.
+
+<div class='comment-item-header' markdown=1>
+Pavlik  &ndash; 8.4.2006
+</div>
+
+Mozno je dobre ze graf je o spotrebe, ale žiadalo by to aj graf o množstve antioxidantov v rovnakom množstve, aby sme sa teda mohli rozhodnuť, čo uprednostniť. Ale zaujimavý článok
+
+</section>

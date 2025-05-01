@@ -38,3 +38,13 @@ Otázkou zůstává, zda se po zvýšení koncentrace zlata podaří vytvářet 
 
 K tomu jsem poněkud skeptický. Zaprvé by se musel do té kuličky trefit a zadruhé se mi nechce věřit, že by se už vzniklá kulička zlata nechala v uzavřeném skleněném prostoru jen tak vypařit/zkapalnit a difundovat do skla. Na druhou stranu nevěřím, že by si někdo dovolil do, byť populárního, vědeckého článku plácnout něco "jen tak". Rozhodně struktura materiálu po opětovném smíchání zlata se sklem bude dost vzdálená struktuře původní. I když myšlenka toho, že by si **počítač mohl sám tvořit a mazat vlastní obvody** je VELMI lákavá.
 
+
+<section id='comments-section'>
+<div class='commentsheader'>Komentáře</div>        
+<div class='comment-item-header' markdown=1>
+dryjak  &ndash; 6.1.2007
+</div>
+
+No ve skrini mi tedy lezi kristal, kde je jedna ze slozek PbO, ne ze skla s olovem...
+
+</section>
