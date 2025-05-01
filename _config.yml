@@ -104,3 +104,10 @@ titles_from_headings:
   enabled:     true
   strip_title: true
   collections: true 
+
+search_result_template: |
+  <div class="search-result">
+    <h3><a href="{{ item.url }}">{{ item.title }}</a></h3>
+    <p>Published: {{ item.date | date: "%m/%d/%Y" }}</p>
+    <p>{{ item.excerpt | markdownify | truncate: 200 }}</p>
+  </div>
