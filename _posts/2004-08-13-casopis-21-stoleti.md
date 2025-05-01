@@ -63,7 +63,7 @@ Další názory na časopis 21. století:
 
 
 
-<div class="commentssection2" markdown=1>
+<div class="commentssection2">
 
 <div class='commentsheader'>Komentáře</div>        
 <div class='comment-item-header'>
