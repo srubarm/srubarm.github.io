@@ -10,7 +10,7 @@ Nastal už čas ukázat, že pánové Galileo a Einstein neměli tak úplně pra
 
 ## Začal to Galileo
 
-<div class="obry"><div class="leftbox"><img alt="Údajný Galileův experiment na šikmé věži v Pise" src="http://techblog.srubar.net/images/galileo-vez-pisa.jpg"/></div>Údajný Galileův experiment<br/>na šikmé věži v Pise<br/>Credit: NASA</div> 
+<div class="obry"><div class="leftbox"><img alt="Údajný Galileův experiment na šikmé věži v Pise" src="http://www.techblog.cz/images/galileo-vez-pisa.jpg"/></div>Údajný Galileův experiment<br/>na šikmé věži v Pise<br/>Credit: NASA</div> 
 
 Populární je historka o tom, že [házel z šikmé věže](http://physicsweb.org/article/world/16/2/2) v Pise různé předměty a měřil, za jak dlouho dopadnou na zem. Ve skutečnosti měřil, jak dlouho se koule z různých materiálů kutálejí po nakloněné rovině. Bylo to hlavně pohodlnější. Představte si, že desetkrát denně lezete nahoru na šikmou věž. :-)
 
@@ -24,7 +24,7 @@ Jeho teorie opět nebere vůbec v úvahu složení těles, která prostor zakři
 
 ## Jak daleko je Měsíc s přesností na milimetry
 
-<div class="obry"><div class="leftbox"><img alt="Zrcadlo na měsíci umístěné astronaouty Appola 11" src="http://techblog.srubar.net/images/zrcadlo-appolo-11.jpg"/></div>Zrcadlo na měsíci umístěné<br/>astronaouty Appola 11<br/>Credit: NASA</div> 
+<div class="obry"><div class="leftbox"><img alt="Zrcadlo na měsíci umístěné astronaouty Appola 11" src="http://www.techblog.cz/images/zrcadlo-appolo-11.jpg"/></div>Zrcadlo na měsíci umístěné<br/>astronaouty Appola 11<br/>Credit: NASA</div> 
 
 Jedním z pokusů o důkladnější prověření zmíněných teorií je [měření vzdálenosti Měsíce](http://science.nasa.gov/headlines/y2004/06may_lunarranging.htm) pomocí odrazu laserových paprsků od několika zrcadel umístěných na Měsíci. Z dlouhodobých pozorování jsme byli schopni [jeho vzdálenost měřit](http://sunearth.gsfc.nasa.gov/eclipse/SEhelp/ApolloLaser.html) s přesností asi 1,7 cm. Nyní bychom to chtěli zlepšit desetkrát na 1 až 2 mm. Teleskop, který zachycoval odražené paprsky byl dosud schopný zachytit 1 odražený foton z 1019 vyslaných. Novější teleskop by měl zachytit 5 z 1017, což má údajně velmi omezit chybu měření.
 
@@ -34,7 +34,7 @@ S takovouto přesností chtějí vědci ověřit, zda Slunce přitahuje jinak M�
 
 Na rok 2009 je plánován experiment [Laser Astrometric Test of Relativity](http://arxiv.org/abs/gr-qc/0311020) (LATOR). [Bude zkoumat](http://science.nasa.gov/headlines/y2004/26mar_einstein.htm), jak je prostoročas zakřiven kolem Slunce. Ze Země odstartují v určitých rozestupech dvě sondy. Budou navedeny na "eliptičtější" dráhu kolem Slunce než Země a tím se za několik měsíců dostanou na opačnou stranu od Slunce, než kde bude Země. Tak nastane situace, že jedna sonda bud úhlově (zdánlivě) velice blízko Slunci, zatímco ta druhá poněkud dále.
 
-<div class="obryleft"><div class="leftbox"><img alt="Sonda Cassini také měřila křivost prostoročasu na své cestě k Saturnu" src="http://techblog.srubar.net/images/cassini-ohyb-prostorocasu.jpg"/></div>Sonda Cassini také měřila<br/>křivost prostoročasu<br/>na své cestě k Saturnu<br/>Credit: NASA</div> 
+<div class="obryleft"><div class="leftbox"><img alt="Sonda Cassini také měřila křivost prostoročasu na své cestě k Saturnu" src="http://www.techblog.cz/images/cassini-ohyb-prostorocasu.jpg"/></div>Sonda Cassini také měřila<br/>křivost prostoročasu<br/>na své cestě k Saturnu<br/>Credit: NASA</div> 
 
 V tom okamžiku se pomocí laserové interferometrie změří vzdálenosti mezi jednotlivými sondami a Zemí, mezi sondami navzájem a úhlovou vzdálenost mezi sondami při pohledu ze země. Úhel mezi sondami budeme moci zjistit díky tomu, že měření "na Zemi" bude probíhat na dvou 15 metrů vzdálených interferometrech umístěných na ISS. Kdyby prostoročas nebyl zakřiven stačilo by znát pouze tři z těchto hodnot (a nic bychom neotestovali), ale jelikož je zakřivený, je nutné znát hodnot více. Převedeno do 2D – trojúhelník na kouli může mít součet vnitřních úhlů až 360°.
 
@@ -42,7 +42,7 @@ Princip experimentu je jasný z [tohoto obrázku](http://science.nasa.gov/headli
 
 ## Jak ohýbá Země ohýbá prostoročas
 
-<div class="obry"><div class="leftbox"><img alt="Siločáry gravitačního pole v okolí rotující černé díry" src="http://techblog.srubar.net/images/rotujici-cerna-dira.jpg"/></div>Siločáry gravitačního pole<br/>v okolí rotující černé díry<br/>Credit: NASA</div> 
+<div class="obry"><div class="leftbox"><img alt="Siločáry gravitačního pole v okolí rotující černé díry" src="http://www.techblog.cz/images/rotujici-cerna-dira.jpg"/></div>Siločáry gravitačního pole<br/>v okolí rotující černé díry<br/>Credit: NASA</div> 
 
 Nedávno medializovaná a "odstartovaná" sonda [Gravity Probe-B](http://einstein.stanford.edu/) testuje další předpovědi vyplývající z Einsteinovy obecné relativity. Podle stáčení její oběžné dráhy budeme usuzovat na zakřivení prostoročasu a navíc oproti experimentu LATOR zde sehraje relativně významný vliv rotace Země. Jelikož se gravitace se šíří konečnou rychlostí musí se siločáry gravitačního pole také stáčet obdobně jako se stáčí voda, když točíte sprchou (Lepší příklad mě nenapadnul.). Nebudu se zatěžovat podrobnějším popisem, jelikož jej najdete na Aldebaranu v článku [Létající termoska](http://www.aldebaran.cz/bulletin/2004_17_gpb.html).
 

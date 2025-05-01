@@ -10,7 +10,7 @@ Ve městech je mnoho betonových budov a taky mnoho znečištění. Dáme-li to 
 
 ## Zázračný oxid titaničitý
 
-<div class="obry"><div class="leftbox"><img alt="Moderní kostel se samočisticím povrchem" height="129" src="http://techblog.srubar.net/images/moderni-samocistici-kostel.jpg" width="170"/></div>Moderní kostel se samočisticím <br/>povrchem z oxidu titaničitého</div> 
+<div class="obry"><div class="leftbox"><img alt="Moderní kostel se samočisticím povrchem" height="129" src="http://www.techblog.cz/images/moderni-samocistici-kostel.jpg" width="170"/></div>Moderní kostel se samočisticím <br/>povrchem z oxidu titaničitého</div> 
 
 Běžně používaný [oxid titaničitý](http://en.wikipedia.org/wiki/Titanium_dioxide) (TiO2) je tou zázračnou substancí, která čistí ovzduší i sama sebe. Je fotokatalytický, což znamená, že další látky v jeho blízkosti a za působení UV záření velmi snadno reagují. Mohou spolu reagovat i takové látky, které by to jinak ani nenapadlo. Je tak možné, aby se na čistícím povrchu odehrály reakce podobné jako v katalyzátoru auta.
 
@@ -20,7 +20,7 @@ Jak by to dopadlo, kdybychom na všechny povrchy domů nanesli čistící povlak
 
 ## Superhydrofobní a superhydrofilní povrchy
 
-<div class="obry"><div class="leftbox"><img alt="Práškový oxid titaničitý" height="105" src="http://techblog.srubar.net/images/praskovy-oxid-titanicity.jpg" width="170"/></div>Práškový oxid titaničitý</div> 
+<div class="obry"><div class="leftbox"><img alt="Práškový oxid titaničitý" height="105" src="http://www.techblog.cz/images/praskovy-oxid-titanicity.jpg" width="170"/></div>Práškový oxid titaničitý</div> 
 
 Superhydrofobní (voda se po nich kutálí) a superhydrofilní (voda je smáčí) povrchy s vrstvou oxidu titaničitého jsou však pro městskou zástavbu zajímavé. Superhydrofilní skla jsou již dnes k dispozici. Nečistoty, které se na nich usadí, se UV zářením rozloží a při dešti se díky hydrofilitě povrchu snadno spláchnou. Nemusíte tak mýt okna. Také omítka s oxidem titaničitým (součást titanové běloby) se čistí sama.
 

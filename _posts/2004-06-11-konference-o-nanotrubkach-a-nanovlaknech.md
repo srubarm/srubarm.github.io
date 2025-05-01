@@ -6,9 +6,9 @@ permalink: /nano/konference-o-nanotrubkach-a-nanovlaknech.html
 ---
 # Konference o nanotrubkách a nanovláknech
 
-<div class="obry"><div class="leftbox"><img alt="Logo nanokonference" src="http://techblog.srubar.net/images/nanokonference-nanotrubky.jpg"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Logo nanokonference" src="http://www.techblog.cz/images/nanokonference-nanotrubky.jpg"/></div></div> 
 
-Máte-li čas, vyražte 22. a 23. června na konferenci [Nanotrubky a nanovlákna](http://www.nanotubesandfibres.com/). Program vypadá zajímavě. Tématem jsou vlastnosti [nanotrubek](http://techblog.srubar.net/nano/nanotubes-nanotrubky.html) a [vláken](http://techblog.srubar.net/nano/nejdelsi-nanotrubka.html) z nich vytvořených.
+Máte-li čas, vyražte 22. a 23. června na konferenci [Nanotrubky a nanovlákna](http://www.nanotubesandfibres.com/). Program vypadá zajímavě. Tématem jsou vlastnosti [nanotrubek](http://www.techblog.cz/nano/nanotubes-nanotrubky.html) a [vláken](http://www.techblog.cz/nano/nejdelsi-nanotrubka.html) z nich vytvořených.
 
 Na konferenci nebudou probíhat žádné plané akademické debaty, ale bude se diskutovat o praktickém využití. Nahlédnul jsem do programu a vybírám z něj několik zajímavých bodů:
 

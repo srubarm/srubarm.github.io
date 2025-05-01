@@ -25,7 +25,7 @@ Co by to bylo za světelný počítač, kdybychom do něj museli svítit infrač
 
 ## Čip, který ukládá světlo
 
-Je to k neuvěření, ale světlo můžeme i uložit. Sice jen na krátký okamžik, ale jde to. Uložení probíhá tím způsobem, že se světlo zpomalí na méně než setinu své rychlosti. Na simulacích se podařilo dosáhnout zpomalení až na 10 cm/s. Tím světlo na kratičké zlomky vteřiny zadržíme. Je to dost na to, aby mohlo chvíli počkat, než proběhne jiná operace. Světlo bylo zpomalováno a "zastavováno" již dříve, ale vždy za extrémních podmínek nebo [v rubínu](http://techblog.srubar.net/fyzika/archiv/2003-06-25.html). Nyní se to povedlo v polovodičovém čipu.  
+Je to k neuvěření, ale světlo můžeme i uložit. Sice jen na krátký okamžik, ale jde to. Uložení probíhá tím způsobem, že se světlo zpomalí na méně než setinu své rychlosti. Na simulacích se podařilo dosáhnout zpomalení až na 10 cm/s. Tím světlo na kratičké zlomky vteřiny zadržíme. Je to dost na to, aby mohlo chvíli počkat, než proběhne jiná operace. Světlo bylo zpomalováno a "zastavováno" již dříve, ale vždy za extrémních podmínek nebo [v rubínu](http://www.techblog.cz/fyzika/archiv/2003-06-25.html). Nyní se to povedlo v polovodičovém čipu.  
 [Light-storing chip charted](http://www.trnmag.com/Stories/2004/021104/Light-storing_chip_charted_021104.html)
 
 Všechny tyto novinky mají společnou práci se světlem. Do světelných počítačů to má velmi daleko. Naznačuje nám to možný směr vývoje, ale nemyslím si, že by někdy byl vyroben počítač, který by fungoval výlučně "na světlu". Považuji to spíše jen za doplněk, pro nějaké zvláštní aplikace. V [jednom](http://www.upi.com/view.cfm?StoryID=15012002-043541-3745r) ze článků zmiňovaný superrychlý světelný tranzistor zatím zařazuji do říše snů a hudby budoucnosti.

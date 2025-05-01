@@ -10,13 +10,13 @@ Znamená to snad, že čím víc kávy vypijeme, tím budeme zdravější? Je le
 
 ## Antioxidanty získáváme především z kávy
 
-<div class="obry" style="width:177px"><div class="leftbox"><img alt="Šálek kávy s pěnou" height="242" src="http://techblog.srubar.net/images/salek-kavy-s-penou.jpg" width="160"/></div></div> 
+<div class="obry" style="width:177px"><div class="leftbox"><img alt="Šálek kávy s pěnou" height="242" src="http://www.techblog.cz/images/salek-kavy-s-penou.jpg" width="160"/></div></div> 
 
 To, že je káva největším zdrojem antioxidantů neznamená, že je také nejvydatnějším. Nadpis je v tomto ohledu dvojsmyslný. Pravdou je, že při zkoumání původu antioxidantů v jídelníčku Američanů, vědci přišli na to, že jich nejvíce získávají z kávy. Druhým největším zdrojem je černý čaj. Následovaly banány, ořechy, kukuřice, červené víno, pivo, jablka až za nimi se objevila rajčata a brambory. Výsledek není zrovna lichotivý pro tak propagovanou zeleninu. Chyba však není na její straně.
 
 Vítězství kávy není způsobeno vysokou koncentrací antioxidantů v ní, jako spíše množstvím, jaké jí vypijeme. Pochybuji, že bychom se v konzumaci kávy výrazně lišili od obyvatelů USA. Prostě pijeme více kávy, než jíme zeleninu. To je jistě špatně. Nedoženeme přísun užitečných látek, zejména vláknin, ze zeleniny, zvýšenou konzumací kávy. Optimální jsou jeden až dva šálky za den. Netuším, jestli i zde platí obdoba českého pivního výzkumu, který prokázal, že pití pěti piv denně je zdraví prospěšnější než nepití vůbec. Výzkum se nezmiňuje, jestli je nutné pít pravou mletou kávu, nebo zda si i instantní zachovává obsah užitečných látek.
 
-<div class="imag" style="width:425px"><div class="innerimg"><img alt="Graf deseti největších zdrojů antioxidantů ve stravě Američanů" height="286" src="http://techblog.srubar.net/images/top-10-antioxidanty-usa.gif" width="423"/></div></div> 
+<div class="imag" style="width:425px"><div class="innerimg"><img alt="Graf deseti největších zdrojů antioxidantů ve stravě Američanů" height="286" src="http://www.techblog.cz/images/top-10-antioxidanty-usa.gif" width="423"/></div></div> 
 
 ## Čím jsou antioxidanty prospěšné
 

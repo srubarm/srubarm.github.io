@@ -10,13 +10,13 @@ S tím jak jdou ceny ropy nahoru, hledají aktivněji i nová naleziště. Nají
 
 ## Co je to bitumen?
 
-<div class="obry"><div class="leftbox"><img alt="Ropná pumpa v poušti" height="195" src="http://techblog.srubar.net/images/ropna-pumpa-v-pousti.jpg" width="170"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Ropná pumpa v poušti" height="195" src="http://www.techblog.cz/images/ropna-pumpa-v-pousti.jpg" width="170"/></div></div> 
 
 Bitumen je v doslovném překladu z angličtiny asfalt. V souvislosti s těžbou ropy v Kanadě jde o přírodní asfalt, který vzniknul tak, že ropa kdysi vytekla do písku v okolí dnešního města Fort McMurray v kanadské provincii Alberta. To, co mohlo, se z ní vypařilo a zůstal asfalt smíchaný s pískem. Jedná se o návrat k těžbě asfaltu po několika stoletích. Když se ropa příliš nevyužívala, těžil se asfalt, ani ne tak na stavbu cest jako na utěsnění lodí. S rozmachem zpracování ropy se asfalt stal vedlejším produktem po destilaci lehčích uhlovodíků a z lodí se přesunul na silnice. Nyní, když je ropy nedostatek, začíná se těžba asfaltu opět vyplácet. Tentokrát neděláme asfalt z ropy, ale ropu z asfaltu.
 
 ## Jak vznikne z asfaltu ropa?
 
-<div class="obry"><div class="leftbox"><img alt="Hrubý asfalt držený v bílých rukavicích" height="116" src="http://techblog.srubar.net/images/asfalt-v-rukavicich.jpg" width="170"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Hrubý asfalt držený v bílých rukavicích" height="116" src="http://www.techblog.cz/images/asfalt-v-rukavicich.jpg" width="170"/></div></div> 
 
 Nejdříve se z asfaltu musí odstranit pevné nečistoty, což je zejména písek. To se provede smísením bitumentu horkou vodou a rozpouštědly a následnou filtrací. Tak dostaneme čistý asfalt – to jsou velmi molekuly uhlovodíku, které mají k ropě daleko. Musí nastoupit další operace – krakování, čili dělení dlouhých molekul těžkých uhlovodíků na menší. Provádí obvykle buď vodní parou za vysokých teplot, nebo za nižších teplot vodíkovým plynem za přítomnosti katalyzátorů. Vzniklá ropa má výbornou kvalitu a neobsahuje síru, která ropu obvykle degraduje.
 
@@ -26,7 +26,7 @@ Rčení o zlatém dolu bude brzy nahrazeno ropným dolem. Náklady na výrobu je
 
 ## Trh se začíná hýbat
 
-<div class="obry"><div class="leftbox"><img alt="Sídlo francouzské firmy Total" height="106" src="http://techblog.srubar.net/images/sidlo-firmy-total.jpg" width="170"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Sídlo francouzské firmy Total" height="106" src="http://www.techblog.cz/images/sidlo-firmy-total.jpg" width="170"/></div></div> 
 
 Ropná společnost Total [oznámila koupi](http://news.yahoo.com/news?tmpl=story&u=/cpress/20050802/ca_pr_on_bu/deer_creek_2) firmy [Deer Creek](http://www.deercreekenergy.com/), která plánuje v Kanadě těžit ropu výše popsaným způsobem. Akcie kupované společnosti hned vyskočily o 39 %, čímž se z nich stala nejhorší investice tohoto typu. Total už vlastní 50 % jiné "bitumenové společnosti"; je vidět, že myslí dopředu. Ale i na vás ještě čeká mnoho společností spoléhajících na rizikové investory. Ropy v bitumenu je dost. V Kanadě nejméně pro rentabilní výrobu 174 miliard barelů ropy.
 

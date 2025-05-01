@@ -6,7 +6,7 @@ permalink: /nano/pata-forma-uhliku-nanopena.html
 ---
 # Pátá forma uhlíku – nanopěna
 
-V přírodě se uhlík vyskytuje ve dvou základních formách – grafit a diamant. Lidem se podařilo vytvořit další – fulreny, [nanotrubky](http://techblog.srubar.net/nano/archiv/2004-01-10.html) a nyní [nově nanopěnu.](http://www.nature.com/nsu/040322/040322-5.html)
+V přírodě se uhlík vyskytuje ve dvou základních formách – grafit a diamant. Lidem se podařilo vytvořit další – fulreny, [nanotrubky](http://www.techblog.cz/nano/archiv/2004-01-10.html) a nyní [nově nanopěnu.](http://www.nature.com/nsu/040322/040322-5.html)
 
 Vědci z Canberské univerzity bombardovali cíl ze sklovitého uhlíku (Což je grafit s nějakými příměsemi, který se také používá jako elektroda) umístěný v trubce z oxidu křemičitého vyplněné argonovou atmosférou laserem s frekvencí 10 tisíc pulzů za vteřinu. Když dosáhnul teploty kolem 10 tisíc °C (To už byl v plynné stavu – teplota vypařování grafitu je 3500 °C) začal se usazovat na stěnách trubky a vytvořil křížící se síť uhlíkových trubiček dlouhých pouze několik nanometrů, kterou vědci nazvali nanopěnou.
 

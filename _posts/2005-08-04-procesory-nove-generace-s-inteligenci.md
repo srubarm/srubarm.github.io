@@ -10,7 +10,7 @@ Nová generace procesorů pro váš počítač bude schopna měnit sama sebe pod
 
 ## Procesor upravuje sám sebe pro lepší výkon
 
-<div class="obry"><div class="leftbox"><img alt="Spodní strana procesoru" height="112" src="http://techblog.srubar.net/images/spodni-strana-procesoru.jpg" width="170"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Spodní strana procesoru" height="112" src="http://www.techblog.cz/images/spodni-strana-procesoru.jpg" width="170"/></div></div> 
 
 Zní to jako sci-fi, ale jsou skutečně míněny úpravy procesoru na hardwarové úrovni, nikoliv na úrovni instrukční sady. K hardwarovým změnám procesoru bude využíván jev [elektromigrace](http://en.wikipedia.org/wiki/Electromigration). Elektromigrace je obvykle nežádoucí. Poškozují se jí spoje v mikroprocesoru a může dojít i k jejich úplnému přerušení. Projevuje se při větším proudovém zatížení vodiče. Podstatě jevu příliš nerozumím, ale při velké proudové hustotě doprovázené vysokými frekvencemi se proud vede blízko povrchu vodiče, a tak nejspíš příliš vysoká koncentrace elektronů může snadněji "vykopnout" iont (jádro atomu) materiálu vodiče pryč. Negativní vlivy elektromigrace se omezují nanášením pasivačních vrstev na povrch vodičů. Řízeným využitím elektromigrace bude možné měnit strukturu procesoru a optimalizovat jej pro aplikace, které využíváte. Za půl roku po zakoupení, byste tak měli úplně jiný procesor.
 
@@ -20,7 +20,7 @@ Důsledky praktického nasazení by byly ohromné. Jelikož musí existovat zpě
 
 ## Nanotrubky do každého procesoru
 
-<div class="obry"><div class="leftbox"><img alt="Propojky z nanotrubek" height="115" src="http://techblog.srubar.net/images/propojky-z-nanotrubek.jpg" width="170"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Propojky z nanotrubek" height="115" src="http://www.techblog.cz/images/propojky-z-nanotrubek.jpg" width="170"/></div></div> 
 
 Intel již od roku 1998 uvažuje o tom, [jak by využil nanotrubky](http://www.eweek.com/article2/0,1759,1821412,00.asp) ve svých procesorech. Nejblíže k uplatnění je využití vodivých nanotrubek jako propojek mezi jednotlivými vrstvami procesoru. Nahradily by tak měď. Také by se mohlo podařit sestavit rovnou z polovodivých nanotrubek nanoskopické tranzistory. To jistě nebude tak jednoduché. Aplikaci nanotrubek v procesorech nahrávají nedávno oznámené objevy jejich snadného [umístění na čipy](http://www.upenn.edu/pennnews/article.php?id=825) a možností separace vodivých a polovodivých nanotrubek a také [podle délky](http://www.nist.gov/public_affairs/techbeat/tb2005_0726.htm#researchers).
 

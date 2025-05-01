@@ -10,7 +10,7 @@ V době blížící se energetické krize se stupňuje zájem o alternativní zd
 
 ## Jak fungují solární články?
 
-<div class="obry"><div class="leftbox"><img alt="Solární článek, na nějž dopadá paprsek světla" height="170" src="http://techblog.srubar.net/images/solarni-clanek-s-paprskem.jpg" width="170"/></div>Credit: UC Berkley</div> 
+<div class="obry"><div class="leftbox"><img alt="Solární článek, na nějž dopadá paprsek světla" height="170" src="http://www.techblog.cz/images/solarni-clanek-s-paprskem.jpg" width="170"/></div>Credit: UC Berkley</div> 
 
 Solární články jsou v podstatě velké série fotodiod s velkou plochou PN přechodu. Velmi zjednodušeně řečeno, když foton světelného záření dopadne do oblasti [PN přechodu](http://cs.wikipedia.org/wiki/Přechod_P-N), vyrazí nějaký elektron ze svého místa a vznikne nový pár elektron-díra. Ty jsou díky PN přechodu odděleny, takže se elektron nemůže vrátit zpět do "své" vlastní díry. Vzniká tak elektrické napětí a při zapojení zátěže, začne solární článek produkovat proud. Běžná účinnost přeměny světla na elektrickou energii se pohybuje kolem 15 %.
 

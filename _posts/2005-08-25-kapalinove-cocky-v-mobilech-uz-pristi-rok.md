@@ -10,7 +10,7 @@ Po kapalinových čočkách touží všichni majitelé foťáků v mobilních te
 
 ## Jak fungují mechanicky ovládané kapalinové čočky
 
-<div class="obry"><div class="leftbox"><img alt="Mobil snímající text se zoomem" height="241" src="http://techblog.srubar.net/images/kapalinove-cocky-v-mobilu.jpg" width="170"/></div>Technicky zdařilá fotomontáž mobilu <br/>jakoby snímající text se zoomem. <br/>Obrázek je však evidentně <br/>vyfocen krátkým ohniskem. <br/>Credit: UMRE</div> 
+<div class="obry"><div class="leftbox"><img alt="Mobil snímající text se zoomem" height="241" src="http://www.techblog.cz/images/kapalinove-cocky-v-mobilu.jpg" width="170"/></div>Technicky zdařilá fotomontáž mobilu <br/>jakoby snímající text se zoomem. <br/>Obrázek je však evidentně <br/>vyfocen krátkým ohniskem. <br/>Credit: UMRE</div> 
 
 Vědci v Singapuru [se nevydali](http://optics.org/articles/news/11/8/20/1) patenty zahuštěnou cestou elektricky ovládaných čoček, ale vymysleli vlastní mechanizmus změny ohniskové vzdálnosti čočky. Šli na to pouhou změnou tlaku kapaliny v čočce. Řešení, které použili, by určitě hned napadlo každého, kdo by něco takového měl vymyslet. Jde o dvě prosté průhledné blanky natažené na pevném kroužku, mezi něž se "pumpuje" kapalina. Nápad je to prostý, ale funkční realizace je velmi obtížná.
 
@@ -18,7 +18,7 @@ Je třeba zajistit, aby vnější kroužek byl pevný a vůbec se nedeformoval. 
 
 ## Změna ohniskové vzdálenosti (zoomování)
 
-<div class="obry"><div class="leftbox"><a href="http://techblog.srubar.net/images/zmena-ohniskove-vzdalenosti-kapalinove-cocky.jpg"><img alt="Změna ohniskové vzdálenosti mechanicky ovládané čočky ve čtyřech zobrazených krocích" height="126" src="http://techblog.srubar.net/images/zmena-ohniskove-vzdalenosti-kapalinove-cocky-nahled.jpg" width="170"/></a></div><a href="http://techblog.srubar.net/images/zmena-ohniskove-vzdalenosti-kapalinove-cocky.jpg">Zvětšit</a><br/>Čtyři stavy nafouknutí čočky<br/>Credit: UMRE</div> 
+<div class="obry"><div class="leftbox"><a href="http://www.techblog.cz/images/zmena-ohniskove-vzdalenosti-kapalinove-cocky.jpg"><img alt="Změna ohniskové vzdálenosti mechanicky ovládané čočky ve čtyřech zobrazených krocích" height="126" src="http://www.techblog.cz/images/zmena-ohniskove-vzdalenosti-kapalinove-cocky-nahled.jpg" width="170"/></a></div><a href="http://www.techblog.cz/images/zmena-ohniskove-vzdalenosti-kapalinove-cocky.jpg">Zvětšit</a><br/>Čtyři stavy nafouknutí čočky<br/>Credit: UMRE</div> 
 
 Možnost měnit ohniskovou vzdálenost při zachování miniaturních rozměrů je hlavním hnacím motorem vývoje kapalinových čoček. U mechanicky ovládaného typu probíhá tak, že se mění tlak kapaliny v čočce tím, že se do ní pumpuje nebo naopak vypouští průhledná kapalina. Tím se jakoby "nafukuje" či "vyfukuje" bublina tvořící čočku a mění se tak její ohnisková vzdálenost.
 
@@ -26,7 +26,7 @@ U konkurenčních systémů probíhá změna ohniskové vzdálenosti jinak. Vyu�
 
 ## Výhody a nevýhody
 
-<div class="obry"><div class="leftbox"><img alt="Schéma funkce elektricky ovládané kapalinové čočky" height="244" src="http://techblog.srubar.net/images/schema-elektricke-kapalinove-cocky.gif" width="170"/></div>Elektricky ovládaná kapalinová čočka<br/>Credit: Variooptic</div> 
+<div class="obry"><div class="leftbox"><img alt="Schéma funkce elektricky ovládané kapalinové čočky" height="244" src="http://www.techblog.cz/images/schema-elektricke-kapalinove-cocky.gif" width="170"/></div>Elektricky ovládaná kapalinová čočka<br/>Credit: Variooptic</div> 
 
 Výhodou všech zmiňovaných čoček jsou extrémně malé rozměry při zachováni možnost změny ohniskové vzdálenosti. Průměr čoček se pohybuje kolem tří milimetrů, zatímco rozměry běžných čoček jsou asi jeden centimetr. Bohužel dále následují jen nevýhody.
 

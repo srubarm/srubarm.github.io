@@ -10,7 +10,7 @@ Jak fungují pasivní radary? Proč jsou jednou z nejdůležitějších strategi
 
 ## Jak fungují pasivní radary
 
-<div class="obry"><div class="leftbox"><img alt="Klasický stacionární radar" height="228" src="http://techblog.srubar.net/images/klasicky-radar.jpg" width="160"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Klasický stacionární radar" height="228" src="http://www.techblog.cz/images/klasicky-radar.jpg" width="160"/></div></div> 
 
 Oproti [klasickým radarům](http://sk.wikipedia.org/wiki/Radar), které střídají vysílání a příjem rádiových vln a vyhodnocují poté signál odražený od objektů ve vzduchu, pasivní radary jsou zcela potichu a jen přijímají elektromagnetické záření z okolí. Samozřejmě je nutný nějaký zdroj tohoto záření. Obvykle na to stačí vysílače rádia, televize, případně mobilní sítě, také se s úspěchem využívá signálů vlastních i protivníkových klasických radarů a dokonce i protivníkovo rušící vysílání. Všechny tyto zdroje záření se odráží od objektů na obloze i mimo ni. Tvoří tak přirozený signál, který pasivní radar zpracovává. Otáčivé radary, které můžete vidět na letištích, jsou schopny sledovat pohyb ve vzduchu samy o sobě, pasivní radar potřebuje více přijímačů, aby získal kvalitní data pro zpracování. Z rozdílů signálů v jednotlivých měřících stanicích lze přesněji určit polohu, směr a rychlost letounu v daném okamžiku.
 
@@ -18,17 +18,17 @@ Nejdříve se pomocí [Dopplerova jevu](http://cs.wikipedia.org/wiki/Dopplerův_
 
 ## Výhody pasivních radarů
 
-<div class="obry"><div class="leftbox"><a href="http://techblog.srubar.net/images/radar-vera-prijimac-v-lese.jpg"><img alt="Radar Věra ve funkčním stavu v lese" height="215" src="http://techblog.srubar.net/images/radar-vera-prijimac-v-lese-nahled.jpg" width="170"/></a></div><a href="http://techblog.srubar.net/images/radar-vera-prijimac-v-lese.jpg">Zvětšit</a><br/>Rozložený radar Věra<br/>Credit: ERA</div> 
+<div class="obry"><div class="leftbox"><a href="http://www.techblog.cz/images/radar-vera-prijimac-v-lese.jpg"><img alt="Radar Věra ve funkčním stavu v lese" height="215" src="http://www.techblog.cz/images/radar-vera-prijimac-v-lese-nahled.jpg" width="170"/></a></div><a href="http://www.techblog.cz/images/radar-vera-prijimac-v-lese.jpg">Zvětšit</a><br/>Rozložený radar Věra<br/>Credit: ERA</div> 
 
 Nespočet výhod učinil z pasivních radarů jednu z nejdůležitějších strategických zbraní současnosti. Je prakticky nemožné vyřadit je z činnosti. Široký rozsah druhů přijímaných signálu vylučuje zničení všech vysílačů. Pokus o aktivní rušení přispěje pouze ke zlepšení jejich funkce, protože přidá signál, který mohou pasivní radary zachytit a vyhodnotit. Vyřadit z provozu přijímače je téměř neproveditelné, jelikož jsou relativně malé a tudíž snadno mobilní. Převáží se na korbách nákladních aut (pro věru [stačí 5 aut](http://www.reflex.cz/Clanek18148.html)), vztyčí se v lese a díky své pasivitě jsou nezachytitelné. A když nepřítel neví, kde jsou, tak je ani nemůže zničit. I kdyby se mu dařilo ničit je, nevyvolá to žádné velké potíže, protože veškeré součásti pasivních radarů jsou levné a snadno nahraditelné. Nenahraditelný je pouze software a ten nelze zničit nikdy.
 
 ## Historie vývoje
 
-<div class="obry"><div class="leftbox"><a href="http://techblog.srubar.net/images/radar-vera-prijimac-slozeny.jpg"><img alt="Složený radar Věra na přívěsném vozíku" height="125" src="http://techblog.srubar.net/images/radar-vera-prijimac-slozeny-nahled.jpg" width="170"/></a></div><a href="http://techblog.srubar.net/images/radar-vera-prijimac-slozeny.jpg">Zvětšit</a><br/>Složený radar Věra<br/>Credit: ERA</div> 
+<div class="obry"><div class="leftbox"><a href="http://www.techblog.cz/images/radar-vera-prijimac-slozeny.jpg"><img alt="Složený radar Věra na přívěsném vozíku" height="125" src="http://www.techblog.cz/images/radar-vera-prijimac-slozeny-nahled.jpg" width="170"/></a></div><a href="http://www.techblog.cz/images/radar-vera-prijimac-slozeny.jpg">Zvětšit</a><br/>Složený radar Věra<br/>Credit: ERA</div> 
 
 Na čele vývoje pasivních radarů vždycky stála Česká republika, i když jsme princip pasivního radaru nevymysleli, byli jsme první, kdo pochopil jeho strategický význam. Takže zatímco v Tesle Pardubice v sedmdesátých letech vzniknul první český pasivní radar Ramona, západ vesele budoval síť aktivních radarů a možnosti rušení klasických radarů. O vývoji pasivních radarů ve východním bloku věděl, ale nedokázal odhadnout jejich význam. Podle analytiků by tato ignorace v teoretickém vojenském střetu přivodila obrovskou porážku západních vzdušných sil. Východ by neměl problémy se sledováním oblohy, ale západ by byl brzy po započetí konfliktu "slepý". V osmdesátých letech přišla na svět silně vylepšená Tamara. Před rokem 1989 bylo prodáno 32 kompletů Ramona a 21 Tamara.
 
-<div class="obryleft"><div class="leftbox"><img alt="Řídící centrum radaru Věra" height="123" src="http://techblog.srubar.net/images/radar-vera-cps.jpg" width="170"/></div>Mobilní středisko zpracování <br/>dat systému Věra<br/>Credit: ERA</div> 
+<div class="obryleft"><div class="leftbox"><img alt="Řídící centrum radaru Věra" height="123" src="http://www.techblog.cz/images/radar-vera-cps.jpg" width="170"/></div>Mobilní středisko zpracování <br/>dat systému Věra<br/>Credit: ERA</div> 
 
 Koncem osmdesátých let začal pasivní radary brát vážně i západ a začali jsme ztrácet výlučné postavení. Ale náskok dvaceti let vývoje nelze jen tak dohnat. Pardubická Tesla se přejmenovala na [ERA](http://www.era.cz/), která nyní vyrábí pasivní radary Věra. Konkurence je veliká. Šikovní Ukrajinci, kteří nepochybně měli podrobné informace o Tamaře nabízejí dnes radar [Kolčuga](http://www.globalsecurity.org/military/world/ukraine/kolchuga.htm), jehož jedna buňka má dosah až 850 km, kdežto Věra pouhých 450 km. Dosah radaru má však význam pouze nad nepřátelským územím, kde se těžko rozmisťují buňky vlastního radaru. Nenalezl jsem informace o přesnosti Kolčugy ani o možném počtu sledovaných cílů (Věra zvládá 200).
 
@@ -38,7 +38,7 @@ I když považujeme pasivní radary za něco zcela výjimečného, jsou v provoz
 
 ## Obchodní úspěchy našich pasivních radarů
 
-<div class="obry"><div class="leftbox"><a href="http://techblog.srubar.net/images/radar-vera-schema.gif"><img alt="Schéma předávání informací v systému radaru Věra" height="124" src="http://techblog.srubar.net/images/radar-vera-schema-nahled.gif" width="170"/></a></div><a href="http://techblog.srubar.net/images/radar-vera-schema.gif">Zvětšit</a><br/>Schéma předávání informací <br/>v systému radaru Věra<br/>Credit: ERA</div> 
+<div class="obry"><div class="leftbox"><a href="http://www.techblog.cz/images/radar-vera-schema.gif"><img alt="Schéma předávání informací v systému radaru Věra" height="124" src="http://www.techblog.cz/images/radar-vera-schema-nahled.gif" width="170"/></a></div><a href="http://www.techblog.cz/images/radar-vera-schema.gif">Zvětšit</a><br/>Schéma předávání informací <br/>v systému radaru Věra<br/>Credit: ERA</div> 
 
 O nějakých obchodních úspěších lze hovořit pouze u civilní verze pasivních radiolokátorů k řízení provozu na letištích. Mimo Prahy je vlastní letiště v Kodani a Santiagu de Chile. Ovšem díky zbabělosti našich politiků, zůstávají nejlukrativnější vojenské zakázky nedostupné. Jeden radiolokátor Věra stojí asi 100 miliónů dolarů. A to už je cena, za kterou by se vyplatilo trochu bojovat.
 

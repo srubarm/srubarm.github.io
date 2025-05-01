@@ -6,11 +6,11 @@ permalink: /nano/nanotrubka-dlouha-4-centimetry.html
 ---
 # Nanotrubka dlouhá 4 centimetry
 
-Konečně se podařil velký skok ve výrobě [nanotrubek](http://techblog.srubar.net/nano/nanotubes-nanotrubky.html). Byla vyrobena uhlíková nanotrubka dlouhá 4 centimetry. Jestli se divíte, proč se nad tím tak raduji, když jsem v březnu referoval o [nanotrubce dlouhé 100 m](http://techblog.srubar.net/nano/nejdelsi-nanotrubka.html), máte důvod.
+Konečně se podařil velký skok ve výrobě [nanotrubek](http://www.techblog.cz/nano/nanotubes-nanotrubky.html). Byla vyrobena uhlíková nanotrubka dlouhá 4 centimetry. Jestli se divíte, proč se nad tím tak raduji, když jsem v březnu referoval o [nanotrubce dlouhé 100 m](http://www.techblog.cz/nano/nejdelsi-nanotrubka.html), máte důvod.
 
 ## Pouze jedna nanotrubka
 
-<div class="obry"><div class="leftbox"><img alt="Dlouhá nanotrubka" height="93" src="http://techblog.srubar.net/images/dlouha-nanotrubka.jpg" width="170"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Dlouhá nanotrubka" height="93" src="http://www.techblog.cz/images/dlouha-nanotrubka.jpg" width="170"/></div></div> 
 
 Ten průlom spočívá v tom, že nyní se jedná o jedinou nanotrubku. To znamená, že vznikla jediná souvislá makromolekula dlouhá 4 centimetry. A to už je délka, se kterou se už dá něco dělat. Tehdy se jednalo o krátké nanotrubky slepené do vlákna o pevnosti polyetylénu; nyní využijeme celé její pevnosti nesnížené žádnými spoji. V současnosti se nanotrubky běžně vyrábějí dlouhé pouze několik stovek mikrometrů. Navíc vědci tvrdí, že nevidí důvod, proč by nemohli vytvořit trubku jakkoliv dlouhou. To už je příslib pro [vesmírný výtah](http://www.transhumanismus.cz/blog.php?time=040705#445).
 

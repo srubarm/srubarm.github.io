@@ -10,7 +10,7 @@ permalink: /nano/filtrovani-vody-nanotrubkami.html
 
 ## Stočený koberec nanotrubek
 
-<div class="obry"><div class="leftbox"><img alt="Filtr z nanotrubek" height="150" src="http://techblog.srubar.net/images/nanotrubky-filtr.jpg" width="150"/></div></div> 
+<div class="obry"><div class="leftbox"><img alt="Filtr z nanotrubek" height="150" src="http://www.techblog.cz/images/nanotrubky-filtr.jpg" width="150"/></div></div> 
 
 Filtr si můžete představit jako stočený koberec, kde místo vlněných (či u někoho hedvábných) vláken se nalézají nanotrubky. Přesto, že se může zdát složité vytvořit takový makroskopický útvar z mikroskopických vlákének, byla výroba překvapivě snadná. Jako formu pro filtr vědci použili trubku z křemene. Do ní za teploty 900 °C vstřikovali argon s příměsí benzenu a ferrocenu (jako katalyzátor). Takto začaly na stěně trubky vznikat nanotrubky rostoucí kolmo na její povrch a vytvořily filtr samotný – trubku dlouhou několik centimetrů se stěnou tlustou 300 až 500 mikrometrů. Zajímavé bylo oddělení vzniklého filtru od formy. Kyselinu vědci opatrně nanášeli na vnitřní stěnu formy tak, že postupně odleptávala části nanotrubek usazených na jejím povrchu, a tak umožnila vyjmutí filtru. Předpokládám, že po zhlédnutí [obrázku](http://pubs.acs.org/cen/images/8233/8232tubes.gif) se vám postup objasní.
 

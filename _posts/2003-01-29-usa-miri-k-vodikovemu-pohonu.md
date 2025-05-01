@@ -12,8 +12,8 @@ Jen mě trochu udivuje, že když to udělají USA tak je kolem toho relativně 
 
 ## Další informace
 
-  * [Kanada je nová ropná velmoc](http://techblog.srubar.net/technologie/kanada-je-nova-ropna-velmoc.html)
-  * [Těžba ropy na Aljašce asi projde](http://techblog.srubar.net/technologie/tezba-ropy-na-aljasce-asi-projde.html)
+  * [Kanada je nová ropná velmoc](http://www.techblog.cz/technologie/kanada-je-nova-ropna-velmoc.html)
+  * [Těžba ropy na Aljašce asi projde](http://www.techblog.cz/technologie/tezba-ropy-na-aljasce-asi-projde.html)
 
 
 
