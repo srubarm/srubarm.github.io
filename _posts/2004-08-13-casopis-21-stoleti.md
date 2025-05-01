@@ -297,7 +297,7 @@ uplny souhlas s [19]. VTM jsem si pravidelne kupoval cca 3 roky a bylo opravdu s
 krakhen  &ndash; 17.6.2008
 </div>
 
-Je to pravda ten článek. Někdy si říkám, &#65533;e jde o takový Blesk mezi \"vědeckými\" časopisy. Naprosto lákavý nadpis ve smyslu \"vědci vyrobí lidské oko\" a podobně. Dále se dočítám, &#65533;e pouze jakýsi americký odborník předpovídá budoucnost a vysvětluje známé věci, které nemají úroveň. Jen občas za čas tam mělo něco úroveň. Samozřejmě nerozumím v&#65533;emu, ale články k tématům o kterých něco vím mě velmi zklamaly.
+Je to pravda ten článek. Někdy si říkám, že jde o takový Blesk mezi "vědeckými" časopisy. Naprosto lákavý nadpis ve smyslu "vědci vyrobí lidské oko" a podobně. Dále se dočítám, že pouze jakýsi americký odborník předpovídá budoucnost a vysvětluje známé věci, které nemají úroveň. Jen občas za čas tam mělo něco úroveň. Samozřejmě nerozumím všemu, ale články k tématům o kterých něco vím mě velmi zklamaly.
 
 <div class='comment-item-header' markdown=1>
 [albert](mailto:albert@albert-sd.cz) &ndash; [WWW](http://albert-sd.cz) &ndash; 3.6.2013
