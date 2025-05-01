@@ -105,6 +105,7 @@ titles_from_headings:
   strip_title: true
   collections: true 
 
+search_plugin: simple-jekyll-search
 search_result_template: |
   <div class="search-result">
     <h3><a href="{{ item.url }}">{{ item.title }}</a></h3>
