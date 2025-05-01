@@ -1,6 +1,6 @@
 ---
 layout: post
-title: NewScientist: stojí za to?
+title: NewScientist &ndash; stojí za to?
 categories: [Ostatní věda]
 permalink: /veda/newscientist-stoji-za-to.html
 ---

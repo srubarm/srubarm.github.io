@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Časopis 21. století
-categories: [14:17]
+categories: [Články]
 permalink: /clanky/casopis-21-stoleti.html
 ---
 # Časopis 21. století
