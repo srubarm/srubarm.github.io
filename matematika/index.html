@@ -101,6 +101,19 @@ layout: null
       font-size: 1.3rem;
       line-height: 2;
     }
+    .score-table {
+      margin: 15px auto;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    .score-table th, .score-table td {
+      padding: 6px 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    .score-table th { color: #4a90d9; }
+    #personal-best { margin-top: 25px; }
+    #score-table-wrap { margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -111,7 +124,16 @@ layout: null
     <div class="mode-buttons">
       <button onclick="startSolo()">Solo</button>
       <button onclick="showCompSetup()">Competition</button>
+      <button onclick="showScoreboard()">Top Scores</button>
     </div>
+  </div>
+
+  <!-- Solo name entry -->
+  <div id="solo-setup" style="display:none">
+    <p>Enter your name:</p>
+    <input type="text" id="solo-name" placeholder="Your name">
+    <br>
+    <button class="btn-block" onclick="confirmSoloName()">Next</button>
   </div>
 
   <!-- Difficulty selection -->
@@ -157,6 +179,15 @@ layout: null
   <!-- Solo done -->
   <div id="done" style="display:none">
     <div class="summary" id="summary"></div>
+    <div id="personal-best"></div>
+    <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
+  </div>
+
+  <!-- Scoreboard -->
+  <div id="scoreboard" style="display:none">
+    <p><b>Top Scores</b></p>
+    <div class="level-buttons" id="score-level-buttons"></div>
+    <div id="score-table-wrap"></div>
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
 
@@ -247,7 +278,7 @@ layout: null
     }
 
     function hideAll() {
-      ['menu','difficulty','comp-setup','game','done','handoff','comp-done'].forEach(function(id) {
+      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
     }
@@ -310,11 +341,17 @@ layout: null
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
 
       if (mode === 'solo') {
+        var scores = saveScore(soloName, level, mistakes, elapsed);
         hideAll();
         document.getElementById('done').style.display = 'block';
         document.getElementById('summary').innerHTML =
+          '<b>' + soloName + '</b><br>' +
           'Mistakes: <b>' + mistakes + '</b><br>' +
           'Time: <b>' + formatTime(elapsed) + '</b>';
+        // Show top 5 for this level
+        document.getElementById('personal-best').innerHTML =
+          '<p><b>Top scores \u2013 ' + LEVEL_LABELS[level] + '</b></p>' +
+          buildScoreTable(scores.slice(0, 5));
       } else if (mode === 'comp') {
         playerResults.push({ mistakes: mistakes, time: elapsed });
         if (playerResults.length === 1) {
@@ -374,10 +411,97 @@ layout: null
 
     // --- Mode launchers ---
 
+    var soloName = '';
+
     function startSolo() {
       mode = 'solo';
       hideAll();
+      document.getElementById('solo-setup').style.display = 'block';
+      document.getElementById('solo-name').value = localStorage.getItem('lastSoloName') || '';
+      document.getElementById('solo-name').focus();
+    }
+
+    function confirmSoloName() {
+      soloName = document.getElementById('solo-name').value.trim() || 'Anonymous';
+      localStorage.setItem('lastSoloName', soloName);
+      hideAll();
       document.getElementById('difficulty').style.display = 'block';
+    }
+
+    document.getElementById('solo-name').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') confirmSoloName();
+    });
+
+    // --- Score storage ---
+
+    var LEVEL_LABELS = {
+      add10: '+ / \u2212 up to 10',
+      add50: '+ / \u2212 up to 50',
+      add200: '+ / \u2212 up to 200',
+      mul5x5: '1\u20135 \u00d7 1\u20135',
+      mul5x10: '1\u20135 \u00d7 1\u201310',
+      mul10x10: '1\u201310 \u00d7 1\u201310',
+      mul10x20: '1\u201310 \u00d7 1\u201320',
+      mul10x50: '1\u201310 \u00d7 1\u201350',
+      mul10x100: '1\u201310 \u00d7 1\u2013100',
+    };
+
+    function getScores(lv) {
+      try {
+        return JSON.parse(localStorage.getItem('scores_' + lv)) || [];
+      } catch(e) { return []; }
+    }
+
+    function saveScore(name, lv, mistakeCount, timeSec) {
+      var scores = getScores(lv);
+      scores.push({
+        name: name,
+        mistakes: mistakeCount,
+        time: timeSec,
+        date: new Date().toISOString()
+      });
+      // Sort: fewer mistakes first, then faster time
+      scores.sort(function(a, b) {
+        return a.mistakes - b.mistakes || a.time - b.time;
+      });
+      // Keep top 20
+      scores = scores.slice(0, 20);
+      localStorage.setItem('scores_' + lv, JSON.stringify(scores));
+      return scores;
+    }
+
+    function formatDate(iso) {
+      var d = new Date(iso);
+      return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
+        String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+
+    function buildScoreTable(scores) {
+      if (scores.length === 0) return '<p>No scores yet.</p>';
+      var h = '<table class="score-table"><tr><th>#</th><th>Name</th><th>Mistakes</th><th>Time</th><th>Date</th></tr>';
+      scores.forEach(function(s, i) {
+        h += '<tr><td>' + (i + 1) + '</td><td>' + s.name + '</td><td>' + s.mistakes +
+          '</td><td>' + formatTime(s.time) + '</td><td>' + formatDate(s.date) + '</td></tr>';
+      });
+      h += '</table>';
+      return h;
+    }
+
+    function showScoreboard() {
+      hideAll();
+      document.getElementById('scoreboard').style.display = 'block';
+      var btns = '';
+      Object.keys(LEVEL_LABELS).forEach(function(lv) {
+        btns += '<button onclick="showScoresFor(\'' + lv + '\')">' + LEVEL_LABELS[lv] + '</button>';
+      });
+      document.getElementById('score-level-buttons').innerHTML = btns;
+      document.getElementById('score-table-wrap').innerHTML = '<p>Select a level above.</p>';
+    }
+
+    function showScoresFor(lv) {
+      var scores = getScores(lv);
+      document.getElementById('score-table-wrap').innerHTML =
+        '<p><b>' + LEVEL_LABELS[lv] + '</b></p>' + buildScoreTable(scores);
     }
 
     function showCompSetup() {
