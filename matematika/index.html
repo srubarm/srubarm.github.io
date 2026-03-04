@@ -1,0 +1,94 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matematika</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: 60px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    h1 { margin-bottom: 30px; }
+    .problem { font-size: 2.5rem; margin: 30px 0; }
+    input {
+      font-size: 1.5rem;
+      width: 100px;
+      text-align: center;
+      padding: 8px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      font-size: 1.2rem;
+      padding: 8px 24px;
+      margin-left: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #4a90d9;
+      color: white;
+    }
+    .result { font-size: 1.3rem; margin-top: 20px; min-height: 1.6em; }
+    .correct { color: green; }
+    .wrong { color: red; }
+    .score { margin-top: 30px; font-size: 1.1rem; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Matematika</h1>
+  <div class="problem" id="problem"></div>
+  <div>
+    <input type="number" id="answer" autofocus>
+    <button onclick="check()">OK</button>
+  </div>
+  <div class="result" id="result"></div>
+  <div class="score" id="score"></div>
+
+  <script>
+    let a, b, op, correctAnswer;
+    let total = 0, right = 0;
+
+    function generate() {
+      a = Math.floor(Math.random() * 10) + 1;
+      b = Math.floor(Math.random() * 10) + 1;
+      op = Math.random() < 0.5 ? '+' : '-';
+      if (op === '-' && b > a) { [a, b] = [b, a]; }
+      correctAnswer = op === '+' ? a + b : a - b;
+      document.getElementById('problem').textContent = a + ' ' + op + ' ' + b + ' = ?';
+      document.getElementById('answer').value = '';
+      document.getElementById('result').textContent = '';
+      document.getElementById('answer').focus();
+    }
+
+    function check() {
+      const val = parseInt(document.getElementById('answer').value);
+      if (isNaN(val)) return;
+      total++;
+      const el = document.getElementById('result');
+      if (val === correctAnswer) {
+        right++;
+        el.textContent = 'Correct!';
+        el.className = 'result correct';
+      } else {
+        el.textContent = 'Wrong — answer is ' + correctAnswer;
+        el.className = 'result wrong';
+      }
+      document.getElementById('score').textContent = right + ' / ' + total;
+      setTimeout(generate, 1200);
+    }
+
+    document.getElementById('answer').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') check();
+    });
+
+    generate();
+  </script>
+</body>
+</html>
