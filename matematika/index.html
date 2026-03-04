@@ -15,15 +15,27 @@ layout: null
       padding: 0 20px;
       text-align: center;
     }
-    h1 { margin-bottom: 30px; }
+    h1 { margin-bottom: 10px; }
+    .progress { font-size: 1rem; color: #888; margin-bottom: 20px; }
+    .timer { font-size: 1.1rem; color: #555; margin-bottom: 10px; }
+    .player-label { font-size: 1.4rem; color: #4a90d9; font-weight: bold; margin-bottom: 10px; }
     .problem { font-size: 2.5rem; margin: 30px 0; }
-    input {
+    input[type="number"] {
       font-size: 1.5rem;
       width: 100px;
       text-align: center;
       padding: 8px;
       border: 2px solid #ccc;
       border-radius: 6px;
+    }
+    input[type="text"] {
+      font-size: 1.2rem;
+      width: 200px;
+      text-align: center;
+      padding: 8px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      margin: 5px 0;
     }
     button {
       font-size: 1.2rem;
@@ -35,60 +47,308 @@ layout: null
       background: #4a90d9;
       color: white;
     }
+    .btn-block {
+      display: block;
+      margin: 15px auto;
+    }
     .result { font-size: 1.3rem; margin-top: 20px; min-height: 1.6em; }
     .correct { color: green; }
     .wrong { color: red; }
-    .score { margin-top: 30px; font-size: 1.1rem; color: #555; }
+    .summary {
+      margin-top: 30px;
+      font-size: 1.3rem;
+      line-height: 2;
+    }
+    .restart-btn {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      padding: 10px 30px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #4a90d9;
+      color: white;
+    }
+    .mode-buttons { margin: 30px 0; }
+    .mode-buttons button { margin: 5px 10px; }
+    .comparison-table {
+      margin: 30px auto;
+      border-collapse: collapse;
+      font-size: 1.2rem;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 10px 25px;
+      border-bottom: 1px solid #ddd;
+    }
+    .comparison-table th { color: #4a90d9; }
+    .winner-cell { font-weight: bold; color: green; }
+    .loser-cell { color: #999; }
+    .winner-banner {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #e8a020;
+    }
+    .handoff {
+      margin-top: 40px;
+      font-size: 1.3rem;
+      line-height: 2;
+    }
   </style>
 </head>
 <body>
   <h1>Matematika</h1>
-  <div class="problem" id="problem"></div>
-  <div>
-    <input type="number" id="answer" autofocus>
-    <button onclick="check()">OK</button>
+
+  <!-- Mode selection -->
+  <div id="menu">
+    <div class="mode-buttons">
+      <button onclick="startSolo()">Solo</button>
+      <button onclick="showCompSetup()">Competition</button>
+    </div>
   </div>
-  <div class="result" id="result"></div>
-  <div class="score" id="score"></div>
+
+  <!-- Competition name entry -->
+  <div id="comp-setup" style="display:none">
+    <p>Enter player names:</p>
+    <input type="text" id="name1" placeholder="Player 1"><br>
+    <input type="text" id="name2" placeholder="Player 2"><br>
+    <button class="btn-block" onclick="startComp()">Start</button>
+  </div>
+
+  <!-- Game screen -->
+  <div id="game" style="display:none">
+    <div class="player-label" id="player-label"></div>
+    <div class="progress" id="progress"></div>
+    <div class="timer" id="timer">0:00</div>
+    <div class="problem" id="problem"></div>
+    <div>
+      <input type="number" id="answer">
+      <button onclick="check()">OK</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <!-- Solo done -->
+  <div id="done" style="display:none">
+    <div class="summary" id="summary"></div>
+    <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
+  </div>
+
+  <!-- Handoff between players -->
+  <div id="handoff" style="display:none">
+    <div class="handoff" id="handoff-msg"></div>
+    <button class="restart-btn" onclick="startPlayer2()">Ready</button>
+  </div>
+
+  <!-- Competition results -->
+  <div id="comp-done" style="display:none">
+    <div class="winner-banner" id="winner-banner"></div>
+    <table class="comparison-table" id="comp-table">
+      <tr>
+        <th></th>
+        <th id="col1"></th>
+        <th id="col2"></th>
+      </tr>
+      <tr>
+        <td>Mistakes</td>
+        <td id="m1"></td>
+        <td id="m2"></td>
+      </tr>
+      <tr>
+        <td>Time</td>
+        <td id="t1"></td>
+        <td id="t2"></td>
+      </tr>
+    </table>
+    <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
+  </div>
 
   <script>
-    let a, b, op, correctAnswer;
-    let total = 0, right = 0;
+    const TOTAL = 10;
+    let problems, current, mistakes, startTime, timerInterval;
+    let mode; // 'solo' or 'comp'
+    let playerNames = [];
+    let playerResults = []; // [{mistakes, time}]
 
-    function generate() {
-      a = Math.floor(Math.random() * 10) + 1;
-      b = Math.floor(Math.random() * 10) + 1;
-      op = Math.random() < 0.5 ? '+' : '-';
-      if (op === '-' && b > a) { [a, b] = [b, a]; }
-      correctAnswer = op === '+' ? a + b : a - b;
-      document.getElementById('problem').textContent = a + ' ' + op + ' ' + b + ' = ?';
+    function generateProblems() {
+      const list = [];
+      for (let i = 0; i < TOTAL; i++) {
+        let a = Math.floor(Math.random() * 10) + 1;
+        let b = Math.floor(Math.random() * 10) + 1;
+        let op = Math.random() < 0.5 ? '+' : '-';
+        if (op === '-' && b > a) { [a, b] = [b, a]; }
+        const answer = op === '+' ? a + b : a - b;
+        list.push({ a, b, op, answer });
+      }
+      return list;
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return m + ':' + String(s).padStart(2, '0');
+    }
+
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('timer').textContent = formatTime(elapsed);
+    }
+
+    function hideAll() {
+      ['menu','comp-setup','game','done','handoff','comp-done'].forEach(function(id) {
+        document.getElementById(id).style.display = 'none';
+      });
+    }
+
+    function showMenu() {
+      hideAll();
+      document.getElementById('menu').style.display = 'block';
+    }
+
+    function showProblem() {
+      const p = problems[current];
+      document.getElementById('progress').textContent = (current + 1) + ' / ' + TOTAL;
+      document.getElementById('problem').textContent = p.a + ' ' + p.op + ' ' + p.b + ' = ?';
       document.getElementById('answer').value = '';
       document.getElementById('result').textContent = '';
       document.getElementById('answer').focus();
     }
 
+    function runGame(label) {
+      hideAll();
+      document.getElementById('game').style.display = 'block';
+      document.getElementById('player-label').textContent = label;
+      current = 0;
+      mistakes = 0;
+      startTime = Date.now();
+      clearInterval(timerInterval);
+      document.getElementById('timer').textContent = '0:00';
+      timerInterval = setInterval(updateTimer, 1000);
+      showProblem();
+    }
+
     function check() {
       const val = parseInt(document.getElementById('answer').value);
       if (isNaN(val)) return;
-      total++;
       const el = document.getElementById('result');
-      if (val === correctAnswer) {
-        right++;
+      const p = problems[current];
+
+      if (val === p.answer) {
         el.textContent = 'Correct!';
         el.className = 'result correct';
       } else {
-        el.textContent = 'Wrong — answer is ' + correctAnswer;
+        mistakes++;
+        el.textContent = 'Wrong — answer is ' + p.answer;
         el.className = 'result wrong';
       }
-      document.getElementById('score').textContent = right + ' / ' + total;
-      setTimeout(generate, 1200);
+
+      current++;
+      if (current < TOTAL) {
+        setTimeout(showProblem, 1000);
+      } else {
+        setTimeout(finish, 1000);
+      }
+    }
+
+    function finish() {
+      clearInterval(timerInterval);
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+
+      if (mode === 'solo') {
+        hideAll();
+        document.getElementById('done').style.display = 'block';
+        document.getElementById('summary').innerHTML =
+          'Mistakes: <b>' + mistakes + '</b><br>' +
+          'Time: <b>' + formatTime(elapsed) + '</b>';
+      } else if (mode === 'comp') {
+        playerResults.push({ mistakes: mistakes, time: elapsed });
+        if (playerResults.length === 1) {
+          // Player 1 done, hand off to player 2
+          hideAll();
+          document.getElementById('handoff').style.display = 'block';
+          document.getElementById('handoff-msg').innerHTML =
+            '<b>' + playerNames[0] + '</b> is done!<br><br>' +
+            'Hand the device to <b>' + playerNames[1] + '</b> and press Ready.';
+        } else {
+          showCompResults();
+        }
+      }
+    }
+
+    function showCompResults() {
+      hideAll();
+      document.getElementById('comp-done').style.display = 'block';
+      const r1 = playerResults[0];
+      const r2 = playerResults[1];
+
+      document.getElementById('col1').textContent = playerNames[0];
+      document.getElementById('col2').textContent = playerNames[1];
+
+      const m1El = document.getElementById('m1');
+      const m2El = document.getElementById('m2');
+      const t1El = document.getElementById('t1');
+      const t2El = document.getElementById('t2');
+
+      m1El.textContent = r1.mistakes;
+      m2El.textContent = r2.mistakes;
+      t1El.textContent = formatTime(r1.time);
+      t2El.textContent = formatTime(r2.time);
+
+      // Determine winner: fewer mistakes wins; if tied, faster time wins
+      let winner;
+      if (r1.mistakes < r2.mistakes) winner = 0;
+      else if (r2.mistakes < r1.mistakes) winner = 1;
+      else if (r1.time < r2.time) winner = 0;
+      else if (r2.time < r1.time) winner = 1;
+      else winner = -1; // tie
+
+      // Highlight cells
+      m1El.className = r1.mistakes <= r2.mistakes ? 'winner-cell' : 'loser-cell';
+      m2El.className = r2.mistakes <= r1.mistakes ? 'winner-cell' : 'loser-cell';
+      t1El.className = r1.time <= r2.time ? 'winner-cell' : 'loser-cell';
+      t2El.className = r2.time <= r1.time ? 'winner-cell' : 'loser-cell';
+
+      const banner = document.getElementById('winner-banner');
+      if (winner === -1) {
+        banner.textContent = "It's a tie!";
+      } else {
+        banner.textContent = playerNames[winner] + ' wins!';
+      }
+    }
+
+    // --- Mode launchers ---
+
+    function startSolo() {
+      mode = 'solo';
+      problems = generateProblems();
+      runGame('');
+    }
+
+    function showCompSetup() {
+      hideAll();
+      document.getElementById('comp-setup').style.display = 'block';
+      document.getElementById('name1').value = '';
+      document.getElementById('name2').value = '';
+      document.getElementById('name1').focus();
+    }
+
+    function startComp() {
+      const n1 = document.getElementById('name1').value.trim() || 'Player 1';
+      const n2 = document.getElementById('name2').value.trim() || 'Player 2';
+      playerNames = [n1, n2];
+      playerResults = [];
+      mode = 'comp';
+      problems = generateProblems();
+      runGame(n1);
+    }
+
+    function startPlayer2() {
+      runGame(playerNames[1]);
     }
 
     document.getElementById('answer').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') check();
     });
-
-    generate();
   </script>
 </body>
 </html>
