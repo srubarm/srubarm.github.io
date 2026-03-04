@@ -131,7 +131,8 @@ layout: null
   <!-- Solo name entry -->
   <div id="solo-setup" style="display:none">
     <p>Enter your name:</p>
-    <input type="text" id="solo-name" placeholder="Your name">
+    <input type="text" id="solo-name" placeholder="Your name" list="known-names" autocomplete="off">
+    <datalist id="known-names"></datalist>
     <br>
     <button class="btn-block" onclick="confirmSoloName()">Next</button>
   </div>
@@ -413,9 +414,28 @@ layout: null
 
     var soloName = '';
 
+    function getKnownNames() {
+      var names = {};
+      Object.keys(LEVEL_LABELS).forEach(function(lv) {
+        getScores(lv).forEach(function(s) { names[s.name] = true; });
+      });
+      return Object.keys(names).sort();
+    }
+
+    function populateNameList() {
+      var dl = document.getElementById('known-names');
+      dl.innerHTML = '';
+      getKnownNames().forEach(function(n) {
+        var opt = document.createElement('option');
+        opt.value = n;
+        dl.appendChild(opt);
+      });
+    }
+
     function startSolo() {
       mode = 'solo';
       hideAll();
+      populateNameList();
       document.getElementById('solo-setup').style.display = 'block';
       document.getElementById('solo-name').value = localStorage.getItem('lastSoloName') || '';
       document.getElementById('solo-name').focus();
