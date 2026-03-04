@@ -15,7 +15,9 @@ layout: null
       padding: 0 20px;
       text-align: center;
     }
-    h1 { margin-bottom: 30px; }
+    h1 { margin-bottom: 10px; }
+    .progress { font-size: 1rem; color: #888; margin-bottom: 20px; }
+    .timer { font-size: 1.1rem; color: #555; margin-bottom: 10px; }
     .problem { font-size: 2.5rem; margin: 30px 0; }
     input {
       font-size: 1.5rem;
@@ -38,30 +40,76 @@ layout: null
     .result { font-size: 1.3rem; margin-top: 20px; min-height: 1.6em; }
     .correct { color: green; }
     .wrong { color: red; }
-    .score { margin-top: 30px; font-size: 1.1rem; color: #555; }
+    .summary {
+      margin-top: 40px;
+      font-size: 1.3rem;
+      line-height: 2;
+    }
+    .summary .mistakes { font-weight: bold; }
+    .summary .time { font-weight: bold; }
+    .restart-btn {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      padding: 10px 30px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #4a90d9;
+      color: white;
+    }
   </style>
 </head>
 <body>
   <h1>Matematika</h1>
-  <div class="problem" id="problem"></div>
-  <div>
-    <input type="number" id="answer" autofocus>
-    <button onclick="check()">OK</button>
+
+  <div id="game">
+    <div class="progress" id="progress"></div>
+    <div class="timer" id="timer">0:00</div>
+    <div class="problem" id="problem"></div>
+    <div>
+      <input type="number" id="answer" autofocus>
+      <button onclick="check()">OK</button>
+    </div>
+    <div class="result" id="result"></div>
   </div>
-  <div class="result" id="result"></div>
-  <div class="score" id="score"></div>
+
+  <div id="done" style="display:none">
+    <div class="summary" id="summary"></div>
+    <button class="restart-btn" onclick="start()">Try Again</button>
+  </div>
 
   <script>
-    let a, b, op, correctAnswer;
-    let total = 0, right = 0;
+    const TOTAL = 10;
+    let problems, current, mistakes, startTime, timerInterval;
 
-    function generate() {
-      a = Math.floor(Math.random() * 10) + 1;
-      b = Math.floor(Math.random() * 10) + 1;
-      op = Math.random() < 0.5 ? '+' : '-';
-      if (op === '-' && b > a) { [a, b] = [b, a]; }
-      correctAnswer = op === '+' ? a + b : a - b;
-      document.getElementById('problem').textContent = a + ' ' + op + ' ' + b + ' = ?';
+    function generateProblems() {
+      const list = [];
+      for (let i = 0; i < TOTAL; i++) {
+        let a = Math.floor(Math.random() * 10) + 1;
+        let b = Math.floor(Math.random() * 10) + 1;
+        let op = Math.random() < 0.5 ? '+' : '-';
+        if (op === '-' && b > a) { [a, b] = [b, a]; }
+        const answer = op === '+' ? a + b : a - b;
+        list.push({ a, b, op, answer });
+      }
+      return list;
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return m + ':' + String(s).padStart(2, '0');
+    }
+
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('timer').textContent = formatTime(elapsed);
+    }
+
+    function showProblem() {
+      const p = problems[current];
+      document.getElementById('progress').textContent = (current + 1) + ' / ' + TOTAL;
+      document.getElementById('problem').textContent = p.a + ' ' + p.op + ' ' + p.b + ' = ?';
       document.getElementById('answer').value = '';
       document.getElementById('result').textContent = '';
       document.getElementById('answer').focus();
@@ -70,25 +118,53 @@ layout: null
     function check() {
       const val = parseInt(document.getElementById('answer').value);
       if (isNaN(val)) return;
-      total++;
       const el = document.getElementById('result');
-      if (val === correctAnswer) {
-        right++;
+      const p = problems[current];
+
+      if (val === p.answer) {
         el.textContent = 'Correct!';
         el.className = 'result correct';
       } else {
-        el.textContent = 'Wrong — answer is ' + correctAnswer;
+        mistakes++;
+        el.textContent = 'Wrong — answer is ' + p.answer;
         el.className = 'result wrong';
       }
-      document.getElementById('score').textContent = right + ' / ' + total;
-      setTimeout(generate, 1200);
+
+      current++;
+      if (current < TOTAL) {
+        setTimeout(showProblem, 1000);
+      } else {
+        setTimeout(finish, 1000);
+      }
+    }
+
+    function finish() {
+      clearInterval(timerInterval);
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('done').style.display = 'block';
+      document.getElementById('summary').innerHTML =
+        'Mistakes: <span class="mistakes">' + mistakes + '</span><br>' +
+        'Time: <span class="time">' + formatTime(elapsed) + '</span>';
+    }
+
+    function start() {
+      problems = generateProblems();
+      current = 0;
+      mistakes = 0;
+      startTime = Date.now();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateTimer, 1000);
+      document.getElementById('game').style.display = 'block';
+      document.getElementById('done').style.display = 'none';
+      showProblem();
     }
 
     document.getElementById('answer').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') check();
     });
 
-    generate();
+    start();
   </script>
 </body>
 </html>
