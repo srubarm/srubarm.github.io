@@ -20,7 +20,7 @@ layout: null
     .timer { font-size: 1.1rem; color: #555; margin-bottom: 10px; }
     .player-label { font-size: 1.4rem; color: #4a90d9; font-weight: bold; margin-bottom: 10px; }
     .problem { font-size: 2.5rem; margin: 30px 0; }
-    input[type="number"] {
+    input[type="tel"] {
       font-size: 1.5rem;
       width: 100px;
       text-align: center;
@@ -122,7 +122,7 @@ layout: null
     <div class="timer" id="timer">0:00</div>
     <div class="problem" id="problem"></div>
     <div>
-      <input type="number" id="answer">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" id="answer">
       <button onclick="check()">OK</button>
     </div>
     <div class="result" id="result"></div>
@@ -137,7 +137,7 @@ layout: null
   <!-- Handoff between players -->
   <div id="handoff" style="display:none">
     <div class="handoff" id="handoff-msg"></div>
-    <button class="restart-btn" onclick="startPlayer2()">Ready</button>
+    <button class="restart-btn" id="handoff-btn">Ready</button>
   </div>
 
   <!-- Competition results -->
@@ -209,9 +209,12 @@ layout: null
       const p = problems[current];
       document.getElementById('progress').textContent = (current + 1) + ' / ' + TOTAL;
       document.getElementById('problem').textContent = p.a + ' ' + p.op + ' ' + p.b + ' = ?';
-      document.getElementById('answer').value = '';
+      const inp = document.getElementById('answer');
+      inp.value = '';
       document.getElementById('result').textContent = '';
-      document.getElementById('answer').focus();
+      inp.focus();
+      // Ensure keyboard stays open on mobile after setTimeout transitions
+      setTimeout(function() { inp.focus(); }, 50);
     }
 
     function runGame(label) {
@@ -269,6 +272,7 @@ layout: null
           document.getElementById('handoff-msg').innerHTML =
             '<b>' + playerNames[0] + '</b> is done!<br><br>' +
             'Hand the device to <b>' + playerNames[1] + '</b> and press Ready.';
+          document.getElementById('handoff-btn').onclick = function() { startPlayer(1); };
         } else {
           showCompResults();
         }
@@ -339,11 +343,16 @@ layout: null
       playerResults = [];
       mode = 'comp';
       problems = generateProblems();
-      runGame(n1);
+      // Show ready screen for player 1
+      hideAll();
+      document.getElementById('handoff').style.display = 'block';
+      document.getElementById('handoff-msg').innerHTML =
+        'Hand the device to <b>' + n1 + '</b> and press Ready.';
+      document.getElementById('handoff-btn').onclick = function() { startPlayer(0); };
     }
 
-    function startPlayer2() {
-      runGame(playerNames[1]);
+    function startPlayer(index) {
+      runGame(playerNames[index]);
     }
 
     document.getElementById('answer').addEventListener('keydown', function(e) {
