@@ -22,7 +22,7 @@ layout: null
     .problem { font-size: 2.5rem; margin: 30px 0; }
     input[type="tel"] {
       font-size: 1.5rem;
-      width: 100px;
+      width: 120px;
       text-align: center;
       padding: 8px;
       border: 2px solid #ccc;
@@ -71,6 +71,13 @@ layout: null
     }
     .mode-buttons { margin: 30px 0; }
     .mode-buttons button { margin: 5px 10px; }
+    .level-buttons { margin: 20px 0; }
+    .level-buttons button {
+      display: block;
+      margin: 10px auto;
+      width: 220px;
+    }
+    .level-desc { font-size: 0.85rem; color: #888; margin-top: 5px; }
     .comparison-table {
       margin: 30px auto;
       border-collapse: collapse;
@@ -104,6 +111,21 @@ layout: null
     <div class="mode-buttons">
       <button onclick="startSolo()">Solo</button>
       <button onclick="showCompSetup()">Competition</button>
+    </div>
+  </div>
+
+  <!-- Difficulty selection -->
+  <div id="difficulty" style="display:none">
+    <p>Choose difficulty:</p>
+    <div class="level-buttons">
+      <button onclick="pickLevel('easy')">Easy</button>
+      <div class="level-desc">+ / &minus; up to 10</div>
+      <button onclick="pickLevel('medium')">Medium</button>
+      <div class="level-desc">+ / &minus; up to 50</div>
+      <button onclick="pickLevel('hard')">Hard</button>
+      <div class="level-desc">+ / &minus; up to 200</div>
+      <button onclick="pickLevel('multiply')">Multiply</button>
+      <div class="level-desc">single digit &times; double digit</div>
     </div>
   </div>
 
@@ -167,17 +189,31 @@ layout: null
     const TOTAL = 10;
     let problems, current, mistakes, startTime, timerInterval;
     let mode; // 'solo' or 'comp'
+    let level; // 'easy','medium','hard','multiply'
     let playerNames = [];
     let playerResults = []; // [{mistakes, time}]
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
     function generateProblems() {
       const list = [];
       for (let i = 0; i < TOTAL; i++) {
-        let a = Math.floor(Math.random() * 10) + 1;
-        let b = Math.floor(Math.random() * 10) + 1;
-        let op = Math.random() < 0.5 ? '+' : '-';
-        if (op === '-' && b > a) { [a, b] = [b, a]; }
-        const answer = op === '+' ? a + b : a - b;
+        let a, b, op, answer;
+        if (level === 'multiply') {
+          a = randInt(2, 9);
+          b = randInt(2, 99);
+          op = '\u00d7';
+          answer = a * b;
+        } else {
+          var max = level === 'easy' ? 10 : level === 'medium' ? 50 : 200;
+          a = randInt(1, max);
+          b = randInt(1, max);
+          op = Math.random() < 0.5 ? '+' : '-';
+          if (op === '-' && b > a) { [a, b] = [b, a]; }
+          answer = op === '+' ? a + b : a - b;
+        }
         list.push({ a, b, op, answer });
       }
       return list;
@@ -195,7 +231,7 @@ layout: null
     }
 
     function hideAll() {
-      ['menu','comp-setup','game','done','handoff','comp-done'].forEach(function(id) {
+      ['menu','difficulty','comp-setup','game','done','handoff','comp-done'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
     }
@@ -324,8 +360,8 @@ layout: null
 
     function startSolo() {
       mode = 'solo';
-      problems = generateProblems();
-      runGame('');
+      hideAll();
+      document.getElementById('difficulty').style.display = 'block';
     }
 
     function showCompSetup() {
@@ -342,13 +378,23 @@ layout: null
       playerNames = [n1, n2];
       playerResults = [];
       mode = 'comp';
-      problems = generateProblems();
-      // Show ready screen for player 1
       hideAll();
-      document.getElementById('handoff').style.display = 'block';
-      document.getElementById('handoff-msg').innerHTML =
-        'Hand the device to <b>' + n1 + '</b> and press Ready.';
-      document.getElementById('handoff-btn').onclick = function() { startPlayer(0); };
+      document.getElementById('difficulty').style.display = 'block';
+    }
+
+    function pickLevel(lv) {
+      level = lv;
+      problems = generateProblems();
+      if (mode === 'solo') {
+        runGame('');
+      } else {
+        // Show ready screen for player 1
+        hideAll();
+        document.getElementById('handoff').style.display = 'block';
+        document.getElementById('handoff-msg').innerHTML =
+          'Hand the device to <b>' + playerNames[0] + '</b> and press Ready.';
+        document.getElementById('handoff-btn').onclick = function() { startPlayer(0); };
+      }
     }
 
     function startPlayer(index) {
