@@ -116,16 +116,20 @@ layout: null
 
   <!-- Difficulty selection -->
   <div id="difficulty" style="display:none">
-    <p>Choose difficulty:</p>
+    <p><b>+ / &minus;</b></p>
     <div class="level-buttons">
-      <button onclick="pickLevel('easy')">Easy</button>
-      <div class="level-desc">+ / &minus; up to 10</div>
-      <button onclick="pickLevel('medium')">Medium</button>
-      <div class="level-desc">+ / &minus; up to 50</div>
-      <button onclick="pickLevel('hard')">Hard</button>
-      <div class="level-desc">+ / &minus; up to 200</div>
-      <button onclick="pickLevel('multiply')">Multiply</button>
-      <div class="level-desc">single digit &times; double digit</div>
+      <button onclick="pickLevel('add10')">up to 10</button>
+      <button onclick="pickLevel('add50')">up to 50</button>
+      <button onclick="pickLevel('add200')">up to 200</button>
+    </div>
+    <p><b>&times;</b></p>
+    <div class="level-buttons">
+      <button onclick="pickLevel('mul5x5')">1–5 &times; 1–5</button>
+      <button onclick="pickLevel('mul5x10')">1–5 &times; 1–10</button>
+      <button onclick="pickLevel('mul10x10')">1–10 &times; 1–10</button>
+      <button onclick="pickLevel('mul10x20')">1–10 &times; 1–20</button>
+      <button onclick="pickLevel('mul10x50')">1–10 &times; 1–50</button>
+      <button onclick="pickLevel('mul10x100')">1–10 &times; 1–100</button>
     </div>
   </div>
 
@@ -197,19 +201,31 @@ layout: null
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    var LEVELS = {
+      add10:    { type: 'add', max: 10 },
+      add50:    { type: 'add', max: 50 },
+      add200:   { type: 'add', max: 200 },
+      mul5x5:   { type: 'mul', maxA: 5,  maxB: 5 },
+      mul5x10:  { type: 'mul', maxA: 5,  maxB: 10 },
+      mul10x10: { type: 'mul', maxA: 10, maxB: 10 },
+      mul10x20: { type: 'mul', maxA: 10, maxB: 20 },
+      mul10x50: { type: 'mul', maxA: 10, maxB: 50 },
+      mul10x100:{ type: 'mul', maxA: 10, maxB: 100 },
+    };
+
     function generateProblems() {
+      var cfg = LEVELS[level];
       const list = [];
       for (let i = 0; i < TOTAL; i++) {
         let a, b, op, answer;
-        if (level === 'multiply') {
-          a = randInt(2, 9);
-          b = randInt(2, 99);
+        if (cfg.type === 'mul') {
+          a = randInt(1, cfg.maxA);
+          b = randInt(1, cfg.maxB);
           op = '\u00d7';
           answer = a * b;
         } else {
-          var max = level === 'easy' ? 10 : level === 'medium' ? 50 : 200;
-          a = randInt(1, max);
-          b = randInt(1, max);
+          a = randInt(1, cfg.max);
+          b = randInt(1, cfg.max);
           op = Math.random() < 0.5 ? '+' : '-';
           if (op === '-' && b > a) { [a, b] = [b, a]; }
           answer = op === '+' ? a + b : a - b;
