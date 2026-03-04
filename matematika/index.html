@@ -22,7 +22,7 @@ layout: null
     .problem { font-size: 2.5rem; margin: 30px 0; }
     input[type="tel"] {
       font-size: 1.5rem;
-      width: 100px;
+      width: 120px;
       text-align: center;
       padding: 8px;
       border: 2px solid #ccc;
@@ -71,6 +71,13 @@ layout: null
     }
     .mode-buttons { margin: 30px 0; }
     .mode-buttons button { margin: 5px 10px; }
+    .level-buttons { margin: 20px 0; }
+    .level-buttons button {
+      display: block;
+      margin: 10px auto;
+      width: 220px;
+    }
+    .level-desc { font-size: 0.85rem; color: #888; margin-top: 5px; }
     .comparison-table {
       margin: 30px auto;
       border-collapse: collapse;
@@ -104,6 +111,25 @@ layout: null
     <div class="mode-buttons">
       <button onclick="startSolo()">Solo</button>
       <button onclick="showCompSetup()">Competition</button>
+    </div>
+  </div>
+
+  <!-- Difficulty selection -->
+  <div id="difficulty" style="display:none">
+    <p><b>+ / &minus;</b></p>
+    <div class="level-buttons">
+      <button onclick="pickLevel('add10')">up to 10</button>
+      <button onclick="pickLevel('add50')">up to 50</button>
+      <button onclick="pickLevel('add200')">up to 200</button>
+    </div>
+    <p><b>&times;</b></p>
+    <div class="level-buttons">
+      <button onclick="pickLevel('mul5x5')">1–5 &times; 1–5</button>
+      <button onclick="pickLevel('mul5x10')">1–5 &times; 1–10</button>
+      <button onclick="pickLevel('mul10x10')">1–10 &times; 1–10</button>
+      <button onclick="pickLevel('mul10x20')">1–10 &times; 1–20</button>
+      <button onclick="pickLevel('mul10x50')">1–10 &times; 1–50</button>
+      <button onclick="pickLevel('mul10x100')">1–10 &times; 1–100</button>
     </div>
   </div>
 
@@ -167,17 +193,43 @@ layout: null
     const TOTAL = 10;
     let problems, current, mistakes, startTime, timerInterval;
     let mode; // 'solo' or 'comp'
+    let level; // 'easy','medium','hard','multiply'
     let playerNames = [];
     let playerResults = []; // [{mistakes, time}]
 
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    var LEVELS = {
+      add10:    { type: 'add', max: 10 },
+      add50:    { type: 'add', max: 50 },
+      add200:   { type: 'add', max: 200 },
+      mul5x5:   { type: 'mul', maxA: 5,  maxB: 5 },
+      mul5x10:  { type: 'mul', maxA: 5,  maxB: 10 },
+      mul10x10: { type: 'mul', maxA: 10, maxB: 10 },
+      mul10x20: { type: 'mul', maxA: 10, maxB: 20 },
+      mul10x50: { type: 'mul', maxA: 10, maxB: 50 },
+      mul10x100:{ type: 'mul', maxA: 10, maxB: 100 },
+    };
+
     function generateProblems() {
+      var cfg = LEVELS[level];
       const list = [];
       for (let i = 0; i < TOTAL; i++) {
-        let a = Math.floor(Math.random() * 10) + 1;
-        let b = Math.floor(Math.random() * 10) + 1;
-        let op = Math.random() < 0.5 ? '+' : '-';
-        if (op === '-' && b > a) { [a, b] = [b, a]; }
-        const answer = op === '+' ? a + b : a - b;
+        let a, b, op, answer;
+        if (cfg.type === 'mul') {
+          a = randInt(1, cfg.maxA);
+          b = randInt(1, cfg.maxB);
+          op = '\u00d7';
+          answer = a * b;
+        } else {
+          a = randInt(1, cfg.max);
+          b = randInt(1, cfg.max);
+          op = Math.random() < 0.5 ? '+' : '-';
+          if (op === '-' && b > a) { [a, b] = [b, a]; }
+          answer = op === '+' ? a + b : a - b;
+        }
         list.push({ a, b, op, answer });
       }
       return list;
@@ -195,7 +247,7 @@ layout: null
     }
 
     function hideAll() {
-      ['menu','comp-setup','game','done','handoff','comp-done'].forEach(function(id) {
+      ['menu','difficulty','comp-setup','game','done','handoff','comp-done'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
     }
@@ -324,8 +376,8 @@ layout: null
 
     function startSolo() {
       mode = 'solo';
-      problems = generateProblems();
-      runGame('');
+      hideAll();
+      document.getElementById('difficulty').style.display = 'block';
     }
 
     function showCompSetup() {
@@ -342,13 +394,23 @@ layout: null
       playerNames = [n1, n2];
       playerResults = [];
       mode = 'comp';
-      problems = generateProblems();
-      // Show ready screen for player 1
       hideAll();
-      document.getElementById('handoff').style.display = 'block';
-      document.getElementById('handoff-msg').innerHTML =
-        'Hand the device to <b>' + n1 + '</b> and press Ready.';
-      document.getElementById('handoff-btn').onclick = function() { startPlayer(0); };
+      document.getElementById('difficulty').style.display = 'block';
+    }
+
+    function pickLevel(lv) {
+      level = lv;
+      problems = generateProblems();
+      if (mode === 'solo') {
+        runGame('');
+      } else {
+        // Show ready screen for player 1
+        hideAll();
+        document.getElementById('handoff').style.display = 'block';
+        document.getElementById('handoff-msg').innerHTML =
+          'Hand the device to <b>' + playerNames[0] + '</b> and press Ready.';
+        document.getElementById('handoff-btn').onclick = function() { startPlayer(0); };
+      }
     }
 
     function startPlayer(index) {
