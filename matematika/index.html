@@ -124,7 +124,9 @@ layout: null
     <div class="mode-buttons">
       <button onclick="startSolo()">Solo</button>
       <button onclick="showCompSetup()">Competition</button>
-      <button onclick="showScoreboard()">Top Scores</button>
+    </div>
+    <div style="margin-top:25px">
+      <button onclick="showScoreboard()" style="font-size:0.8em; padding:6px 14px; background:#888;">Top Scores</button>
     </div>
   </div>
 
@@ -154,6 +156,20 @@ layout: null
       <button onclick="pickLevel('mul10x50')">1–10 &times; 1–50</button>
       <button onclick="pickLevel('mul10x100')">1–10 &times; 1–100</button>
     </div>
+    <p><b>&divide;</b></p>
+    <div class="level-buttons">
+      <button onclick="pickLevel('div50d5')">up to 50 &divide; 1–5</button>
+      <button onclick="pickLevel('div100d5')">up to 100 &divide; 1–5</button>
+      <button onclick="pickLevel('div50d10')">up to 50 &divide; 1–10</button>
+      <button onclick="pickLevel('div100d10')">up to 100 &divide; 1–10</button>
+    </div>
+    <p><b>&divide; with remainder</b></p>
+    <div class="level-buttons">
+      <button onclick="pickLevel('divmod50d5')">up to 50 &divide; 1–5</button>
+      <button onclick="pickLevel('divmod100d5')">up to 100 &divide; 1–5</button>
+      <button onclick="pickLevel('divmod50d10')">up to 50 &divide; 1–10</button>
+      <button onclick="pickLevel('divmod100d10')">up to 100 &divide; 1–10</button>
+    </div>
   </div>
 
   <!-- Competition name entry -->
@@ -172,6 +188,9 @@ layout: null
     <div class="problem" id="problem"></div>
     <div>
       <input type="tel" inputmode="numeric" pattern="[0-9]*" id="answer">
+      <span id="remainder-wrap" style="display:none">
+        r <input type="tel" inputmode="numeric" pattern="[0-9]*" id="answer-remainder" style="width:60px">
+      </span>
       <button onclick="check()">OK</button>
     </div>
     <div class="result" id="result"></div>
@@ -243,6 +262,14 @@ layout: null
       mul10x20: { type: 'mul', maxA: 10, maxB: 20 },
       mul10x50: { type: 'mul', maxA: 10, maxB: 50 },
       mul10x100:{ type: 'mul', maxA: 10, maxB: 100 },
+      div50d5:    { type: 'div', maxDividend: 50,  maxDivisor: 5 },
+      div100d5:   { type: 'div', maxDividend: 100, maxDivisor: 5 },
+      div50d10:   { type: 'div', maxDividend: 50,  maxDivisor: 10 },
+      div100d10:  { type: 'div', maxDividend: 100, maxDivisor: 10 },
+      divmod50d5:   { type: 'divmod', maxDividend: 50,  maxDivisor: 5 },
+      divmod100d5:  { type: 'divmod', maxDividend: 100, maxDivisor: 5 },
+      divmod50d10:  { type: 'divmod', maxDividend: 50,  maxDivisor: 10 },
+      divmod100d10: { type: 'divmod', maxDividend: 100, maxDivisor: 10 },
     };
 
     function generateProblems() {
@@ -255,6 +282,20 @@ layout: null
           b = randInt(1, cfg.maxB);
           op = '\u00d7';
           answer = a * b;
+        } else if (cfg.type === 'div') {
+          b = randInt(1, cfg.maxDivisor);
+          var quotient = randInt(1, Math.floor(cfg.maxDividend / b));
+          a = b * quotient;
+          op = '\u00f7';
+          answer = quotient;
+        } else if (cfg.type === 'divmod') {
+          b = randInt(2, cfg.maxDivisor);
+          a = randInt(1, cfg.maxDividend);
+          op = '\u00f7';
+          answer = Math.floor(a / b);
+          var remainder = a % b;
+          list.push({ a: a, b: b, op: op, answer: answer, remainder: remainder });
+          continue;
         } else {
           a = randInt(1, cfg.max);
           b = randInt(1, cfg.max);
@@ -262,7 +303,7 @@ layout: null
           if (op === '-' && b > a) { [a, b] = [b, a]; }
           answer = op === '+' ? a + b : a - b;
         }
-        list.push({ a, b, op, answer });
+        list.push({ a: a, b: b, op: op, answer: answer });
       }
       return list;
     }
@@ -289,6 +330,10 @@ layout: null
       document.getElementById('menu').style.display = 'block';
     }
 
+    function isDivmod() {
+      return LEVELS[level] && LEVELS[level].type === 'divmod';
+    }
+
     function showProblem() {
       const p = problems[current];
       document.getElementById('progress').textContent = (current + 1) + ' / ' + TOTAL;
@@ -296,8 +341,15 @@ layout: null
       const inp = document.getElementById('answer');
       inp.value = '';
       document.getElementById('result').textContent = '';
+      var remWrap = document.getElementById('remainder-wrap');
+      var remInp = document.getElementById('answer-remainder');
+      if (isDivmod()) {
+        remWrap.style.display = 'inline';
+        remInp.value = '';
+      } else {
+        remWrap.style.display = 'none';
+      }
       inp.focus();
-      // Ensure keyboard stays open on mobile after setTimeout transitions
       setTimeout(function() { inp.focus(); }, 50);
     }
 
@@ -317,15 +369,29 @@ layout: null
     function check() {
       const val = parseInt(document.getElementById('answer').value);
       if (isNaN(val)) return;
+      var remVal = 0;
+      if (isDivmod()) {
+        remVal = parseInt(document.getElementById('answer-remainder').value);
+        if (isNaN(remVal)) return;
+      }
       const el = document.getElementById('result');
       const p = problems[current];
 
-      if (val === p.answer) {
+      var correct;
+      if (isDivmod()) {
+        correct = val === p.answer && remVal === p.remainder;
+      } else {
+        correct = val === p.answer;
+      }
+
+      if (correct) {
         el.textContent = 'Correct!';
         el.className = 'result correct';
       } else {
+        var rightAnswer = String(p.answer);
+        if (isDivmod()) rightAnswer += ' r ' + p.remainder;
         mistakes++;
-        el.textContent = 'Wrong — answer is ' + p.answer;
+        el.textContent = 'Wrong \u2014 answer is ' + rightAnswer;
         el.className = 'result wrong';
       }
 
@@ -464,6 +530,14 @@ layout: null
       mul10x20: '1\u201310 \u00d7 1\u201320',
       mul10x50: '1\u201310 \u00d7 1\u201350',
       mul10x100: '1\u201310 \u00d7 1\u2013100',
+      div50d5: '\u00f7 up to 50 by 1\u20135',
+      div100d5: '\u00f7 up to 100 by 1\u20135',
+      div50d10: '\u00f7 up to 50 by 1\u201310',
+      div100d10: '\u00f7 up to 100 by 1\u201310',
+      divmod50d5: '\u00f7r up to 50 by 1\u20135',
+      divmod100d5: '\u00f7r up to 100 by 1\u20135',
+      divmod50d10: '\u00f7r up to 50 by 1\u201310',
+      divmod100d10: '\u00f7r up to 100 by 1\u201310',
     };
 
     function getScores(lv) {
@@ -562,6 +636,16 @@ layout: null
     }
 
     document.getElementById('answer').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        if (isDivmod()) {
+          document.getElementById('answer-remainder').focus();
+        } else {
+          check();
+        }
+      }
+    });
+
+    document.getElementById('answer-remainder').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') check();
     });
   </script>
