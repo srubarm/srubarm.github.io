@@ -205,7 +205,11 @@ layout: null
       <p><b>Settings</b></p>
       <label style="font-size:0.9rem; color:#888;">Google AI API Key:</label><br>
       <input type="password" id="api-key-input" placeholder="Enter API key" style="font-size:1rem; width:250px; padding:6px; border:2px solid #ccc; border-radius:6px; margin:5px 0;">
-      <button onclick="saveApiKey()" style="font-size:0.9rem; padding:6px 14px;">Save</button>
+      <br>
+      <label style="font-size:0.9rem; color:#888;">AI Model:</label><br>
+      <input type="text" id="ai-model-input" placeholder="gemini-flash-latest" style="font-size:1rem; width:250px; padding:6px; border:2px solid #ccc; border-radius:6px; margin:5px 0;">
+      <br>
+      <button onclick="saveAISettings()" style="font-size:0.9rem; padding:6px 14px;">Save</button>
       <div id="api-key-status" style="font-size:0.85rem; color:#4a90d9; margin-top:4px;"></div>
     </div>
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
@@ -860,7 +864,8 @@ layout: null
         '<span style="color:#888;">Analyzing performance and creating personalized problems...</span>';
       document.getElementById('handoff-btn').style.display = 'none';
 
-      fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
+      var aiModel = getSetting('AiModel') || 'gemini-flash-latest';
+      fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1175,13 +1180,16 @@ layout: null
       hideAll();
       document.getElementById('data-management').style.display = 'block';
       document.getElementById('api-key-input').value = getSetting('ApiKey');
+      document.getElementById('ai-model-input').value = getSetting('AiModel') || '';
       document.getElementById('api-key-status').textContent = '';
     }
 
-    function saveApiKey() {
+    function saveAISettings() {
       var key = document.getElementById('api-key-input').value.trim();
+      var model = document.getElementById('ai-model-input').value.trim();
       setSetting('ApiKey', key);
-      document.getElementById('api-key-status').textContent = key ? 'Saved.' : 'Cleared.';
+      setSetting('AiModel', model);
+      document.getElementById('api-key-status').textContent = 'Saved.';
     }
 
     // --- Export / Import ---
