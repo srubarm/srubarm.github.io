@@ -148,6 +148,7 @@ layout: null
     <div style="margin-top:25px">
       <button onclick="showScoreboard()" style="font-size:0.8em; padding:6px 14px; background:#888;">Top Scores</button>
       <button onclick="showUserManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Users</button>
+      <button onclick="showDataManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Data</button>
     </div>
   </div>
 
@@ -191,12 +192,15 @@ layout: null
       </div>
       <button class="btn-block" onclick="addUser()">Add User</button>
     </div>
-    <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:20px;">
-      <p><b>Data Management</b></p>
-      <button class="btn-block" onclick="exportData()">Export Data</button>
-      <button class="btn-block" onclick="document.getElementById('import-file').click()">Import Data</button>
-      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
-    </div>
+    <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
+  </div>
+
+  <!-- Data management -->
+  <div id="data-management" style="display:none">
+    <p><b>Data Management</b></p>
+    <button class="btn-block" onclick="exportData()">Export Data</button>
+    <button class="btn-block" onclick="document.getElementById('import-file').click()">Import Data</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
 
@@ -501,7 +505,7 @@ layout: null
     }
 
     function hideAll() {
-      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management'].forEach(function(id) {
+      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management','data-management'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
     }
@@ -847,6 +851,11 @@ layout: null
 
     function startPlayer(index) {
       runGame(playerNames[index]);
+    }
+
+    function showDataManagement() {
+      hideAll();
+      document.getElementById('data-management').style.display = 'block';
     }
 
     // --- Export / Import ---
