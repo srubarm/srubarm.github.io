@@ -288,9 +288,13 @@ layout: null
 
   <!-- Scoreboard -->
   <div id="scoreboard" style="display:none">
-    <p><b>Top Scores</b></p>
-    <div class="level-buttons" id="score-level-buttons"></div>
-    <div id="score-table-wrap"></div>
+    <p><b>User Leaderboard</b></p>
+    <div id="user-leaderboard"></div>
+    <div style="margin-top:30px;">
+      <p><b>Top Scores by Level</b></p>
+      <div class="level-buttons" id="score-level-buttons"></div>
+      <div id="score-table-wrap"></div>
+    </div>
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
 
@@ -804,9 +808,48 @@ layout: null
       return h;
     }
 
+    function buildUserLeaderboard() {
+      var data = getAppData();
+      if (data.tests.length === 0) return '<p style="color:#999;">No tests completed yet.</p>';
+      var stats = {};
+      data.tests.forEach(function(t) {
+        if (!stats[t.userId]) {
+          stats[t.userId] = { correct: 0, incorrect: 0, timeCorrect: 0, timeIncorrect: 0 };
+        }
+        var s = stats[t.userId];
+        t.problems.forEach(function(p) {
+          if (p.correct) {
+            s.correct++;
+            s.timeCorrect += (p.timeTaken || 0);
+          } else {
+            s.incorrect++;
+            s.timeIncorrect += (p.timeTaken || 0);
+          }
+        });
+      });
+      var rows = Object.keys(stats).map(function(userId) {
+        var s = stats[userId];
+        var total = s.correct + s.incorrect;
+        var pct = total > 0 ? Math.round(s.correct / total * 100) : 0;
+        var avgCorrect = s.correct > 0 ? Math.round(s.timeCorrect / s.correct * 10) / 10 : 0;
+        var avgIncorrect = s.incorrect > 0 ? Math.round(s.timeIncorrect / s.incorrect * 10) / 10 : 0;
+        return { name: userId, correct: s.correct, total: total, pct: pct, avgCorrect: avgCorrect, avgIncorrect: avgIncorrect };
+      });
+      rows.sort(function(a, b) { return b.correct - a.correct; });
+      var h = '<table class="score-table"><tr><th>#</th><th>Name</th><th>Correct</th><th>%</th><th>Avg correct</th><th>Avg incorrect</th></tr>';
+      rows.forEach(function(r, i) {
+        h += '<tr><td>' + (i + 1) + '</td><td>' + r.name + '</td><td>' + r.correct + '/' + r.total +
+          '</td><td>' + r.pct + '%</td><td>' + r.avgCorrect + 's</td><td>' +
+          (r.avgIncorrect > 0 ? r.avgIncorrect + 's' : '\u2014') + '</td></tr>';
+      });
+      h += '</table>';
+      return h;
+    }
+
     function showScoreboard() {
       hideAll();
       document.getElementById('scoreboard').style.display = 'block';
+      document.getElementById('user-leaderboard').innerHTML = buildUserLeaderboard();
       var btns = '';
       Object.keys(LEVEL_LABELS).forEach(function(lv) {
         btns += '<button onclick="showScoresFor(\'' + lv + '\')">' + LEVEL_LABELS[lv] + '</button>';
