@@ -114,6 +114,26 @@ layout: null
     .score-table th { color: #4a90d9; }
     #personal-best { margin-top: 25px; }
     #score-table-wrap { margin-top: 20px; }
+    .user-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      margin: 8px auto;
+      max-width: 350px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+      text-align: left;
+    }
+    .user-card .user-info { flex: 1; }
+    .user-card .user-name { font-weight: bold; font-size: 1.1rem; }
+    .user-card .user-birth { font-size: 0.85rem; color: #888; }
+    .user-card .remove-btn {
+      background: #e55; color: white; border: none; border-radius: 4px;
+      padding: 4px 10px; cursor: pointer; font-size: 0.85rem; margin-left: 10px;
+    }
+    .no-users { color: #999; font-style: italic; margin: 15px 0; }
   </style>
 </head>
 <body>
@@ -127,16 +147,51 @@ layout: null
     </div>
     <div style="margin-top:25px">
       <button onclick="showScoreboard()" style="font-size:0.8em; padding:6px 14px; background:#888;">Top Scores</button>
+      <button onclick="showUserManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Users</button>
     </div>
   </div>
 
   <!-- Solo name entry -->
   <div id="solo-setup" style="display:none">
-    <p>Enter your name:</p>
-    <input type="text" id="solo-name" placeholder="Your name" list="known-names" autocomplete="off">
-    <datalist id="known-names"></datalist>
+    <p>Select your name:</p>
+    <select id="solo-user-select" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">
+      <option value="">-- select user --</option>
+    </select>
     <br>
     <button class="btn-block" onclick="confirmSoloName()">Next</button>
+  </div>
+
+  <!-- User management -->
+  <div id="user-management" style="display:none">
+    <p><b>Manage Users</b></p>
+    <div id="user-list"></div>
+    <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:20px;">
+      <p><b>Add new user</b></p>
+      <input type="text" id="new-user-name" placeholder="Name">
+      <br>
+      <div style="margin:10px 0;">
+        <select id="new-user-month" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
+          <option value="">Month</option>
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+        <select id="new-user-year" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
+          <option value="">Year</option>
+        </select>
+      </div>
+      <button class="btn-block" onclick="addUser()">Add User</button>
+    </div>
+    <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
 
   <!-- Difficulty selection -->
@@ -174,9 +229,19 @@ layout: null
 
   <!-- Competition name entry -->
   <div id="comp-setup" style="display:none">
-    <p>Enter player names:</p>
-    <input type="text" id="name1" placeholder="Player 1"><br>
-    <input type="text" id="name2" placeholder="Player 2"><br>
+    <p>Select players:</p>
+    <div style="margin:10px 0;">
+      <label style="font-size:0.9rem; color:#888;">Player 1:</label><br>
+      <select id="comp-user-select-1" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">
+        <option value="">-- select user --</option>
+      </select>
+    </div>
+    <div style="margin:10px 0;">
+      <label style="font-size:0.9rem; color:#888;">Player 2:</label><br>
+      <select id="comp-user-select-2" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">
+        <option value="">-- select user --</option>
+      </select>
+    </div>
     <button class="btn-block" onclick="startComp()">Start</button>
   </div>
 
@@ -320,7 +385,7 @@ layout: null
     }
 
     function hideAll() {
-      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard'].forEach(function(id) {
+      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
     }
@@ -480,43 +545,110 @@ layout: null
 
     var soloName = '';
 
-    function getKnownNames() {
-      var names = {};
-      Object.keys(LEVEL_LABELS).forEach(function(lv) {
-        getScores(lv).forEach(function(s) { names[s.name] = true; });
-      });
-      return Object.keys(names).sort();
+    // --- User management ---
+
+    var MONTH_NAMES = ['January','February','March','April','May','June',
+      'July','August','September','October','November','December'];
+
+    function getUsers() {
+      try {
+        return JSON.parse(localStorage.getItem('math_users')) || [];
+      } catch(e) { return []; }
     }
 
-    function populateNameList() {
-      var dl = document.getElementById('known-names');
-      dl.innerHTML = '';
-      getKnownNames().forEach(function(n) {
+    function saveUsers(users) {
+      localStorage.setItem('math_users', JSON.stringify(users));
+    }
+
+    function addUser() {
+      var name = document.getElementById('new-user-name').value.trim();
+      var month = parseInt(document.getElementById('new-user-month').value);
+      var year = parseInt(document.getElementById('new-user-year').value);
+      if (!name) { alert('Please enter a name.'); return; }
+      if (!month || !year) { alert('Please select month and year of birth.'); return; }
+      var users = getUsers();
+      users.push({ name: name, birthMonth: month, birthYear: year });
+      users.sort(function(a, b) { return a.name.localeCompare(b.name); });
+      saveUsers(users);
+      document.getElementById('new-user-name').value = '';
+      document.getElementById('new-user-month').value = '';
+      document.getElementById('new-user-year').value = '';
+      renderUserList();
+    }
+
+    function removeUser(index) {
+      var users = getUsers();
+      var user = users[index];
+      if (!confirm('Remove ' + user.name + '?')) return;
+      users.splice(index, 1);
+      saveUsers(users);
+      renderUserList();
+    }
+
+    function renderUserList() {
+      var users = getUsers();
+      var el = document.getElementById('user-list');
+      if (users.length === 0) {
+        el.innerHTML = '<p class="no-users">No users added yet.</p>';
+        return;
+      }
+      var h = '';
+      users.forEach(function(u, i) {
+        h += '<div class="user-card">' +
+          '<div class="user-info"><span class="user-name">' + u.name + '</span><br>' +
+          '<span class="user-birth">' + MONTH_NAMES[u.birthMonth - 1] + ' ' + u.birthYear + '</span></div>' +
+          '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button></div>';
+      });
+      el.innerHTML = h;
+    }
+
+    function populateYearDropdown() {
+      var sel = document.getElementById('new-user-year');
+      var currentYear = new Date().getFullYear();
+      for (var y = currentYear; y >= currentYear - 100; y--) {
         var opt = document.createElement('option');
-        opt.value = n;
-        dl.appendChild(opt);
+        opt.value = y;
+        opt.textContent = y;
+        sel.appendChild(opt);
+      }
+    }
+
+    function showUserManagement() {
+      hideAll();
+      document.getElementById('user-management').style.display = 'block';
+      renderUserList();
+    }
+
+    function populateUserSelect(selectId) {
+      var sel = document.getElementById(selectId);
+      var users = getUsers();
+      sel.innerHTML = '<option value="">-- select user --</option>';
+      users.forEach(function(u) {
+        var opt = document.createElement('option');
+        opt.value = u.name;
+        opt.textContent = u.name;
+        sel.appendChild(opt);
       });
     }
 
     function startSolo() {
       mode = 'solo';
       hideAll();
-      populateNameList();
+      populateUserSelect('solo-user-select');
       document.getElementById('solo-setup').style.display = 'block';
-      document.getElementById('solo-name').value = localStorage.getItem('lastSoloName') || '';
-      document.getElementById('solo-name').focus();
+      var lastName = localStorage.getItem('lastSoloName') || '';
+      document.getElementById('solo-user-select').value = lastName;
     }
 
     function confirmSoloName() {
-      soloName = document.getElementById('solo-name').value.trim() || 'Anonymous';
+      soloName = document.getElementById('solo-user-select').value;
+      if (!soloName) { alert('Please select a user.'); return; }
       localStorage.setItem('lastSoloName', soloName);
       hideAll();
       document.getElementById('difficulty').style.display = 'block';
     }
 
-    document.getElementById('solo-name').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') confirmSoloName();
-    });
+    populateYearDropdown();
 
     // --- Score storage ---
 
@@ -600,15 +732,16 @@ layout: null
 
     function showCompSetup() {
       hideAll();
+      populateUserSelect('comp-user-select-1');
+      populateUserSelect('comp-user-select-2');
       document.getElementById('comp-setup').style.display = 'block';
-      document.getElementById('name1').value = '';
-      document.getElementById('name2').value = '';
-      document.getElementById('name1').focus();
     }
 
     function startComp() {
-      const n1 = document.getElementById('name1').value.trim() || 'Player 1';
-      const n2 = document.getElementById('name2').value.trim() || 'Player 2';
+      const n1 = document.getElementById('comp-user-select-1').value;
+      const n2 = document.getElementById('comp-user-select-2').value;
+      if (!n1 || !n2) { alert('Please select both players.'); return; }
+      if (n1 === n2) { alert('Please select two different players.'); return; }
       playerNames = [n1, n2];
       playerResults = [];
       mode = 'comp';
