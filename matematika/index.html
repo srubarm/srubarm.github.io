@@ -294,6 +294,10 @@ layout: null
   <div id="done" style="display:none">
     <div class="summary" id="summary"></div>
     <div id="personal-best"></div>
+    <div id="ai-evaluate-wrap" style="display:none; margin-top:15px;">
+      <button id="ai-evaluate-btn" onclick="requestAIEvaluation()" style="font-size:1rem; padding:8px 18px; background:#2a9d2a; color:white; border:none; border-radius:6px; cursor:pointer;">AI Evaluate</button>
+      <div id="ai-evaluation" style="margin-top:12px; padding:12px; background:#f5f5f5; border-radius:8px; font-size:0.95rem; line-height:1.5; text-align:left; display:none;"></div>
+    </div>
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
 
@@ -641,6 +645,22 @@ layout: null
         document.getElementById('personal-best').innerHTML =
           '<p><b>Top scores \u2013 ' + (LEVEL_LABELS[level] || level) + '</b></p>' +
           buildScoreTable(scores.slice(0, 5));
+
+        // Show AI Evaluate button for AI-generated tests
+        var evalWrap = document.getElementById('ai-evaluate-wrap');
+        var evalDiv = document.getElementById('ai-evaluation');
+        evalDiv.style.display = 'none';
+        evalDiv.textContent = '';
+        if (aiGeneratedTest && getSetting('ApiKey')) {
+          lastAITestObj = testObj;
+          evalWrap.style.display = 'block';
+          document.getElementById('ai-evaluate-btn').disabled = false;
+          document.getElementById('ai-evaluate-btn').textContent = 'AI Evaluate';
+        } else {
+          evalWrap.style.display = 'none';
+          lastAITestObj = null;
+        }
+        aiGeneratedTest = false;
       } else if (mode === 'comp') {
         // Save this player's test immediately (before player 2 overwrites problems)
         var currentPlayerIndex = playerResults.length;
@@ -702,6 +722,8 @@ layout: null
     // --- Mode launchers ---
 
     var soloName = '';
+    var aiGeneratedTest = false;
+    var lastAITestObj = null;
 
     // --- User management ---
 
@@ -756,7 +778,7 @@ layout: null
       el.innerHTML = h;
     }
 
-    function buildPromptText(userName) {
+    function buildStudentContext(userName) {
       var data = getAppData();
       var user = data.users.find(function(u) { return u.name === userName; });
       if (!user) return null;
@@ -776,8 +798,6 @@ layout: null
       birthStr += user.birthYear;
 
       var lines = [];
-      lines.push('Generate a custom math test JSON file for a student based on their recent performance data.');
-      lines.push('');
       lines.push('## Student Profile');
       lines.push('- Name: ' + user.name);
       lines.push('- Birth: ' + birthStr + ageStr);
@@ -786,7 +806,6 @@ layout: null
       if (userTests.length === 0) {
         lines.push('## No test history available.');
         lines.push('');
-        lines.push('Create a beginner-level assessment test with a mix of addition and subtraction problems appropriate for the student\'s age.');
       } else {
         lines.push('## Recent Test History (most recent first)');
         lines.push('');
@@ -813,6 +832,26 @@ layout: null
         });
       }
 
+      return lines.join('\n');
+    }
+
+    function buildPromptText(userName) {
+      var context = buildStudentContext(userName);
+      if (!context) return null;
+
+      var lines = [];
+      lines.push('Generate a custom math test JSON file for a student based on their recent performance data.');
+      lines.push('');
+      lines.push(context);
+
+      // Add generation-specific instructions if no history
+      var data = getAppData();
+      var userTests = data.tests.filter(function(t) { return t.userId === userName; });
+      if (userTests.length === 0) {
+        lines.push('Create a beginner-level assessment test with a mix of addition and subtraction problems appropriate for the student\'s age.');
+        lines.push('');
+      }
+
       lines.push('## Instructions');
       lines.push('Create a custom test that:');
       lines.push('1. Focuses on problem types where the student struggled (made mistakes or was slow)');
@@ -831,6 +870,53 @@ layout: null
       lines.push('Valid operators: "+" (addition), "-" (subtraction), "*" (multiplication), "/" (exact division), "/r" (division with remainder)');
       lines.push('Rules: b must be > 0 for division. For "/" the division must be exact (no remainder). For "/r" use any integers.');
       lines.push('Validation is strict: checks for valid operators, integer operands, division by zero, and exact divisibility for "/" (suggests "/r" if not even).');
+
+      return lines.join('\n');
+    }
+
+    function buildEvaluationPrompt(userName, testObj) {
+      var context = buildStudentContext(userName);
+      if (!context) return null;
+
+      var lines = [];
+      lines.push('Evaluate a student\'s performance on an AI-generated math test.');
+      lines.push('');
+
+      // Student profile and historical performance (excludes the just-completed test since
+      // buildStudentContext reads from saved data which already includes it — but that's fine,
+      // the AI will see it in both sections and understand the context)
+      lines.push(context);
+
+      // Current test results
+      lines.push('## AI-Generated Test Results');
+      lines.push('Test name: ' + (LEVEL_LABELS[testObj.level] || testObj.level));
+      lines.push('Date: ' + (testObj.dateStarted ? testObj.dateStarted.slice(0, 10) : 'today'));
+      lines.push('');
+
+      var correctCount = 0;
+      var totalTime = 0;
+      testObj.problems.forEach(function(p, pi) {
+        var mark = p.correct ? '\u2713' : '\u2717';
+        correctCount += p.correct ? 1 : 0;
+        totalTime += (p.timeTaken || 0);
+        lines.push('  ' + (pi + 1) + '. ' + p.problem + ' = ' + p.correctAnswer +
+          ', answered ' + p.userAnswer + ' ' + mark + ' (' + (p.timeTaken || 0).toFixed(1) + 's)');
+      });
+      var pct = testObj.problems.length > 0 ? Math.round(correctCount / testObj.problems.length * 100) : 0;
+      var totalTimeSec = Math.round(totalTime);
+      var totalTimeStr = Math.floor(totalTimeSec / 60) + ':' + String(totalTimeSec % 60).padStart(2, '0');
+      lines.push('  Summary: ' + correctCount + '/' + testObj.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr);
+      lines.push('');
+
+      lines.push('## Instructions');
+      lines.push('Based on the student\'s historical performance and today\'s test results, provide a brief evaluation (3-5 sentences) covering:');
+      lines.push('1. How the student performed compared to their recent history \u2014 are they improving, staying the same, or struggling more?');
+      lines.push('2. Specific strengths shown in this test (problem types answered quickly and correctly)');
+      lines.push('3. Specific areas that need more practice (problem types with mistakes or slow response times)');
+      lines.push('4. One concrete recommendation for what to focus on next');
+      lines.push('');
+      lines.push('Keep the language encouraging and age-appropriate. Address the evaluation to a parent or teacher, not directly to the student.');
+      lines.push('Respond in plain text, not markdown.');
 
       return lines.join('\n');
     }
@@ -913,6 +999,7 @@ layout: null
         soloName = userName;
         level = 'custom:' + testName;
         problems = convertedProblems;
+        aiGeneratedTest = true;
 
         // Show ready screen
         document.getElementById('handoff-msg').innerHTML =
@@ -931,6 +1018,58 @@ layout: null
           document.getElementById('handoff-btn').textContent = 'Ready';
           showMenu();
         };
+      });
+    }
+
+    function requestAIEvaluation() {
+      if (!lastAITestObj) return;
+      var apiKey = getSetting('ApiKey');
+      if (!apiKey) { alert('No API key configured.'); return; }
+
+      var promptText = buildEvaluationPrompt(lastAITestObj.userId, lastAITestObj);
+      if (!promptText) { alert('Could not build evaluation prompt.'); return; }
+
+      // Show loading state
+      var btn = document.getElementById('ai-evaluate-btn');
+      var evalDiv = document.getElementById('ai-evaluation');
+      btn.disabled = true;
+      btn.textContent = 'Evaluating...';
+      evalDiv.style.display = 'block';
+      evalDiv.innerHTML = '<span style="color:#888;">Analyzing results and generating evaluation...</span>';
+
+      var aiModel = getSetting('AiModel') || 'gemini-flash-latest';
+      fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: promptText }] }]
+        })
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          return response.json().then(function(err) {
+            throw new Error(err.error ? err.error.message : 'API request failed (HTTP ' + response.status + ')');
+          });
+        }
+        return response.json();
+      })
+      .then(function(result) {
+        var text = result.candidates && result.candidates[0] &&
+          result.candidates[0].content && result.candidates[0].content.parts &&
+          result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text;
+        if (!text) throw new Error('Empty response from AI.');
+
+        evalDiv.textContent = text.trim();
+        btn.textContent = 'AI Evaluate';
+        btn.disabled = false;
+      })
+      .catch(function(err) {
+        evalDiv.innerHTML = '<span style="color:red;">Error: ' + err.message + '</span>';
+        btn.textContent = 'Retry';
+        btn.disabled = false;
       });
     }
 
