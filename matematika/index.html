@@ -820,6 +820,7 @@ layout: null
       lines.push('');
       lines.push('Valid operators: "+" (addition), "-" (subtraction), "*" (multiplication), "/" (exact division), "/r" (division with remainder)');
       lines.push('Rules: b must be > 0 for division. For "/" the division must be exact (no remainder). For "/r" use any integers.');
+      lines.push('Validation is strict: checks for valid operators, integer operands, division by zero, and exact divisibility for "/" (suggests "/r" if not even).');
 
       var text = lines.join('\n');
       var blob = new Blob([text], { type: 'text/plain' });
