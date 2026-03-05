@@ -736,9 +736,99 @@ layout: null
         h += '<div class="user-card">' +
           '<div class="user-info"><span class="user-name">' + u.name + '</span><br>' +
           '<span class="user-birth">' + MONTH_NAMES[u.birthMonth - 1] + ' ' + u.birthYear + '</span></div>' +
-          '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button></div>';
+          '<div style="display:flex; flex-direction:column; gap:4px; margin-left:10px;">' +
+          '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button>' +
+          '<button class="remove-btn" style="background:#4a90d9;" onclick="generateTestPrompt(\'' + u.name.replace(/'/g, "\\'") + '\')">AI Prompt</button>' +
+          '</div></div>';
       });
       el.innerHTML = h;
+    }
+
+    function generateTestPrompt(userName) {
+      var data = getAppData();
+      var user = data.users.find(function(u) { return u.name === userName; });
+      if (!user) { alert('User not found.'); return; }
+
+      // Get last 20 tests for this user, most recent first
+      var userTests = data.tests
+        .filter(function(t) { return t.userId === userName; })
+        .sort(function(a, b) { return new Date(b.dateStarted) - new Date(a.dateStarted); })
+        .slice(0, 20);
+
+      // Compute age
+      var now = new Date();
+      var age = now.getFullYear() - user.birthYear;
+      if (user.birthMonth && now.getMonth() + 1 < user.birthMonth) age--;
+      var ageStr = age > 0 ? ' (age ~' + age + ')' : '';
+
+      var birthStr = '';
+      if (user.birthMonth) birthStr += MONTH_NAMES[user.birthMonth - 1] + ' ';
+      birthStr += user.birthYear;
+
+      var lines = [];
+      lines.push('Generate a custom math test JSON file for a student based on their recent performance data.');
+      lines.push('');
+      lines.push('## Student Profile');
+      lines.push('- Name: ' + user.name);
+      lines.push('- Birth: ' + birthStr + ageStr);
+      lines.push('');
+
+      if (userTests.length === 0) {
+        lines.push('## No test history available.');
+        lines.push('');
+        lines.push('Create a beginner-level assessment test with a mix of addition and subtraction problems appropriate for the student\'s age.');
+      } else {
+        lines.push('## Recent Test History (most recent first)');
+        lines.push('');
+        userTests.forEach(function(t, ti) {
+          var levelLabel = LEVEL_LABELS[t.level] || t.level;
+          var modeStr = t.isCompetitionMode ? 'Competition' : 'Solo';
+          var dateStr = t.dateStarted ? t.dateStarted.slice(0, 10) : 'unknown';
+          lines.push('### Test ' + (ti + 1) + ': ' + levelLabel + ' (' + modeStr + ', ' + dateStr + ')');
+
+          var correctCount = 0;
+          var totalTime = 0;
+          t.problems.forEach(function(p, pi) {
+            var mark = p.correct ? '\u2713' : '\u2717';
+            correctCount += p.correct ? 1 : 0;
+            totalTime += (p.timeTaken || 0);
+            lines.push('  ' + (pi + 1) + '. ' + p.problem + ' = ' + p.correctAnswer +
+              ', answered ' + p.userAnswer + ' ' + mark + ' (' + (p.timeTaken || 0) + 's)');
+          });
+          var pct = t.problems.length > 0 ? Math.round(correctCount / t.problems.length * 100) : 0;
+          var totalTimeSec = Math.round(totalTime);
+          var totalTimeStr = Math.floor(totalTimeSec / 60) + ':' + String(totalTimeSec % 60).padStart(2, '0');
+          lines.push('  Summary: ' + correctCount + '/' + t.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr);
+          lines.push('');
+        });
+      }
+
+      lines.push('## Instructions');
+      lines.push('Create a custom test that:');
+      lines.push('1. Focuses on problem types where the student struggled (made mistakes or was slow)');
+      lines.push('2. Includes a mix of easier problems for confidence and harder problems for growth');
+      lines.push('3. Adjusts difficulty appropriately for the student\'s age and skill level');
+      lines.push('4. Contains 10-15 problems');
+      lines.push('');
+      lines.push('Output ONLY a valid JSON file in this exact format:');
+      lines.push('{');
+      lines.push('  "name": "<descriptive test name>",');
+      lines.push('  "problems": [');
+      lines.push('    { "a": <integer>, "b": <integer>, "op": "<operator>" }');
+      lines.push('  ]');
+      lines.push('}');
+      lines.push('');
+      lines.push('Valid operators: "+" (addition), "-" (subtraction), "*" (multiplication), "/" (exact division), "/r" (division with remainder)');
+      lines.push('Rules: b must be > 0 for division. For "/" the division must be exact (no remainder). For "/r" use any integers.');
+
+      var text = lines.join('\n');
+      var blob = new Blob([text], { type: 'text/plain' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'test_prompt_' + userName.replace(/[^a-zA-Z0-9]/g, '_') + '.txt';
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     function populateYearDropdown() {
