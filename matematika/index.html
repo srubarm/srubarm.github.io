@@ -148,6 +148,7 @@ layout: null
     <div style="margin-top:25px">
       <button onclick="showScoreboard()" style="font-size:0.8em; padding:6px 14px; background:#888;">Top Scores</button>
       <button onclick="showUserManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Users</button>
+      <button onclick="showDataManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Data</button>
     </div>
   </div>
 
@@ -191,12 +192,15 @@ layout: null
       </div>
       <button class="btn-block" onclick="addUser()">Add User</button>
     </div>
-    <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:20px;">
-      <p><b>Data Management</b></p>
-      <button class="btn-block" onclick="exportData()">Export Data</button>
-      <button class="btn-block" onclick="document.getElementById('import-file').click()">Import Data</button>
-      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
-    </div>
+    <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
+  </div>
+
+  <!-- Data management -->
+  <div id="data-management" style="display:none">
+    <p><b>Data Management</b></p>
+    <button class="btn-block" onclick="exportData()">Export Data</button>
+    <button class="btn-block" onclick="document.getElementById('import-file').click()">Import Data</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
 
@@ -230,6 +234,14 @@ layout: null
       <button onclick="pickLevel('divmod100d5')">up to 100 &divide; 1–5</button>
       <button onclick="pickLevel('divmod50d10')">up to 50 &divide; 1–10</button>
       <button onclick="pickLevel('divmod100d10')">up to 100 &divide; 1–10</button>
+    </div>
+    <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:15px;">
+      <button onclick="document.getElementById('custom-test-file').click()" style="font-size:0.9em; padding:6px 14px; background:#888;">Load Custom Test</button>
+      <input type="file" id="custom-test-file" accept=".json" style="display:none" onchange="loadCustomTest(event)">
+      <div id="custom-test-name" style="margin-top:8px; font-size:0.9rem; color:#4a90d9;"></div>
+      <div id="custom-test-start" style="display:none; margin-top:8px;">
+        <button onclick="pickCustomTest()">Start Custom Test</button>
+      </div>
     </div>
   </div>
 
@@ -319,6 +331,8 @@ layout: null
     let playerNames = [];
     let playerResults = []; // [{mistakes, time, problems, startTime}]
     let compSessionId = null;
+    let customTestProblems = null; // session-only: loaded custom test problems
+    let customTestName = null;     // session-only: loaded custom test name
 
     function randInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -501,7 +515,7 @@ layout: null
     }
 
     function hideAll() {
-      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management'].forEach(function(id) {
+      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management','data-management'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
     }
@@ -512,13 +526,13 @@ layout: null
     }
 
     function isDivmod() {
-      return LEVELS[level] && LEVELS[level].type === 'divmod';
+      return typeof problems[current].remainder !== 'undefined';
     }
 
     function showProblem() {
       problemStartTime = Date.now();
       const p = problems[current];
-      document.getElementById('progress').textContent = (current + 1) + ' / ' + TOTAL;
+      document.getElementById('progress').textContent = (current + 1) + ' / ' + problems.length;
       document.getElementById('problem').textContent = p.a + ' ' + p.op + ' ' + p.b + ' = ?';
       const inp = document.getElementById('answer');
       inp.value = '';
@@ -588,7 +602,7 @@ layout: null
       }
 
       current++;
-      if (current < TOTAL) {
+      if (current < problems.length) {
         setTimeout(showProblem, 1000);
       } else {
         setTimeout(finish, 1000);
@@ -610,7 +624,7 @@ layout: null
           'Mistakes: <b>' + mistakes + '</b><br>' +
           'Time: <b>' + formatTime(elapsed) + '</b>';
         document.getElementById('personal-best').innerHTML =
-          '<p><b>Top scores \u2013 ' + LEVEL_LABELS[level] + '</b></p>' +
+          '<p><b>Top scores \u2013 ' + (LEVEL_LABELS[level] || level) + '</b></p>' +
           buildScoreTable(scores.slice(0, 5));
       } else if (mode === 'comp') {
         // Save this player's test immediately (before player 2 overwrites problems)
@@ -847,6 +861,88 @@ layout: null
 
     function startPlayer(index) {
       runGame(playerNames[index]);
+    }
+
+    // --- Custom test loading ---
+
+    var OP_MAP = {
+      '+':  { op: '+',       fn: function(a, b) { return { answer: a + b }; } },
+      '-':  { op: '\u2212',  fn: function(a, b) { return { answer: a - b }; } },
+      '*':  { op: '\u00d7',  fn: function(a, b) { return { answer: a * b }; } },
+      '/':  { op: '\u00f7',  fn: function(a, b) { return { answer: a / b }; } },
+      '/r': { op: '\u00f7',  fn: function(a, b) { return { answer: Math.floor(a / b), remainder: a % b }; } }
+    };
+
+    function validateCustomTest(data) {
+      if (!data || typeof data !== 'object') return 'File does not contain a valid JSON object.';
+      if (typeof data.name !== 'string' || !data.name.trim()) return 'Missing or empty "name" field.';
+      if (!Array.isArray(data.problems) || data.problems.length === 0) return 'Missing or empty "problems" array.';
+      var validOps = Object.keys(OP_MAP);
+      for (var i = 0; i < data.problems.length; i++) {
+        var p = data.problems[i];
+        var num = 'Problem ' + (i + 1) + ': ';
+        if (typeof p.a !== 'number' || typeof p.b !== 'number') return num + '"a" and "b" must be numbers.';
+        if (!Number.isInteger(p.a) || !Number.isInteger(p.b)) return num + '"a" and "b" must be integers.';
+        if (typeof p.op !== 'string' || validOps.indexOf(p.op) === -1) return num + '"op" must be one of: ' + validOps.join(', ');
+        if (p.b === 0 && (p.op === '/' || p.op === '/r')) return num + 'division by zero (b = 0).';
+        if (p.op === '/' && p.a % p.b !== 0) return num + 'not evenly divisible (' + p.a + ' / ' + p.b + '). Use "/r" for remainder.';
+      }
+      return null;
+    }
+
+    function convertCustomProblems(data) {
+      return data.problems.map(function(p) {
+        var mapping = OP_MAP[p.op];
+        var result = mapping.fn(p.a, p.b);
+        var prob = { a: p.a, b: p.b, op: mapping.op, answer: result.answer };
+        if (typeof result.remainder !== 'undefined') prob.remainder = result.remainder;
+        return prob;
+      });
+    }
+
+    function loadCustomTest(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var data = JSON.parse(e.target.result);
+          var error = validateCustomTest(data);
+          if (error) { alert('Invalid custom test:\n' + error); return; }
+          customTestName = data.name.trim();
+          customTestProblems = convertCustomProblems(data);
+          document.getElementById('custom-test-name').textContent =
+            'Loaded: ' + customTestName + ' (' + customTestProblems.length + ' problems)';
+          document.getElementById('custom-test-start').style.display = 'block';
+        } catch(err) {
+          alert('Error reading file: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function pickCustomTest() {
+      if (!customTestProblems) { alert('No custom test loaded.'); return; }
+      level = 'custom:' + customTestName;
+      problems = customTestProblems.map(function(p) { return Object.assign({}, p); });
+      if (mode === 'comp') {
+        compSessionId = 'comp-' + new Date().toISOString();
+      }
+      if (mode === 'solo') {
+        runGame('');
+      } else {
+        hideAll();
+        document.getElementById('handoff').style.display = 'block';
+        document.getElementById('handoff-msg').innerHTML =
+          'Hand the device to <b>' + playerNames[0] + '</b> and press Ready.';
+        document.getElementById('handoff-btn').onclick = function() { startPlayer(0); };
+      }
+    }
+
+    function showDataManagement() {
+      hideAll();
+      document.getElementById('data-management').style.display = 'block';
     }
 
     // --- Export / Import ---
