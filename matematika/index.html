@@ -201,6 +201,13 @@ layout: null
     <button class="btn-block" onclick="exportData()">Export Data</button>
     <button class="btn-block" onclick="document.getElementById('import-file').click()">Import Data</button>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+    <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:20px;">
+      <p><b>Settings</b></p>
+      <label style="font-size:0.9rem; color:#888;">Google AI API Key:</label><br>
+      <input type="password" id="api-key-input" placeholder="Enter API key" style="font-size:1rem; width:250px; padding:6px; border:2px solid #ccc; border-radius:6px; margin:5px 0;">
+      <button onclick="saveApiKey()" style="font-size:0.9rem; padding:6px 14px;">Save</button>
+      <div id="api-key-status" style="font-size:0.85rem; color:#4a90d9; margin-top:4px;"></div>
+    </div>
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
 
@@ -739,23 +746,22 @@ layout: null
           '<div style="display:flex; flex-direction:column; gap:4px; margin-left:10px;">' +
           '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button>' +
           '<button class="remove-btn" style="background:#4a90d9;" onclick="generateTestPrompt(\'' + u.name.replace(/'/g, "\\'") + '\')">AI Prompt</button>' +
+          '<button class="remove-btn" style="background:#2a9d2a;" onclick="generateAITest(\'' + u.name.replace(/'/g, "\\'") + '\')">AI Generate</button>' +
           '</div></div>';
       });
       el.innerHTML = h;
     }
 
-    function generateTestPrompt(userName) {
+    function buildPromptText(userName) {
       var data = getAppData();
       var user = data.users.find(function(u) { return u.name === userName; });
-      if (!user) { alert('User not found.'); return; }
+      if (!user) return null;
 
-      // Get last 20 tests for this user, most recent first
       var userTests = data.tests
         .filter(function(t) { return t.userId === userName; })
         .sort(function(a, b) { return new Date(b.dateStarted) - new Date(a.dateStarted); })
         .slice(0, 20);
 
-      // Compute age
       var now = new Date();
       var age = now.getFullYear() - user.birthYear;
       if (user.birthMonth && now.getMonth() + 1 < user.birthMonth) age--;
@@ -820,8 +826,14 @@ layout: null
       lines.push('');
       lines.push('Valid operators: "+" (addition), "-" (subtraction), "*" (multiplication), "/" (exact division), "/r" (division with remainder)');
       lines.push('Rules: b must be > 0 for division. For "/" the division must be exact (no remainder). For "/r" use any integers.');
+      lines.push('Validation is strict: checks for valid operators, integer operands, division by zero, and exact divisibility for "/" (suggests "/r" if not even).');
 
-      var text = lines.join('\n');
+      return lines.join('\n');
+    }
+
+    function generateTestPrompt(userName) {
+      var text = buildPromptText(userName);
+      if (!text) { alert('User not found.'); return; }
       var blob = new Blob([text], { type: 'text/plain' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
@@ -829,6 +841,92 @@ layout: null
       a.download = 'test_prompt_' + userName.replace(/[^a-zA-Z0-9]/g, '_') + '.txt';
       a.click();
       URL.revokeObjectURL(url);
+    }
+
+    function generateAITest(userName) {
+      var apiKey = getSetting('ApiKey');
+      if (!apiKey) {
+        alert('No API key configured. Please set your Google AI API key in the Data screen.');
+        return;
+      }
+      var promptText = buildPromptText(userName);
+      if (!promptText) { alert('User not found.'); return; }
+
+      // Show loading state
+      hideAll();
+      document.getElementById('handoff').style.display = 'block';
+      document.getElementById('handoff-msg').innerHTML =
+        'Generating AI test for <b>' + userName + '</b>...<br><br>' +
+        '<span style="color:#888;">Analyzing performance and creating personalized problems...</span>';
+      document.getElementById('handoff-btn').style.display = 'none';
+
+      fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: promptText }] }]
+        })
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          return response.json().then(function(err) {
+            throw new Error(err.error ? err.error.message : 'API request failed (HTTP ' + response.status + ')');
+          });
+        }
+        return response.json();
+      })
+      .then(function(result) {
+        var text = result.candidates && result.candidates[0] &&
+          result.candidates[0].content && result.candidates[0].content.parts &&
+          result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text;
+        if (!text) throw new Error('Empty response from AI.');
+
+        // Extract JSON from response (may be wrapped in ```json ... ```)
+        var jsonStr = text;
+        var match = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (match) jsonStr = match[1];
+        jsonStr = jsonStr.trim();
+
+        var testData;
+        try {
+          testData = JSON.parse(jsonStr);
+        } catch(e) {
+          throw new Error('Could not parse AI response as JSON.');
+        }
+
+        var validationError = validateCustomTest(testData);
+        if (validationError) throw new Error('AI generated invalid test: ' + validationError);
+
+        var convertedProblems = convertCustomProblems(testData);
+        var testName = testData.name.trim();
+
+        // Set up solo game with this test
+        mode = 'solo';
+        soloName = userName;
+        level = 'custom:' + testName;
+        problems = convertedProblems;
+
+        // Show ready screen
+        document.getElementById('handoff-msg').innerHTML =
+          'AI test ready: <b>' + testName + '</b><br>' +
+          '(' + problems.length + ' problems)<br><br>' +
+          'Hand the device to <b>' + userName + '</b> and press Ready.';
+        document.getElementById('handoff-btn').style.display = '';
+        document.getElementById('handoff-btn').onclick = function() { runGame(''); };
+      })
+      .catch(function(err) {
+        document.getElementById('handoff-msg').innerHTML =
+          '<span style="color:red;">Error: ' + err.message + '</span>';
+        document.getElementById('handoff-btn').style.display = '';
+        document.getElementById('handoff-btn').textContent = 'Back to Menu';
+        document.getElementById('handoff-btn').onclick = function() {
+          document.getElementById('handoff-btn').textContent = 'Ready';
+          showMenu();
+        };
+      });
     }
 
     function populateYearDropdown() {
@@ -1076,6 +1174,14 @@ layout: null
     function showDataManagement() {
       hideAll();
       document.getElementById('data-management').style.display = 'block';
+      document.getElementById('api-key-input').value = getSetting('ApiKey');
+      document.getElementById('api-key-status').textContent = '';
+    }
+
+    function saveApiKey() {
+      var key = document.getElementById('api-key-input').value.trim();
+      setSetting('ApiKey', key);
+      document.getElementById('api-key-status').textContent = key ? 'Saved.' : 'Cleared.';
     }
 
     // --- Export / Import ---
