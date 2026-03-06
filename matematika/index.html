@@ -299,18 +299,20 @@ layout: null
         <option value="">-- select user --</option>
       </select>
     </div>
-    <div id="comp-add-user-area" style="margin:15px 0; border-top:1px solid #ddd; padding-top:15px;">
-      <p style="font-size:0.9rem; color:#888;">Competitor not in the list?</p>
-      <input type="text" id="comp-new-user-name" placeholder="Name">
-      <div style="margin:10px 0;">
-        <select id="comp-new-user-month" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
-          <option value="">Month</option>
-        </select>
-        <select id="comp-new-user-year" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
-          <option value="">Year</option>
-        </select>
+    <div id="comp-add-user-area" style="margin:15px 0;">
+      <button id="comp-add-user-btn" onclick="document.getElementById('comp-add-user-btn').style.display='none'; document.getElementById('comp-add-user-form').style.display='block';" style="font-size:0.9rem; padding:6px 14px; background:#888;">Add new user</button>
+      <div id="comp-add-user-form" style="display:none; border-top:1px solid #ddd; padding-top:15px; margin-top:10px;">
+        <input type="text" id="comp-new-user-name" placeholder="Name">
+        <div style="margin:10px 0;">
+          <select id="comp-new-user-month" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
+            <option value="">Month</option>
+          </select>
+          <select id="comp-new-user-year" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
+            <option value="">Year</option>
+          </select>
+        </div>
+        <button onclick="addCompUser()" style="font-size:0.9rem; padding:6px 14px;">Add &amp; Select</button>
       </div>
-      <button onclick="addCompUser()" style="font-size:0.9rem; padding:6px 14px;">Add &amp; Select</button>
     </div>
     <button class="btn-block" onclick="startComp()">Start</button>
     <button class="restart-btn" onclick="showMenu()" style="font-size:0.9rem; padding:6px 14px; background:#888;">Back</button>
@@ -1771,6 +1773,8 @@ layout: null
         yearSel.innerHTML += '<option value="' + y + '">' + y + '</option>';
       }
       document.getElementById('comp-new-user-name').value = '';
+      document.getElementById('comp-add-user-btn').style.display = '';
+      document.getElementById('comp-add-user-form').style.display = 'none';
       document.getElementById('comp-setup').style.display = 'block';
     }
 
@@ -1796,6 +1800,8 @@ layout: null
       document.getElementById('comp-new-user-name').value = '';
       document.getElementById('comp-new-user-month').value = '';
       document.getElementById('comp-new-user-year').value = '';
+      document.getElementById('comp-add-user-form').style.display = 'none';
+      document.getElementById('comp-add-user-btn').style.display = '';
     }
 
     function startComp() {
