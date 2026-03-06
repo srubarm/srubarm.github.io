@@ -185,7 +185,7 @@ layout: null
       <button onclick="startSolo()">Solo</button>
       <button onclick="showCompSetup()">Competition</button>
     </div>
-    <div style="margin-top:15px">
+    <div id="ai-teacher-menu-wrap" style="margin-top:15px; display:none;">
       <button onclick="startAITeacher()" style="background:#2a9d2a;">Practice with AI Teacher</button>
     </div>
     <div style="margin-top:25px">
@@ -511,6 +511,19 @@ layout: null
       saveAppData(data);
     }
 
+    function isAIEnabled() {
+      return !!(getSetting('ApiKey') && getSetting('apiKeyValid'));
+    }
+
+    function updateAIVisibility() {
+      var enabled = isAIEnabled();
+      var teacherWrap = document.getElementById('ai-teacher-menu-wrap');
+      if (teacherWrap) teacherWrap.style.display = enabled ? 'block' : 'none';
+      // Re-render user list if it's visible (to show/hide AI buttons)
+      var userMgmt = document.getElementById('user-management');
+      if (userMgmt && userMgmt.style.display !== 'none') renderUserList();
+    }
+
     // --- Problem generation ---
 
     function generateProblems() {
@@ -720,7 +733,7 @@ layout: null
         var evalDiv = document.getElementById('ai-evaluation');
         evalDiv.style.display = 'none';
         evalDiv.textContent = '';
-        if (aiGeneratedTest && getSetting('ApiKey')) {
+        if (aiGeneratedTest && isAIEnabled()) {
           lastAITestObj = testObj;
           evalWrap.style.display = 'block';
           document.getElementById('ai-evaluate-btn').disabled = false;
@@ -835,16 +848,20 @@ layout: null
         el.innerHTML = '<p class="no-users">No users added yet.</p>';
         return;
       }
+      var aiEnabled = isAIEnabled();
       var h = '';
       users.forEach(function(u, i) {
+        var escapedName = u.name.replace(/'/g, "\\'");
         h += '<div class="user-card">' +
           '<div class="user-info"><span class="user-name">' + u.name + '</span><br>' +
           '<span class="user-birth">' + MONTH_NAMES[u.birthMonth - 1] + ' ' + u.birthYear + '</span></div>' +
           '<div style="display:flex; flex-direction:column; gap:4px; margin-left:10px;">' +
-          '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button>' +
-          '<button class="remove-btn" style="background:#4a90d9;" onclick="generateTestPrompt(\'' + u.name.replace(/'/g, "\\'") + '\')">AI Prompt</button>' +
-          '<button class="remove-btn" style="background:#2a9d2a;" onclick="generateAITest(\'' + u.name.replace(/'/g, "\\'") + '\')">AI Generate</button>' +
-          '</div></div>';
+          '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button>';
+        if (aiEnabled) {
+          h += '<button class="remove-btn" style="background:#4a90d9;" onclick="generateTestPrompt(\'' + escapedName + '\')">AI Prompt</button>' +
+            '<button class="remove-btn" style="background:#2a9d2a;" onclick="generateAITest(\'' + escapedName + '\')">AI Generate</button>';
+        }
+        h += '</div></div>';
       });
       el.innerHTML = h;
     }
@@ -1169,10 +1186,6 @@ layout: null
     }
 
     function startAITeacher() {
-      if (!getSetting('ApiKey')) {
-        alert('Please set an API key in Data settings first.');
-        return;
-      }
       hideAll();
       document.getElementById('ai-teacher-setup').style.display = 'block';
       populateUserSelect('ai-teacher-user-select');
@@ -1611,6 +1624,7 @@ layout: null
 
     populateYearDropdown();
     renderLevelButtons();
+    updateAIVisibility();
 
     // --- Scoreboard ---
 
@@ -1822,8 +1836,10 @@ layout: null
       var statusEl = document.getElementById('api-key-status');
 
       if (!key) {
+        setSetting('apiKeyValid', '');
         statusEl.textContent = 'Saved (no key set).';
         statusEl.style.color = '#888';
+        updateAIVisibility();
         return;
       }
 
@@ -1850,12 +1866,16 @@ layout: null
           result.candidates[0].content && result.candidates[0].content.parts &&
           result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text;
         if (!text) throw new Error('Empty response');
+        setSetting('apiKeyValid', '1');
         statusEl.textContent = 'Saved \u2013 API key and model verified \u2713';
         statusEl.style.color = '#2a9d2a';
+        updateAIVisibility();
       })
       .catch(function(err) {
+        setSetting('apiKeyValid', '');
         statusEl.textContent = 'Saved \u2013 verification failed: ' + err.message;
         statusEl.style.color = '#e55';
+        updateAIVisibility();
       });
     }
 
