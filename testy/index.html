@@ -197,6 +197,9 @@ layout: null
       font-size: 0.95rem;
     }
     .section-header h3 { margin: 0; font-size: 1.05rem; }
+    .section-header .btn-translate { color: #fff; border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.15); }
+    .section-header .btn-translate:hover { background: rgba(255,255,255,0.25); }
+    .section-header .translated-text { color: #fff; background: rgba(255,255,255,0.12); border-left-color: rgba(255,255,255,0.5); }
     .section-header p { margin: 4px 0 0; font-size: 0.85rem; opacity: 0.85; }
     .question-text {
       font-size: 1.15rem;
@@ -380,6 +383,30 @@ layout: null
     @keyframes spin { to { transform: rotate(360deg); } }
     .grading-overlay p { margin-top: 15px; color: #555; font-size: 1rem; }
 
+    /* Translate toggle */
+    .btn-translate {
+      display: inline-block;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      background: #e8f4fb;
+      color: #055585;
+      border: 1px solid #1F96D3;
+      border-radius: 14px;
+      cursor: pointer;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .btn-translate:hover { background: #d0ecf8; }
+    .translated-text {
+      margin-top: 6px;
+      padding: 6px 10px;
+      background: #f0f8ff;
+      border-left: 3px solid #1F96D3;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
     /* History */
     .history-item {
       display: flex;
@@ -437,6 +464,12 @@ layout: null
     <label id="birth-label" style="font-size:0.9rem; color:#888;">Birth month/year (optional):</label><br>
     <select id="new-user-month"></select>
     <select id="new-user-year"></select>
+    <br>
+    <label id="user-lang-label" style="font-size:0.9rem; color:#888;">Test language:</label><br>
+    <select id="new-user-lang" style="font-size:1rem; padding:6px 10px; min-width:200px;">
+      <option value="en">English</option>
+      <option value="cs">Čeština</option>
+    </select>
     <br>
     <button class="btn-block" id="btn-add-user" onclick="addUser()">Add User</button>
   </div>
@@ -596,6 +629,8 @@ var UI_STRINGS = {
     instructions: 'Instructions:',
     invalidDataFile: 'Invalid data file.',
     dataImported: 'Data imported successfully.',
+    testLanguage: 'Test language:',
+    translate: 'Translate',
     enterName: 'Please enter a name.',
     userExists: 'A user with this name already exists.',
     january: 'January', february: 'February', march: 'March', april: 'April',
@@ -669,6 +704,8 @@ var UI_STRINGS = {
     instructions: 'Pokyny:',
     invalidDataFile: 'Neplatný datový soubor.',
     dataImported: 'Data úspěšně importována.',
+    testLanguage: 'Jazyk testu:',
+    translate: 'Přeložit',
     enterName: 'Zadejte prosím jméno.',
     userExists: 'Uživatel s tímto jménem již existuje.',
     january: 'Leden', february: 'Únor', march: 'Březen', april: 'Duben',
@@ -730,6 +767,24 @@ function saveUsers(users) {
   saveAppData(data);
 }
 
+// ── User Test Language ────────────────────────────────────────────────────────
+function getUserTestLang() {
+  var userName = getSelectedUser();
+  if (!userName) return getUILang();
+  var users = getUsers();
+  var user = users.find(function(u) { return u.name === userName; });
+  return (user && user.testLang) || getUILang();
+}
+
+function getTranslationLocale(displayLocale) {
+  // Return the "other" locale from the test's supported_locales
+  if (!currentTest || !currentTest.test) return null;
+  var supported = currentTest.test.supported_locales || [];
+  if (supported.length < 2) return null;
+  var other = supported.find(function(l) { return l !== displayLocale; });
+  return other || null;
+}
+
 // ── UI Language ──────────────────────────────────────────────────────────────
 function changeUILanguage() {
   var sel = document.getElementById('ui-lang-select');
@@ -764,6 +819,7 @@ function updateUIStrings() {
   el = document.getElementById('user-mgmt-title'); if (el) el.textContent = tr('users');
   el = document.getElementById('new-user-name'); if (el) el.placeholder = tr('name');
   el = document.getElementById('birth-label'); if (el) el.textContent = tr('birthMonthYear');
+  el = document.getElementById('user-lang-label'); if (el) el.textContent = tr('testLanguage');
   el = document.getElementById('btn-add-user'); if (el) el.textContent = tr('addUser');
 
   // Test ready
@@ -940,7 +996,9 @@ function addUser() {
   var month = document.getElementById('new-user-month').value;
   var year = document.getElementById('new-user-year').value;
 
-  users.push({ id: name, name: name, dateCreated: new Date().toISOString(), birthMonth: month, birthYear: year });
+  var lang = document.getElementById('new-user-lang').value || 'en';
+
+  users.push({ id: name, name: name, dateCreated: new Date().toISOString(), birthMonth: month, birthYear: year, testLang: lang });
   users.sort(function(a, b) { return a.name.localeCompare(b.name); });
   saveUsers(users);
 
@@ -966,10 +1024,12 @@ function renderUserList() {
     container.innerHTML = '<p style="color:#888;">No users yet.</p>';
     return;
   }
+  var langNames = { en: 'English', cs: 'Čeština' };
   var html = '';
   users.forEach(function(u) {
+    var langLabel = langNames[u.testLang] || u.testLang || '—';
     html += '<div class="user-card">' +
-      '<span>' + escHtml(u.name) + '</span>' +
+      '<span>' + escHtml(u.name) + ' <span style="font-size:0.8rem; color:#888;">(' + escHtml(langLabel) + ')</span></span>' +
       '<button class="remove-btn" onclick="removeUser(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">' + escHtml(tr('remove')) + '</button>' +
       '</div>';
   });
@@ -1180,7 +1240,8 @@ var testState = null; // { questions, answers, currentIndex, locale, mediaMap, s
 
 function startTest() {
   var t = currentTest.test;
-  var locale = getUILang();
+  var locale = getUserTestLang();
+  var transLocale = getTranslationLocale(locale);
 
   // Build ordered question list (respecting sections or flat)
   var orderedQuestions = buildQuestionOrder(t);
@@ -1211,6 +1272,7 @@ function startTest() {
     answers: answers,
     currentIndex: 0,
     locale: locale,
+    translationLocale: transLocale,
     mediaMap: mediaMap,
     sectionMap: sectionMap,
     settings: t.settings || {},
@@ -1316,6 +1378,24 @@ function updateTimerDisplay() {
   el.className = 'timer-display' + (s <= 60 ? ' warning' : '');
 }
 
+// ── Translation Toggle ──────────────────────────────────────────────────────
+var translationCounter = 0;
+
+function makeTranslateBtn(locObj) {
+  if (!testState || !testState.translationLocale) return '';
+  var transText = locStr(locObj, testState.translationLocale);
+  if (!transText) return '';
+  var id = 'trans-' + (++translationCounter);
+  return ' <button class="btn-translate" onclick="event.stopPropagation(); toggleTranslation(\'' + id + '\')">' +
+    escHtml(tr('translate')) + '</button>' +
+    '<div class="translated-text" id="' + id + '" style="display:none;">' + escHtml(transText) + '</div>';
+}
+
+function toggleTranslation(id) {
+  var el = document.getElementById(id);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
 // ── Question Rendering ──────────────────────────────────────────────────────
 function renderQuestion() {
   var idx = testState.currentIndex;
@@ -1333,9 +1413,9 @@ function renderQuestion() {
   var prevSection = idx > 0 ? testState.sectionMap[testState.questions[idx - 1].id] : null;
   var isNewSection = section && (!prevSection || prevSection.id !== section.id);
   if (isNewSection) {
-    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + '</h3>';
+    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + makeTranslateBtn(section.title) + '</h3>';
     if (section.instructions) {
-      sh += '<p>' + escHtml(locStr(section.instructions, locale)) + '</p>';
+      sh += '<p>' + escHtml(locStr(section.instructions, locale)) + makeTranslateBtn(section.instructions) + '</p>';
     }
     sh += '</div>';
     sectionArea.innerHTML = sh;
@@ -1352,11 +1432,11 @@ function renderQuestion() {
   }
 
   // Question text
-  html += '<div class="question-text">' + escHtml(locStr(q.text, locale)) + '</div>';
+  html += '<div class="question-text">' + escHtml(locStr(q.text, locale)) + makeTranslateBtn(q.text) + '</div>';
 
   // Hint
   if (testState.settings.show_hints && q.feedback && q.feedback.hint) {
-    html += '<div class="question-hint">' + escHtml(locStr(q.feedback.hint, locale)) + '</div>';
+    html += '<div class="question-hint">' + escHtml(locStr(q.feedback.hint, locale)) + makeTranslateBtn(q.feedback.hint) + '</div>';
   }
 
   // Answer input
@@ -1440,7 +1520,7 @@ function renderSingleChoice(config, saved, idx, locale) {
     html += '<li class="option-item' + sel + '" onclick="selectOption(' + idx + ',\'' + escHtml(opt.id) + '\')">';
     html += '<span class="option-radio"></span>';
     html += '<span>';
-    html += escHtml(locStr(opt.text, locale));
+    html += escHtml(locStr(opt.text, locale)) + makeTranslateBtn(opt.text);
     // Option media
     if (opt.media_ref && testState.mediaMap[opt.media_ref]) {
       var m = testState.mediaMap[opt.media_ref];
