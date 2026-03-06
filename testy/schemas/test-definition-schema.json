@@ -1,0 +1,286 @@
+{
+  "test": {
+    "id": "uuid",
+    "default_locale": "en",
+    "supported_locales": ["en", "fr", "de"],
+
+    "title": {
+      "en": "Biology Fundamentals",
+      "fr": "Fondamentaux de Biologie"
+    },
+    "description": {
+      "en": "A test covering core biology concepts",
+      "fr": "Un test couvrant les concepts fondamentaux de biologie"
+    },
+    "instructions": {
+      "en": "Answer all questions to the best of your ability.",
+      "fr": "Répondez à toutes les questions de votre mieux."
+    },
+    "version": 1,
+    "status": "draft",
+    "tags": ["biology", "science"],
+    "created_by": "user_abc",
+    "created_at": "2026-03-05T10:00:00Z",
+    "updated_at": "2026-03-05T10:00:00Z",
+
+    "settings": {
+      "default_time_limit_seconds": null,
+      "shuffle_questions": false,
+      "allow_skip": true,
+      "show_hints": true,
+      "show_correct_answer_comment": true
+    },
+
+    "media": [
+      {
+        "id": "media_001",
+        "type": "image",
+        "mime_type": "image/png",
+        "filename": "cell_diagram.png",
+        "data": {
+          "en": "<base64 encoded bytes for English version>",
+          "fr": "<base64 encoded bytes for French version>"
+        },
+        "url": {
+          "en": "https://cdn.example.com/cell_diagram_en.png",
+          "fr": "https://cdn.example.com/cell_diagram_fr.png"
+        },
+        "alt_text": {
+          "en": "Diagram of an animal cell",
+          "fr": "Diagramme d'une cellule animale"
+        }
+      },
+      {
+        "id": "media_002",
+        "type": "image",
+        "mime_type": "image/png",
+        "filename": "atom_diagram.png",
+        "data": {
+          "en": "<base64 encoded bytes>"
+        },
+        "url": null,
+        "alt_text": {
+          "en": "Diagram of an atom"
+        }
+      }
+    ],
+
+    "questions": [
+      {
+        "id": "q_001",
+        "text": {
+          "en": "What does this diagram show?",
+          "fr": "Que montre ce diagramme?"
+        },
+        "media_refs": ["media_001"],
+        "answer_type": "single_choice",
+        "required": true,
+        "difficulty": "easy",
+        "tags": ["cells"],
+        "weight": 2,
+        "time_limit_seconds": null,
+
+        "answer_config": {
+          "options": [
+            {
+              "id": "opt_a",
+              "text": {
+                "en": "An animal cell",
+                "fr": "Une cellule animale"
+              },
+              "media_ref": null
+            },
+            {
+              "id": "opt_b",
+              "text": {
+                "en": "An atom",
+                "fr": "Un atome"
+              },
+              "media_ref": "media_002"
+            },
+            {
+              "id": "opt_c",
+              "text": {
+                "en": "A bacterium",
+                "fr": "Une bactérie"
+              },
+              "media_ref": null
+            }
+          ],
+          "correct_answer": "opt_a",
+          "shuffle_options": true
+        },
+
+        "evaluation": {
+          "method": "deterministic",
+          "result_type": "boolean",
+          "ai_prompt_context": null
+        },
+
+        "feedback": {
+          "hint": {
+            "en": "Look at the membrane structure...",
+            "fr": "Regardez la structure de la membrane..."
+          },
+          "correct_comment": {
+            "en": "Well done! The membrane and nucleus are key indicators.",
+            "fr": "Bien joué! La membrane et le noyau sont des indicateurs clés."
+          },
+          "explanation": {
+            "en": "This diagram shows an animal cell, identifiable by its nucleus, cell membrane, and lack of cell wall.",
+            "fr": "Ce diagramme montre une cellule animale, identifiable par son noyau, sa membrane cellulaire et l'absence de paroi cellulaire."
+          }
+        }
+      },
+      {
+        "id": "q_002",
+        "text": {
+          "en": "How many chromosomes do humans have?",
+          "fr": "Combien de chromosomes possèdent les humains?"
+        },
+        "media_refs": [],
+        "answer_type": "number",
+        "required": true,
+        "difficulty": "medium",
+        "tags": ["genetics"],
+        "weight": 1,
+        "time_limit_seconds": 30,
+
+        "answer_config": {
+          "correct_answer": 46,
+          "numeric_tolerance": 0
+        },
+
+        "evaluation": {
+          "method": "deterministic",
+          "result_type": "boolean",
+          "ai_prompt_context": null
+        },
+
+        "feedback": {
+          "hint": {
+            "en": "Think about how many pairs there are, then double it.",
+            "fr": "Pensez au nombre de paires, puis doublez-le."
+          },
+          "correct_comment": {
+            "en": "Correct! 23 pairs = 46 chromosomes.",
+            "fr": "Correct! 23 paires = 46 chromosomes."
+          },
+          "explanation": null
+        }
+      },
+      {
+        "id": "q_003",
+        "text": {
+          "en": "Describe the process of photosynthesis in your own words.",
+          "fr": "Décrivez le processus de photosynthèse avec vos propres mots."
+        },
+        "media_refs": [],
+        "answer_type": "free_text",
+        "required": false,
+        "difficulty": "hard",
+        "tags": ["plants", "energy"],
+        "weight": 3,
+        "time_limit_seconds": null,
+
+        "answer_config": {
+          "correct_answer": null,
+          "alternatives": null,
+          "case_sensitive": false
+        },
+
+        "evaluation": {
+          "method": "ai",
+          "result_type": "percentage",
+          "ai_prompt_context": {
+            "en": "Evaluate the student's understanding of photosynthesis. Key concepts to look for: light energy conversion, inputs (water, CO2), outputs (glucose, oxygen). Award partial credit for partial understanding.",
+            "fr": "Évaluez la compréhension de l'étudiant de la photosynthèse. Concepts clés à rechercher: conversion de l'énergie lumineuse, entrées (eau, CO2), sorties (glucose, oxygène). Accordez un crédit partiel pour une compréhension partielle."
+          }
+        },
+
+        "feedback": {
+          "hint": {
+            "en": "Think about what goes in (light, water, CO2) and what comes out.",
+            "fr": "Pensez à ce qui entre (lumière, eau, CO2) et ce qui en sort."
+          },
+          "correct_comment": null,
+          "explanation": {
+            "en": "Photosynthesis converts light energy, water, and carbon dioxide into glucose and oxygen.",
+            "fr": "La photosynthèse convertit l'énergie lumineuse, l'eau et le dioxyde de carbone en glucose et en oxygène."
+          }
+        }
+      },
+      {
+        "id": "q_004",
+        "text": {
+          "en": "Name one function of the cell membrane.",
+          "fr": "Nommez une fonction de la membrane cellulaire."
+        },
+        "media_refs": [],
+        "answer_type": "free_text",
+        "required": true,
+        "difficulty": "medium",
+        "tags": ["cells"],
+        "weight": 1,
+        "time_limit_seconds": null,
+
+        "answer_config": {
+          "correct_answer": null,
+          "alternatives": null,
+          "case_sensitive": false
+        },
+
+        "evaluation": {
+          "method": "ai",
+          "result_type": "boolean",
+          "ai_prompt_context": {
+            "en": "Does the response correctly identify at least one valid function of the cell membrane? Valid functions include: controlling what enters and exits the cell, providing structure, protecting the cell contents, cell signalling.",
+            "fr": "La réponse identifie-t-elle correctement au moins une fonction valide de la membrane cellulaire? Les fonctions valides incluent: contrôler ce qui entre et sort de la cellule, fournir une structure, protéger le contenu cellulaire, la signalisation cellulaire."
+          }
+        },
+
+        "feedback": {
+          "hint": {
+            "en": "Think about what the membrane does for the cell - what would happen without it?",
+            "fr": "Pensez à ce que la membrane fait pour la cellule - que se passerait-il sans elle?"
+          },
+          "correct_comment": {
+            "en": "That's right! The cell membrane is essential for controlling the cell's environment.",
+            "fr": "C'est correct! La membrane cellulaire est essentielle pour contrôler l'environnement de la cellule."
+          },
+          "explanation": null
+        }
+      }
+    ],
+
+    "sections": [
+      {
+        "id": "section_001",
+        "title": {
+          "en": "Section A: Cell Biology",
+          "fr": "Section A: Biologie Cellulaire"
+        },
+        "description": {
+          "en": "Questions about cell structure and function.",
+          "fr": "Questions sur la structure et la fonction des cellules."
+        },
+        "instructions": null,
+        "question_ids": ["q_001", "q_002", "q_004"],
+        "shuffle_questions": false,
+        "time_limit_seconds": null
+      },
+      {
+        "id": "section_002",
+        "title": {
+          "en": "Section B: Plant Biology",
+          "fr": "Section B: Biologie Végétale"
+        },
+        "description": null,
+        "instructions": null,
+        "question_ids": ["q_003"],
+        "shuffle_questions": false,
+        "time_limit_seconds": null
+      }
+    ]
+  }
+}

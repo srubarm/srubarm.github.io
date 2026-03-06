@@ -1,0 +1,119 @@
+{
+  "test_attempt": {
+    "id": "attempt_uuid",
+    "test_id": "uuid",
+    "test_version": 1,
+    "participant_id": "student_uuid",
+    "locale": "en",
+    "status": "completed | abandoned | timed_out | in_progress",
+
+    "device": {
+      "platform": "web | ios | android",
+      "screen_size": "string",
+      "user_agent": "string"
+    },
+
+    "active_settings": {
+      "shuffle_questions": false,
+      "shuffle_options": true,
+      "show_hints": true,
+      "time_limit_seconds": null
+    },
+
+    "timing": {
+      "started_at": "ISO8601",
+      "finished_at": "ISO8601",
+      "duration_seconds": 1234,
+      "idle_time_seconds": 200
+    },
+
+    "navigation_path": ["q_001", "q_002", "q_003", "q_001", "q_003"],
+
+    "question_responses": [
+      {
+        "question_id": "q_001",
+        "presented_order": 1,
+        "option_order_presented": ["opt_c", "opt_a", "opt_b"],
+        "final_answer": "opt_a",
+        "final_answer_at": "ISO8601",
+        "time_spent_seconds": 45,
+        "skipped": false,
+
+        "events": [
+          {
+            "type": "question_displayed",
+            "timestamp": "ISO8601"
+          },
+          {
+            "type": "media_interaction",
+            "timestamp": "ISO8601",
+            "detail": {
+              "media_ref": "media_001",
+              "action": "zoom | play | replay | pause | fullscreen"
+            }
+          },
+          {
+            "type": "translation_requested",
+            "timestamp": "ISO8601",
+            "detail": {
+              "element": "question_text | option | hint | correct_comment | explanation | section_title | section_description | section_instructions",
+              "element_id": null,
+              "from_locale": "en",
+              "to_locale": "fr"
+            }
+          },
+          {
+            "type": "answer_submitted",
+            "timestamp": "ISO8601",
+            "detail": {
+              "answer": "opt_b"
+            }
+          },
+          {
+            "type": "translation_requested",
+            "timestamp": "ISO8601",
+            "detail": {
+              "element": "option",
+              "element_id": "opt_a",
+              "from_locale": "en",
+              "to_locale": "fr"
+            }
+          },
+          {
+            "type": "answer_changed",
+            "timestamp": "ISO8601",
+            "detail": {
+              "previous_answer": "opt_b",
+              "new_answer": "opt_a"
+            }
+          },
+          {
+            "type": "hint_requested",
+            "timestamp": "ISO8601"
+          },
+          {
+            "type": "translation_requested",
+            "timestamp": "ISO8601",
+            "detail": {
+              "element": "hint",
+              "element_id": null,
+              "from_locale": "en",
+              "to_locale": "fr"
+            }
+          },
+          {
+            "type": "feedback_displayed",
+            "timestamp": "ISO8601",
+            "detail": {
+              "feedback_type": "correct_comment | explanation"
+            }
+          },
+          {
+            "type": "question_exited",
+            "timestamp": "ISO8601"
+          }
+        ]
+      }
+    ]
+  }
+}

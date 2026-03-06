@@ -2,7 +2,7 @@
 layout: null
 ---
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,16 +17,672 @@ layout: null
       background: #ffffff;
       color: #111;
     }
+    h1 { margin: 30px 0 0; }
     .app-title {
       font-size: 1.6rem;
       color: #055585;
       font-weight: 700;
-      margin-top: 30px;
+      margin: 8px 0 0;
     }
+    button {
+      font-size: 1.2rem;
+      padding: 8px 24px;
+      margin-left: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #1F96D3;
+      color: white;
+    }
+    .btn-block {
+      display: block;
+      margin: 15px auto;
+    }
+    .btn-secondary {
+      background: #888;
+      font-size: 0.9rem;
+      padding: 6px 14px;
+    }
+    .menu-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 25px 20px;
+      margin: 15px 0;
+      border: 1px solid #e5e5e5;
+    }
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .mode-card {
+      background: #e8f4fb;
+      border-radius: 16px;
+      padding: 20px 10px 15px;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.1s, box-shadow 0.1s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .mode-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .mode-card:active { transform: scale(0.97); }
+    .mode-label { font-size: 1rem; font-weight: 600; color: #055585; }
+    .mode-icon { font-size: 2rem; }
+    input[type="text"], input[type="password"] {
+      font-size: 1.2rem;
+      width: 200px;
+      text-align: center;
+      padding: 8px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      margin: 5px 0;
+    }
+    select {
+      font-size: 1rem;
+      padding: 6px 10px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      margin: 5px 3px;
+    }
+    .user-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      margin: 8px auto;
+      max-width: 350px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+      text-align: left;
+    }
+    .remove-btn {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      background: #e55;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 6px;
+    }
+    .back-arrow {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 1.6rem;
+      color: #1F96D3;
+      cursor: pointer;
+      z-index: 100;
+      display: none;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: #fff;
+      border-top: 1px solid #e5e5e5;
+      display: flex;
+      justify-content: center;
+      padding: 8px 0 12px;
+      z-index: 50;
+    }
+    .bottom-nav button {
+      font-size: 0.85rem;
+      padding: 6px 16px;
+      margin: 0 4px;
+      background: #fff;
+      color: #055585;
+      border: 1px solid #e5e5e5;
+      border-radius: 20px;
+    }
+    .test-info {
+      background: #f0f7f0;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      text-align: left;
+    }
+    .test-info h3 { margin: 0 0 8px; color: #055585; }
+    .test-info p { margin: 4px 0; font-size: 0.95rem; color: #333; }
+    .error-msg {
+      background: #ffeaea;
+      color: #c33;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 0.9rem;
+    }
+    .warning-msg {
+      background: #fff8e0;
+      color: #996600;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 0.9rem;
+    }
+    .api-status { font-size: 0.85rem; color: #1F96D3; margin-top: 4px; }
   </style>
 </head>
 <body>
+
+<div class="back-arrow" id="back-arrow" onclick="goBack()">&lsaquo;</div>
+
+<!-- MENU SCREEN -->
+<div id="menu">
   <div class="app-title">Testy</div>
-  <p>Hello World! Page is working.</p>
+
+  <div class="menu-card" id="menu-user-area"></div>
+
+  <div class="menu-card">
+    <div class="mode-grid">
+      <button class="mode-card" onclick="loadTestFile()">
+        <span class="mode-icon">📄</span>
+        <span class="mode-label">Load Test</span>
+      </button>
+      <button class="mode-card" onclick="showSettings()">
+        <span class="mode-icon">⚙️</span>
+        <span class="mode-label">Settings</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="test-info-area"></div>
+</div>
+
+<!-- USER MANAGEMENT SCREEN -->
+<div id="user-management" style="display:none">
+  <div class="app-title">Users</div>
+  <div style="margin-top:20px;">
+    <input type="text" id="new-user-name" placeholder="Name">
+    <br>
+    <label style="font-size:0.9rem; color:#888;">Birth month/year (optional):</label><br>
+    <select id="new-user-month">
+      <option value="">Month</option>
+      <option value="1">January</option><option value="2">February</option>
+      <option value="3">March</option><option value="4">April</option>
+      <option value="5">May</option><option value="6">June</option>
+      <option value="7">July</option><option value="8">August</option>
+      <option value="9">September</option><option value="10">October</option>
+      <option value="11">November</option><option value="12">December</option>
+    </select>
+    <select id="new-user-year"></select>
+    <br>
+    <button class="btn-block" onclick="addUser()">Add User</button>
+  </div>
+  <div id="user-list"></div>
+</div>
+
+<!-- SETTINGS SCREEN -->
+<div id="settings" style="display:none">
+  <div class="app-title">Settings</div>
+  <div style="margin-top:20px; text-align:left; max-width:350px; margin-left:auto; margin-right:auto;">
+    <label style="font-size:0.9rem; color:#888;">Google AI API Key:</label><br>
+    <input type="password" id="api-key-input" placeholder="Enter API key" style="width:100%; box-sizing:border-box;">
+    <br>
+    <label style="font-size:0.9rem; color:#888;">AI Model:</label><br>
+    <input type="text" id="ai-model-input" placeholder="gemini-flash-latest" style="width:100%; box-sizing:border-box;">
+    <br>
+    <button onclick="saveAISettings()" style="margin-top:10px; margin-left:0;">Save</button>
+    <div id="api-key-status" class="api-status"></div>
+    <div class="warning-msg" style="margin-top:15px;">
+      Note: The API key is stored locally in your browser and is not encrypted.
+    </div>
+  </div>
+
+  <div style="margin-top:30px; border-top:1px solid #ddd; padding-top:20px; text-align:left; max-width:350px; margin-left:auto; margin-right:auto;">
+    <p style="font-weight:600; color:#055585;">Data Management</p>
+    <button class="btn-block" onclick="exportData()">Export Data</button>
+    <button class="btn-block" onclick="document.getElementById('import-file').click()">Import Data</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+</div>
+
+<!-- TEST READY SCREEN (shown after loading a valid test) -->
+<div id="test-ready" style="display:none">
+  <div class="app-title" id="test-ready-title"></div>
+  <div id="test-ready-info" class="test-info"></div>
+  <button onclick="startTest()" style="font-size:1.3rem; padding:12px 40px; margin-top:15px;">Start Test</button>
+</div>
+
+<!-- Hidden file inputs -->
+<input type="file" id="test-file-input" accept=".json" style="display:none" onchange="handleTestFile(event)">
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottom-nav">
+  <button onclick="showMenu()">Home</button>
+  <button onclick="showUserManagement()">Users</button>
+  <button onclick="showSettings()">Settings</button>
+</div>
+
+<script>
+// ── Storage ──────────────────────────────────────────────────────────────────
+var STORAGE_KEY = 'testy_app_data';
+var DEFAULT_DATA = { version: 1, users: [], settings: { ApiKey: '', AiModel: '', apiKeyValid: '', lastSelectedUser: '' } };
+
+function getAppData() {
+  try {
+    var data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (data && data.version) return data;
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+}
+
+function saveAppData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function getSetting(key) {
+  return getAppData().settings[key] || '';
+}
+
+function setSetting(key, value) {
+  var data = getAppData();
+  if (!data.settings) data.settings = {};
+  data.settings[key] = value;
+  saveAppData(data);
+}
+
+function getUsers() {
+  return getAppData().users;
+}
+
+function saveUsers(users) {
+  var data = getAppData();
+  data.users = users;
+  saveAppData(data);
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+var backTarget = null;
+var currentTest = null;
+
+var ALL_SCREENS = ['menu', 'user-management', 'settings', 'test-ready'];
+
+function hideAll() {
+  ALL_SCREENS.forEach(function(id) {
+    document.getElementById(id).style.display = 'none';
+  });
+  setBackArrow(null);
+  var nav = document.getElementById('bottom-nav');
+  if (nav) nav.style.display = 'none';
+}
+
+function setBackArrow(fn) {
+  var arrow = document.getElementById('back-arrow');
+  if (fn) {
+    backTarget = fn;
+    arrow.style.display = '';
+  } else {
+    backTarget = null;
+    arrow.style.display = 'none';
+  }
+}
+
+function goBack() {
+  if (backTarget) backTarget();
+}
+
+function showMenu() {
+  hideAll();
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('bottom-nav').style.display = 'flex';
+  renderMenuUserArea();
+  renderTestInfo();
+}
+
+function showUserManagement() {
+  hideAll();
+  document.getElementById('user-management').style.display = 'block';
+  setBackArrow(showMenu);
+  renderUserList();
+  populateYearSelect('new-user-year');
+}
+
+function showSettings() {
+  hideAll();
+  document.getElementById('settings').style.display = 'block';
+  setBackArrow(showMenu);
+  document.getElementById('api-key-input').value = getSetting('ApiKey');
+  document.getElementById('ai-model-input').value = getSetting('AiModel') || '';
+  document.getElementById('api-key-status').textContent = '';
+}
+
+function showTestReady() {
+  hideAll();
+  document.getElementById('test-ready').style.display = 'block';
+  setBackArrow(showMenu);
+
+  var t = currentTest.test;
+  var locale = t.default_locale || 'en';
+
+  document.getElementById('test-ready-title').textContent = locStr(t.title, locale);
+
+  var info = '';
+  if (t.description) {
+    info += '<p>' + escHtml(locStr(t.description, locale)) + '</p>';
+  }
+  if (t.instructions) {
+    info += '<p><b>Instructions:</b> ' + escHtml(locStr(t.instructions, locale)) + '</p>';
+  }
+  var qCount = t.questions ? t.questions.length : 0;
+  info += '<p>' + qCount + ' question' + (qCount !== 1 ? 's' : '') + '</p>';
+  if (t.sections && t.sections.length > 0) {
+    info += '<p>' + t.sections.length + ' section' + (t.sections.length !== 1 ? 's' : '') + '</p>';
+  }
+
+  document.getElementById('test-ready-info').innerHTML = info;
+}
+
+// ── User Management ──────────────────────────────────────────────────────────
+function renderMenuUserArea() {
+  var area = document.getElementById('menu-user-area');
+  var users = getUsers();
+
+  if (users.length === 0) {
+    area.innerHTML =
+      '<p style="color:#888; font-size:0.95rem;">No users yet. Add one to get started.</p>' +
+      '<button class="btn-secondary" onclick="showUserManagement()">Add User</button>';
+    return;
+  }
+
+  var lastUser = getSetting('lastSelectedUser') || '';
+  var html = '<label style="font-size:0.9rem; color:#888;">Student:</label><br>' +
+    '<select id="menu-user-select" onchange="menuUserChanged()" style="font-size:1.1rem; padding:8px 12px; min-width:200px;">';
+  users.forEach(function(u) {
+    var sel = (u.name === lastUser) ? ' selected' : '';
+    html += '<option value="' + escHtml(u.name) + '"' + sel + '>' + escHtml(u.name) + '</option>';
+  });
+  html += '</select>';
+  area.innerHTML = html;
+}
+
+function menuUserChanged() {
+  var sel = document.getElementById('menu-user-select');
+  if (sel) setSetting('lastSelectedUser', sel.value);
+}
+
+function getSelectedUser() {
+  var sel = document.getElementById('menu-user-select');
+  return sel ? sel.value : '';
+}
+
+function populateYearSelect(id) {
+  var sel = document.getElementById(id);
+  if (!sel) return;
+  var currentYear = new Date().getFullYear();
+  sel.innerHTML = '<option value="">Year</option>';
+  for (var y = currentYear; y >= currentYear - 20; y--) {
+    sel.innerHTML += '<option value="' + y + '">' + y + '</option>';
+  }
+}
+
+function addUser() {
+  var name = document.getElementById('new-user-name').value.trim();
+  if (!name) { alert('Please enter a name.'); return; }
+
+  var users = getUsers();
+  var existing = users.find(function(u) { return u.name.toLowerCase() === name.toLowerCase(); });
+  if (existing) { alert('A user with this name already exists.'); return; }
+
+  var month = document.getElementById('new-user-month').value;
+  var year = document.getElementById('new-user-year').value;
+
+  users.push({ id: name, name: name, dateCreated: new Date().toISOString(), birthMonth: month, birthYear: year });
+  users.sort(function(a, b) { return a.name.localeCompare(b.name); });
+  saveUsers(users);
+
+  document.getElementById('new-user-name').value = '';
+  document.getElementById('new-user-month').value = '';
+  document.getElementById('new-user-year').value = '';
+
+  renderUserList();
+}
+
+function removeUser(name) {
+  if (!confirm('Remove user "' + name + '"?')) return;
+  var users = getUsers().filter(function(u) { return u.name !== name; });
+  saveUsers(users);
+  if (getSetting('lastSelectedUser') === name) setSetting('lastSelectedUser', '');
+  renderUserList();
+}
+
+function renderUserList() {
+  var container = document.getElementById('user-list');
+  var users = getUsers();
+  if (users.length === 0) {
+    container.innerHTML = '<p style="color:#888;">No users yet.</p>';
+    return;
+  }
+  var html = '';
+  users.forEach(function(u) {
+    html += '<div class="user-card">' +
+      '<span>' + escHtml(u.name) + '</span>' +
+      '<button class="remove-btn" onclick="removeUser(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">Remove</button>' +
+      '</div>';
+  });
+  container.innerHTML = html;
+}
+
+// ── Settings / API Key ───────────────────────────────────────────────────────
+function getAiModel() {
+  return getSetting('AiModel') || 'gemini-2.0-flash';
+}
+
+function isAIEnabled() {
+  return !!(getSetting('ApiKey') && getSetting('apiKeyValid'));
+}
+
+function saveAISettings() {
+  var key = document.getElementById('api-key-input').value.trim();
+  var model = document.getElementById('ai-model-input').value.trim();
+  var statusEl = document.getElementById('api-key-status');
+
+  setSetting('ApiKey', key);
+  setSetting('AiModel', model);
+
+  if (!key) {
+    setSetting('apiKeyValid', '');
+    statusEl.textContent = 'Saved (no key set).';
+    statusEl.style.color = '#888';
+    return;
+  }
+
+  statusEl.textContent = 'Validating...';
+  statusEl.style.color = '#1F96D3';
+
+  var aiModel = model || 'gemini-2.0-flash';
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+    body: JSON.stringify({ contents: [{ parts: [{ text: 'Say "ok"' }] }] })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data && data.candidates) {
+      setSetting('apiKeyValid', '1');
+      statusEl.innerHTML = '&#10003; Key is valid.';
+      statusEl.style.color = '#055585';
+    } else {
+      setSetting('apiKeyValid', '');
+      statusEl.textContent = 'Key validation failed: ' + (data.error ? data.error.message : 'Unknown error');
+      statusEl.style.color = '#e55';
+    }
+  }).catch(function(err) {
+    setSetting('apiKeyValid', '');
+    statusEl.textContent = 'Connection error: ' + err.message;
+    statusEl.style.color = '#e55';
+  });
+}
+
+// ── Data Export / Import ─────────────────────────────────────────────────────
+function exportData() {
+  var data = getAppData();
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'testy-data-' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importData(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (!data.version) { alert('Invalid data file.'); return; }
+      saveAppData(data);
+      alert('Data imported successfully.');
+      showSettings();
+    } catch(err) {
+      alert('Error reading file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ── Test Loading ─────────────────────────────────────────────────────────────
+var FILE_SIZE_WARN = 50 * 1024 * 1024; // 50MB
+
+function loadTestFile() {
+  document.getElementById('test-file-input').click();
+}
+
+function handleTestFile(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  event.target.value = '';
+
+  if (file.size > FILE_SIZE_WARN) {
+    if (!confirm('This file is ' + (file.size / (1024 * 1024)).toFixed(1) + ' MB, which exceeds the recommended 50 MB limit. Loading may be slow. Continue?')) return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      var errors = validateTestDefinition(data);
+      if (errors.length > 0) {
+        showTestLoadError(errors);
+        return;
+      }
+      currentTest = data;
+      showTestReady();
+    } catch(err) {
+      showTestLoadError(['Invalid JSON: ' + err.message]);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function validateTestDefinition(data) {
+  var errors = [];
+
+  // Must have a top-level "test" wrapper or be the test object itself
+  var t = data.test || data;
+  if (!t.id) errors.push('Missing required field: id');
+  if (!t.title) errors.push('Missing required field: title');
+  if (!t.questions || !Array.isArray(t.questions) || t.questions.length === 0) {
+    errors.push('Missing or empty required field: questions');
+  }
+
+  // Normalise: ensure we store with the wrapper
+  if (!data.test) data.test = t;
+
+  if (errors.length > 0) return errors;
+
+  // Validate media refs
+  var mediaIds = {};
+  if (t.media && Array.isArray(t.media)) {
+    t.media.forEach(function(m) { mediaIds[m.id] = true; });
+  }
+  t.questions.forEach(function(q, i) {
+    if (q.media_refs && Array.isArray(q.media_refs)) {
+      q.media_refs.forEach(function(ref) {
+        if (!mediaIds[ref]) {
+          errors.push('Question ' + (q.id || i) + ' references unknown media: ' + ref);
+        }
+      });
+    }
+    // Also check option media_refs
+    if (q.answer_config && q.answer_config.options) {
+      q.answer_config.options.forEach(function(opt) {
+        if (opt.media_ref && !mediaIds[opt.media_ref]) {
+          errors.push('Option ' + (opt.id || '?') + ' in question ' + (q.id || i) + ' references unknown media: ' + opt.media_ref);
+        }
+      });
+    }
+  });
+
+  // Validate section question_ids
+  if (t.sections && Array.isArray(t.sections)) {
+    var questionIds = {};
+    t.questions.forEach(function(q) { questionIds[q.id] = true; });
+    t.sections.forEach(function(s) {
+      if (s.question_ids) {
+        s.question_ids.forEach(function(qid) {
+          if (!questionIds[qid]) {
+            errors.push('Section ' + (s.id || '?') + ' references unknown question: ' + qid);
+          }
+        });
+      }
+    });
+  }
+
+  return errors;
+}
+
+function showTestLoadError(errors) {
+  var area = document.getElementById('test-info-area');
+  area.innerHTML = '<div class="error-msg"><b>Failed to load test:</b><br>' +
+    errors.map(escHtml).join('<br>') + '</div>';
+}
+
+function renderTestInfo() {
+  var area = document.getElementById('test-info-area');
+  if (!currentTest) {
+    area.innerHTML = '';
+    return;
+  }
+  var t = currentTest.test;
+  var locale = t.default_locale || 'en';
+  var html = '<div class="test-info">' +
+    '<h3>' + escHtml(locStr(t.title, locale)) + '</h3>';
+  if (t.description) {
+    html += '<p>' + escHtml(locStr(t.description, locale)) + '</p>';
+  }
+  var qCount = t.questions ? t.questions.length : 0;
+  html += '<p>' + qCount + ' question' + (qCount !== 1 ? 's' : '') + '</p>';
+  html += '<button onclick="showTestReady()" style="margin-top:10px; margin-left:0;">Continue to Test</button>';
+  html += '</div>';
+  area.innerHTML = html;
+}
+
+function startTest() {
+  // Placeholder — will be implemented in Milestone 2
+  alert('Test would start here! (Coming in Milestone 2)');
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function locStr(obj, locale) {
+  if (!obj) return '';
+  if (typeof obj === 'string') return obj;
+  return obj[locale] || obj['en'] || obj[Object.keys(obj)[0]] || '';
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+showMenu();
+</script>
 </body>
 </html>
