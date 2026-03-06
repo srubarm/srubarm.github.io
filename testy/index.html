@@ -380,6 +380,31 @@ layout: null
     @keyframes spin { to { transform: rotate(360deg); } }
     .grading-overlay p { margin-top: 15px; color: #555; font-size: 1rem; }
 
+    /* Translate button */
+    .btn-translate {
+      display: inline-block;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      background: #e8f4fb;
+      color: #055585;
+      border: 1px solid #1F96D3;
+      border-radius: 14px;
+      cursor: pointer;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .btn-translate:hover { background: #d0ecf8; }
+    .btn-translate:disabled { opacity: 0.5; cursor: default; }
+    .translated-text {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f0f8ff;
+      border-left: 3px solid #1F96D3;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
     /* History */
     .history-item {
       display: flex;
@@ -416,11 +441,11 @@ layout: null
     <div class="mode-grid">
       <button class="mode-card" onclick="loadTestFile()">
         <span class="mode-icon">📄</span>
-        <span class="mode-label">Load Test</span>
+        <span class="mode-label" id="menu-load-test">Load Test</span>
       </button>
       <button class="mode-card" onclick="showSettings()">
         <span class="mode-icon">⚙️</span>
-        <span class="mode-label">Settings</span>
+        <span class="mode-label" id="menu-settings">Settings</span>
       </button>
     </div>
   </div>
@@ -430,48 +455,46 @@ layout: null
 
 <!-- USER MANAGEMENT SCREEN -->
 <div id="user-management" style="display:none">
-  <div class="app-title">Users</div>
+  <div class="app-title" id="user-mgmt-title">Users</div>
   <div style="margin-top:20px;">
     <input type="text" id="new-user-name" placeholder="Name">
     <br>
-    <label style="font-size:0.9rem; color:#888;">Birth month/year (optional):</label><br>
-    <select id="new-user-month">
-      <option value="">Month</option>
-      <option value="1">January</option><option value="2">February</option>
-      <option value="3">March</option><option value="4">April</option>
-      <option value="5">May</option><option value="6">June</option>
-      <option value="7">July</option><option value="8">August</option>
-      <option value="9">September</option><option value="10">October</option>
-      <option value="11">November</option><option value="12">December</option>
-    </select>
+    <label id="birth-label" style="font-size:0.9rem; color:#888;">Birth month/year (optional):</label><br>
+    <select id="new-user-month"></select>
     <select id="new-user-year"></select>
     <br>
-    <button class="btn-block" onclick="addUser()">Add User</button>
+    <button class="btn-block" id="btn-add-user" onclick="addUser()">Add User</button>
   </div>
   <div id="user-list"></div>
 </div>
 
 <!-- SETTINGS SCREEN -->
 <div id="settings" style="display:none">
-  <div class="app-title">Settings</div>
+  <div class="app-title" id="settings-title">Settings</div>
   <div style="margin-top:20px; text-align:left; max-width:350px; margin-left:auto; margin-right:auto;">
-    <label style="font-size:0.9rem; color:#888;">Google AI API Key:</label><br>
+    <label id="lang-label" style="font-size:0.9rem; color:#888;">Language:</label><br>
+    <select id="ui-lang-select" onchange="changeUILanguage()" style="font-size:1.1rem; padding:8px 12px; min-width:200px;">
+      <option value="en">English</option>
+      <option value="cs">Čeština</option>
+    </select>
+    <br><br>
+    <label id="api-key-label" style="font-size:0.9rem; color:#888;">Google AI API Key:</label><br>
     <input type="password" id="api-key-input" placeholder="Enter API key" style="width:100%; box-sizing:border-box;">
     <br>
-    <label style="font-size:0.9rem; color:#888;">AI Model:</label><br>
+    <label id="ai-model-label" style="font-size:0.9rem; color:#888;">AI Model:</label><br>
     <input type="text" id="ai-model-input" placeholder="gemini-flash-latest" style="width:100%; box-sizing:border-box;">
     <br>
-    <button onclick="saveAISettings()" style="margin-top:10px; margin-left:0;">Save</button>
+    <button id="btn-save-settings" onclick="saveAISettings()" style="margin-top:10px; margin-left:0;">Save</button>
     <div id="api-key-status" class="api-status"></div>
-    <div class="warning-msg" style="margin-top:15px;">
+    <div class="warning-msg" style="margin-top:15px;" id="api-key-note">
       Note: The API key is stored locally in your browser and is not encrypted.
     </div>
   </div>
 
   <div style="margin-top:30px; border-top:1px solid #ddd; padding-top:20px; text-align:left; max-width:350px; margin-left:auto; margin-right:auto;">
-    <p style="font-weight:600; color:#055585;">Data Management</p>
-    <button class="btn-block" onclick="exportData()">Export Data</button>
-    <button class="btn-block" onclick="document.getElementById('import-file').click()">Import Data</button>
+    <p style="font-weight:600; color:#055585;" id="data-mgmt-label">Data Management</p>
+    <button class="btn-block" id="btn-export" onclick="exportData()">Export Data</button>
+    <button class="btn-block" id="btn-import" onclick="document.getElementById('import-file').click()">Import Data</button>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
   </div>
 </div>
@@ -480,7 +503,7 @@ layout: null
 <div id="test-ready" style="display:none">
   <div class="app-title" id="test-ready-title"></div>
   <div id="test-ready-info" class="test-info"></div>
-  <button onclick="startTest()" style="font-size:1.3rem; padding:12px 40px; margin-top:15px;">Start Test</button>
+  <button id="btn-start-test" onclick="startTest()" style="font-size:1.3rem; padding:12px 40px; margin-top:15px;">Start Test</button>
 </div>
 
 <!-- TEST-TAKING SCREEN -->
@@ -502,12 +525,12 @@ layout: null
   <div class="app-title" id="results-title">Results</div>
   <div id="score-area"></div>
   <div id="results-detail"></div>
-  <button onclick="showMenu()" style="margin-top:20px; margin-left:0;">Back to Menu</button>
+  <button id="btn-back-to-menu" onclick="showMenu()" style="margin-top:20px; margin-left:0;">Back to Menu</button>
 </div>
 
 <!-- HISTORY SCREEN -->
 <div id="history-screen" style="display:none">
-  <div class="app-title">Test History</div>
+  <div class="app-title" id="history-title">Test History</div>
   <div id="history-list" style="margin-top:15px;"></div>
 </div>
 
@@ -522,16 +545,186 @@ layout: null
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav" id="bottom-nav">
-  <button onclick="showMenu()">Home</button>
-  <button onclick="showHistory()">History</button>
-  <button onclick="showUserManagement()">Users</button>
-  <button onclick="showSettings()">Settings</button>
+  <button id="nav-home" onclick="showMenu()">Home</button>
+  <button id="nav-history" onclick="showHistory()">History</button>
+  <button id="nav-users" onclick="showUserManagement()">Users</button>
+  <button id="nav-settings" onclick="showSettings()">Settings</button>
 </div>
 
 <script>
+// ── i18n ─────────────────────────────────────────────────────────────────────
+var UI_STRINGS = {
+  en: {
+    appTitle: 'Testy',
+    users: 'Users',
+    settings: 'Settings',
+    home: 'Home',
+    history: 'History',
+    loadTest: 'Load Test',
+    startTest: 'Start Test',
+    results: 'Results',
+    score: 'Score',
+    correct: 'correct',
+    incorrect: 'incorrect',
+    skipped: 'Skipped',
+    pendingReview: 'pending review',
+    backToMenu: 'Back to Menu',
+    testHistory: 'Test History',
+    noUsersYet: 'No users yet. Add one to get started.',
+    addUser: 'Add User',
+    student: 'Student',
+    name: 'Name',
+    birthMonthYear: 'Birth month/year (optional):',
+    language: 'Language:',
+    month: 'Month',
+    year: 'Year',
+    remove: 'Remove',
+    removeUserConfirm: 'Remove user',
+    save: 'Save',
+    apiKey: 'Google AI API Key:',
+    aiModel: 'AI Model:',
+    dataManagement: 'Data Management',
+    exportData: 'Export Data',
+    importData: 'Import Data',
+    apiKeyNote: 'Note: The API key is stored locally in your browser and is not encrypted.',
+    questions: 'questions',
+    question: 'question',
+    sections: 'sections',
+    section: 'section',
+    timeLimit: 'Time limit',
+    noSkipping: 'Skipping questions is not allowed',
+    hintsEnabled: 'Hints are enabled',
+    aiNoteNoKey: 'This test has AI-graded questions but no API key is configured. Those questions will show as "pending review".',
+    note: 'Note:',
+    questionOf: 'Question {0} of {1}',
+    next: 'Next',
+    back: 'Back',
+    skip: 'Skip',
+    finish: 'Finish',
+    submitTest: 'Submit your test?',
+    unansweredWarning: '{0} question(s) unanswered. Submit anyway?',
+    quitTestConfirm: 'Are you sure you want to quit the test? Your answers will be lost.',
+    loadDifferentTest: 'A test is already loaded. Load a different test?',
+    grading: 'Grading...',
+    gradingAI: 'Grading with AI...',
+    yourAnswer: 'Your answer',
+    correctAnswer: 'Correct answer',
+    explanation: 'Explanation:',
+    enterNumber: 'Enter number',
+    typeAnswer: 'Type your answer...',
+    noHistory: 'No test history yet.',
+    showingResultsFor: 'Showing results for',
+    translate: 'Translate',
+    translating: 'Translating...',
+    savedNoKey: 'Saved (no key set).',
+    validating: 'Validating...',
+    keyValid: 'Key is valid.',
+    continueToTest: 'Continue to Test',
+    instructions: 'Instructions:',
+    invalidDataFile: 'Invalid data file.',
+    dataImported: 'Data imported successfully.',
+    enterName: 'Please enter a name.',
+    userExists: 'A user with this name already exists.',
+    january: 'January', february: 'February', march: 'March', april: 'April',
+    may: 'May', june: 'June', july: 'July', august: 'August',
+    september: 'September', october: 'October', november: 'November', december: 'December'
+  },
+  cs: {
+    appTitle: 'Testy',
+    users: 'Uživatelé',
+    settings: 'Nastavení',
+    home: 'Domů',
+    history: 'Historie',
+    loadTest: 'Načíst test',
+    startTest: 'Spustit test',
+    results: 'Výsledky',
+    score: 'Skóre',
+    correct: 'správně',
+    incorrect: 'špatně',
+    skipped: 'Přeskočeno',
+    pendingReview: 'čeká na kontrolu',
+    backToMenu: 'Zpět do menu',
+    testHistory: 'Historie testů',
+    noUsersYet: 'Zatím žádní uživatelé. Přidejte prvního.',
+    addUser: 'Přidat uživatele',
+    student: 'Student',
+    name: 'Jméno',
+    birthMonthYear: 'Měsíc/rok narození (volitelné):',
+    language: 'Jazyk:',
+    month: 'Měsíc',
+    year: 'Rok',
+    remove: 'Odebrat',
+    removeUserConfirm: 'Odebrat uživatele',
+    save: 'Uložit',
+    apiKey: 'Google AI API klíč:',
+    aiModel: 'AI Model:',
+    dataManagement: 'Správa dat',
+    exportData: 'Exportovat data',
+    importData: 'Importovat data',
+    apiKeyNote: 'Poznámka: API klíč je uložen lokálně v prohlížeči a není šifrován.',
+    questions: 'otázek',
+    question: 'otázka',
+    sections: 'sekcí',
+    section: 'sekce',
+    timeLimit: 'Časový limit',
+    noSkipping: 'Přeskakování otázek není povoleno',
+    hintsEnabled: 'Nápovědy jsou zapnuty',
+    aiNoteNoKey: 'Tento test obsahuje otázky hodnocené AI, ale API klíč není nastaven. Tyto otázky se zobrazí jako „čeká na kontrolu".',
+    note: 'Poznámka:',
+    questionOf: 'Otázka {0} z {1}',
+    next: 'Další',
+    back: 'Zpět',
+    skip: 'Přeskočit',
+    finish: 'Dokončit',
+    submitTest: 'Odevzdat test?',
+    unansweredWarning: '{0} otázek nezodpovězeno. Odevzdat přesto?',
+    quitTestConfirm: 'Opravdu chcete ukončit test? Vaše odpovědi budou ztraceny.',
+    loadDifferentTest: 'Test je již načten. Načíst jiný test?',
+    grading: 'Hodnocení...',
+    gradingAI: 'Hodnocení pomocí AI...',
+    yourAnswer: 'Vaše odpověď',
+    correctAnswer: 'Správná odpověď',
+    explanation: 'Vysvětlení:',
+    enterNumber: 'Zadejte číslo',
+    typeAnswer: 'Napište odpověď...',
+    noHistory: 'Zatím žádná historie testů.',
+    showingResultsFor: 'Výsledky pro',
+    translate: 'Přeložit',
+    translating: 'Překládám...',
+    savedNoKey: 'Uloženo (klíč není nastaven).',
+    validating: 'Ověřování...',
+    keyValid: 'Klíč je platný.',
+    continueToTest: 'Pokračovat k testu',
+    instructions: 'Pokyny:',
+    invalidDataFile: 'Neplatný datový soubor.',
+    dataImported: 'Data úspěšně importována.',
+    enterName: 'Zadejte prosím jméno.',
+    userExists: 'Uživatel s tímto jménem již existuje.',
+    january: 'Leden', february: 'Únor', march: 'Březen', april: 'Duben',
+    may: 'Květen', june: 'Červen', july: 'Červenec', august: 'Srpen',
+    september: 'Září', october: 'Říjen', november: 'Listopad', december: 'Prosinec'
+  }
+};
+
+function getUILang() {
+  return getSetting('uiLanguage') || 'en';
+}
+
+function tr(key) {
+  var lang = getUILang();
+  var strings = UI_STRINGS[lang] || UI_STRINGS['en'];
+  return strings[key] || UI_STRINGS['en'][key] || key;
+}
+
+function trFmt(key) {
+  var str = tr(key);
+  var args = Array.prototype.slice.call(arguments, 1);
+  return str.replace(/\{(\d+)\}/g, function(m, i) { return args[parseInt(i)] !== undefined ? args[parseInt(i)] : m; });
+}
+
 // ── Storage ──────────────────────────────────────────────────────────────────
 var STORAGE_KEY = 'testy_app_data';
-var DEFAULT_DATA = { version: 1, users: [], settings: { ApiKey: '', AiModel: '', apiKeyValid: '', lastSelectedUser: '' } };
+var DEFAULT_DATA = { version: 1, users: [], settings: { ApiKey: '', AiModel: '', apiKeyValid: '', lastSelectedUser: '', uiLanguage: 'en' } };
 
 function getAppData() {
   try {
@@ -564,6 +757,53 @@ function saveUsers(users) {
   var data = getAppData();
   data.users = users;
   saveAppData(data);
+}
+
+// ── UI Language ──────────────────────────────────────────────────────────────
+function changeUILanguage() {
+  var sel = document.getElementById('ui-lang-select');
+  if (sel) setSetting('uiLanguage', sel.value);
+  updateUIStrings();
+}
+
+function updateUIStrings() {
+  // Bottom nav
+  var el;
+  el = document.getElementById('nav-home'); if (el) el.textContent = tr('home');
+  el = document.getElementById('nav-history'); if (el) el.textContent = tr('history');
+  el = document.getElementById('nav-users'); if (el) el.textContent = tr('users');
+  el = document.getElementById('nav-settings'); if (el) el.textContent = tr('settings');
+
+  // Menu cards
+  el = document.getElementById('menu-load-test'); if (el) el.textContent = tr('loadTest');
+  el = document.getElementById('menu-settings'); if (el) el.textContent = tr('settings');
+
+  // Settings screen
+  el = document.getElementById('settings-title'); if (el) el.textContent = tr('settings');
+  el = document.getElementById('lang-label'); if (el) el.textContent = tr('language');
+  el = document.getElementById('api-key-label'); if (el) el.textContent = tr('apiKey');
+  el = document.getElementById('ai-model-label'); if (el) el.textContent = tr('aiModel');
+  el = document.getElementById('btn-save-settings'); if (el) el.textContent = tr('save');
+  el = document.getElementById('api-key-note'); if (el) el.textContent = tr('apiKeyNote');
+  el = document.getElementById('data-mgmt-label'); if (el) el.textContent = tr('dataManagement');
+  el = document.getElementById('btn-export'); if (el) el.textContent = tr('exportData');
+  el = document.getElementById('btn-import'); if (el) el.textContent = tr('importData');
+
+  // User management screen
+  el = document.getElementById('user-mgmt-title'); if (el) el.textContent = tr('users');
+  el = document.getElementById('new-user-name'); if (el) el.placeholder = tr('name');
+  el = document.getElementById('birth-label'); if (el) el.textContent = tr('birthMonthYear');
+  el = document.getElementById('btn-add-user'); if (el) el.textContent = tr('addUser');
+
+  // Test ready
+  el = document.getElementById('btn-start-test'); if (el) el.textContent = tr('startTest');
+
+  // Results
+  el = document.getElementById('btn-back-to-menu'); if (el) el.textContent = tr('backToMenu');
+
+  // Test screen nav
+  el = document.getElementById('btn-prev'); if (el) el.textContent = tr('back');
+  el = document.getElementById('btn-skip'); if (el) el.textContent = tr('skip');
 }
 
 // ── Navigation ───────────────────────────────────────────────────────────────
@@ -602,6 +842,7 @@ function showMenu() {
   document.getElementById('bottom-nav').style.display = 'flex';
   renderMenuUserArea();
   renderTestInfo();
+  updateUIStrings();
 }
 
 function showUserManagement() {
@@ -609,7 +850,9 @@ function showUserManagement() {
   document.getElementById('user-management').style.display = 'block';
   setBackArrow(showMenu);
   renderUserList();
+  populateMonthSelect('new-user-month');
   populateYearSelect('new-user-year');
+  updateUIStrings();
 }
 
 function showSettings() {
@@ -619,6 +862,8 @@ function showSettings() {
   document.getElementById('api-key-input').value = getSetting('ApiKey');
   document.getElementById('ai-model-input').value = getSetting('AiModel') || '';
   document.getElementById('api-key-status').textContent = '';
+  document.getElementById('ui-lang-select').value = getUILang();
+  updateUIStrings();
 }
 
 function showTestReady() {
@@ -636,12 +881,25 @@ function showTestReady() {
     info += '<p>' + escHtml(locStr(t.description, locale)) + '</p>';
   }
   if (t.instructions) {
-    info += '<p><b>Instructions:</b> ' + escHtml(locStr(t.instructions, locale)) + '</p>';
+    info += '<p><b>' + escHtml(tr('instructions')) + '</b> ' + escHtml(locStr(t.instructions, locale)) + '</p>';
   }
   var qCount = t.questions ? t.questions.length : 0;
-  info += '<p>' + qCount + ' question' + (qCount !== 1 ? 's' : '') + '</p>';
+  info += '<p>' + qCount + ' ' + (qCount !== 1 ? tr('questions') : tr('question')) + '</p>';
   if (t.sections && t.sections.length > 0) {
-    info += '<p>' + t.sections.length + ' section' + (t.sections.length !== 1 ? 's' : '') + '</p>';
+    info += '<p>' + t.sections.length + ' ' + (t.sections.length !== 1 ? tr('sections') : tr('section')) + '</p>';
+  }
+  var s = t.settings || {};
+  if (s.default_time_limit_seconds) {
+    var mins = Math.floor(s.default_time_limit_seconds / 60);
+    var secs = s.default_time_limit_seconds % 60;
+    info += '<p>' + tr('timeLimit') + ': ' + mins + ':' + (secs < 10 ? '0' : '') + secs + '</p>';
+  }
+  if (s.allow_skip === false) info += '<p>' + escHtml(tr('noSkipping')) + '</p>';
+  if (s.show_hints) info += '<p>' + escHtml(tr('hintsEnabled')) + '</p>';
+  // Check if AI grading is needed but not configured
+  var needsAI = t.questions.some(function(q) { return q.evaluation && q.evaluation.method === 'ai'; });
+  if (needsAI && !isAIEnabled()) {
+    info += '<p style="color:#e8a020;"><b>' + escHtml(tr('note')) + '</b> ' + escHtml(tr('aiNoteNoKey')) + '</p>';
   }
 
   document.getElementById('test-ready-info').innerHTML = info;
@@ -654,13 +912,13 @@ function renderMenuUserArea() {
 
   if (users.length === 0) {
     area.innerHTML =
-      '<p style="color:#888; font-size:0.95rem;">No users yet. Add one to get started.</p>' +
-      '<button class="btn-secondary" onclick="showUserManagement()">Add User</button>';
+      '<p style="color:#888; font-size:0.95rem;">' + escHtml(tr('noUsersYet')) + '</p>' +
+      '<button class="btn-secondary" onclick="showUserManagement()">' + escHtml(tr('addUser')) + '</button>';
     return;
   }
 
   var lastUser = getSetting('lastSelectedUser') || '';
-  var html = '<label style="font-size:0.9rem; color:#888;">Student:</label><br>' +
+  var html = '<label style="font-size:0.9rem; color:#888;">' + escHtml(tr('student')) + ':</label><br>' +
     '<select id="menu-user-select" onchange="menuUserChanged()" style="font-size:1.1rem; padding:8px 12px; min-width:200px;">';
   users.forEach(function(u) {
     var sel = (u.name === lastUser) ? ' selected' : '';
@@ -680,11 +938,21 @@ function getSelectedUser() {
   return sel ? sel.value : '';
 }
 
+function populateMonthSelect(id) {
+  var sel = document.getElementById(id);
+  if (!sel) return;
+  var months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+  sel.innerHTML = '<option value="">' + tr('month') + '</option>';
+  months.forEach(function(m, i) {
+    sel.innerHTML += '<option value="' + (i + 1) + '">' + t(m) + '</option>';
+  });
+}
+
 function populateYearSelect(id) {
   var sel = document.getElementById(id);
   if (!sel) return;
   var currentYear = new Date().getFullYear();
-  sel.innerHTML = '<option value="">Year</option>';
+  sel.innerHTML = '<option value="">' + tr('year') + '</option>';
   for (var y = currentYear; y >= currentYear - 20; y--) {
     sel.innerHTML += '<option value="' + y + '">' + y + '</option>';
   }
@@ -692,11 +960,11 @@ function populateYearSelect(id) {
 
 function addUser() {
   var name = document.getElementById('new-user-name').value.trim();
-  if (!name) { alert('Please enter a name.'); return; }
+  if (!name) { alert(tr('enterName')); return; }
 
   var users = getUsers();
   var existing = users.find(function(u) { return u.name.toLowerCase() === name.toLowerCase(); });
-  if (existing) { alert('A user with this name already exists.'); return; }
+  if (existing) { alert(tr('userExists')); return; }
 
   var month = document.getElementById('new-user-month').value;
   var year = document.getElementById('new-user-year').value;
@@ -713,7 +981,7 @@ function addUser() {
 }
 
 function removeUser(name) {
-  if (!confirm('Remove user "' + name + '"?')) return;
+  if (!confirm(tr('removeUserConfirm') + ' "' + name + '"?')) return;
   var users = getUsers().filter(function(u) { return u.name !== name; });
   saveUsers(users);
   if (getSetting('lastSelectedUser') === name) setSetting('lastSelectedUser', '');
@@ -731,7 +999,7 @@ function renderUserList() {
   users.forEach(function(u) {
     html += '<div class="user-card">' +
       '<span>' + escHtml(u.name) + '</span>' +
-      '<button class="remove-btn" onclick="removeUser(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">Remove</button>' +
+      '<button class="remove-btn" onclick="removeUser(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">' + escHtml(tr('remove')) + '</button>' +
       '</div>';
   });
   container.innerHTML = html;
@@ -756,12 +1024,12 @@ function saveAISettings() {
 
   if (!key) {
     setSetting('apiKeyValid', '');
-    statusEl.textContent = 'Saved (no key set).';
+    statusEl.textContent = tr('savedNoKey');
     statusEl.style.color = '#888';
     return;
   }
 
-  statusEl.textContent = 'Validating...';
+  statusEl.textContent = tr('validating');
   statusEl.style.color = '#1F96D3';
 
   var aiModel = model || 'gemini-2.0-flash';
@@ -772,7 +1040,7 @@ function saveAISettings() {
   }).then(function(r) { return r.json(); }).then(function(data) {
     if (data && data.candidates) {
       setSetting('apiKeyValid', '1');
-      statusEl.innerHTML = '&#10003; Key is valid.';
+      statusEl.innerHTML = '&#10003; ' + escHtml(tr('keyValid'));
       statusEl.style.color = '#055585';
     } else {
       setSetting('apiKeyValid', '');
@@ -804,9 +1072,9 @@ function importData(event) {
   reader.onload = function(e) {
     try {
       var data = JSON.parse(e.target.result);
-      if (!data.version) { alert('Invalid data file.'); return; }
+      if (!data.version) { alert(tr('invalidDataFile')); return; }
       saveAppData(data);
-      alert('Data imported successfully.');
+      alert(tr('dataImported'));
       showSettings();
     } catch(err) {
       alert('Error reading file: ' + err.message);
@@ -820,6 +1088,9 @@ function importData(event) {
 var FILE_SIZE_WARN = 50 * 1024 * 1024; // 50MB
 
 function loadTestFile() {
+  if (currentTest) {
+    if (!confirm(tr('loadDifferentTest'))) return;
+  }
   document.getElementById('test-file-input').click();
 }
 
@@ -928,7 +1199,7 @@ function renderTestInfo() {
   }
   var qCount = t.questions ? t.questions.length : 0;
   html += '<p>' + qCount + ' question' + (qCount !== 1 ? 's' : '') + '</p>';
-  html += '<button onclick="showTestReady()" style="margin-top:10px; margin-left:0;">Continue to Test</button>';
+  html += '<button onclick="showTestReady()" style="margin-top:10px; margin-left:0;">' + escHtml(tr('continueToTest')) + '</button>';
   html += '</div>';
   area.innerHTML = html;
 }
@@ -1035,7 +1306,7 @@ function showTestScreen() {
 }
 
 function confirmQuitTest() {
-  if (confirm('Are you sure you want to quit the test? Your answers will be lost.')) {
+  if (confirm(tr('quitTestConfirm'))) {
     stopTimer();
     testState = null;
     showMenu();
@@ -1083,13 +1354,20 @@ function renderQuestion() {
 
   // Progress
   document.getElementById('progress-fill').style.width = ((idx + 1) / total * 100) + '%';
-  document.getElementById('progress-text').textContent = 'Question ' + (idx + 1) + ' of ' + total;
+  document.getElementById('progress-text').textContent = trFmt('questionOf', idx + 1, total);
 
-  // Section header
+  // Section header — only show at the first question of a new section
   var sectionArea = document.getElementById('section-header-area');
   var section = testState.sectionMap[q.id];
-  if (section) {
-    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + '</h3>';
+  var prevSection = idx > 0 ? testState.sectionMap[testState.questions[idx - 1].id] : null;
+  var isNewSection = section && (!prevSection || prevSection.id !== section.id);
+  if (isNewSection) {
+    var secTitle = locStr(section.title, locale);
+    var sh = '<div class="section-header" id="section-hdr-wrap"><h3>' + escHtml(secTitle);
+    if (isAIEnabled()) {
+      sh += ' <button class="btn-translate" style="color:#fff; border-color:#fff; background:rgba(255,255,255,0.2);" data-translate-text="' + escAttr(secTitle) + '" data-target="section-hdr-wrap" onclick="translateFromBtn(this)">' + escHtml(tr('translate')) + '</button>';
+    }
+    sh += '</h3>';
     if (section.instructions) {
       sh += '<p>' + escHtml(locStr(section.instructions, locale)) + '</p>';
     }
@@ -1107,8 +1385,14 @@ function renderQuestion() {
     html += renderMediaRefs(q.media_refs, locale);
   }
 
-  // Question text
-  html += '<div class="question-text">' + escHtml(locStr(q.text, locale)) + '</div>';
+  // Question text with translate button
+  var qText = locStr(q.text, locale);
+  html += '<div id="q-text-wrap">';
+  html += '<div class="question-text">' + escHtml(qText);
+  if (isAIEnabled()) {
+    html += ' <button class="btn-translate" data-translate-text="' + escAttr(qText) + '" data-target="q-text-wrap" onclick="translateFromBtn(this)">' + escHtml(tr('translate')) + '</button>';
+  }
+  html += '</div></div>';
 
   // Hint
   if (testState.settings.show_hints && q.feedback && q.feedback.hint) {
@@ -1120,13 +1404,16 @@ function renderQuestion() {
 
   document.getElementById('question-area').innerHTML = html;
 
+  // Scroll to top on question change
+  window.scrollTo(0, 0);
+
   // Nav buttons
   document.getElementById('btn-prev').style.display = idx > 0 ? '' : 'none';
   document.getElementById('btn-skip').style.display = (testState.settings.allow_skip !== false) ? '' : 'none';
 
   var isLast = idx === total - 1;
   var nextBtn = document.getElementById('btn-next');
-  nextBtn.textContent = isLast ? 'Finish' : 'Next';
+  nextBtn.textContent = isLast ? tr('finish') : tr('next');
 }
 
 function renderMediaRefs(refs, locale) {
@@ -1187,13 +1474,19 @@ function renderSingleChoice(config, saved, idx, locale) {
     options = shuffle(options);
   }
 
+  var aiOn = isAIEnabled();
   var html = '<ul class="option-list">';
-  options.forEach(function(opt) {
+  options.forEach(function(opt, oi) {
     var sel = (saved === opt.id) ? ' selected' : '';
-    html += '<li class="option-item' + sel + '" onclick="selectOption(' + idx + ',\'' + escHtml(opt.id) + '\')">';
+    var optWrapId = 'opt-wrap-' + oi;
+    html += '<li class="option-item' + sel + '" id="' + optWrapId + '" onclick="selectOption(' + idx + ',\'' + escHtml(opt.id) + '\')">';
     html += '<span class="option-radio"></span>';
     html += '<span>';
-    html += escHtml(locStr(opt.text, locale));
+    var optText = locStr(opt.text, locale);
+    html += escHtml(optText);
+    if (aiOn) {
+      html += ' <button class="btn-translate" data-translate-text="' + escAttr(optText) + '" data-target="' + optWrapId + '" onclick="event.stopPropagation(); translateFromBtn(this)">' + escHtml(tr('translate')) + '</button>';
+    }
     // Option media
     if (opt.media_ref && testState.mediaMap[opt.media_ref]) {
       var m = testState.mediaMap[opt.media_ref];
@@ -1219,7 +1512,7 @@ function selectOption(idx, optId) {
 function renderNumberInput(saved, idx) {
   var val = (saved !== null && saved !== undefined) ? saved : '';
   return '<input type="number" class="number-input" id="number-answer" value="' + escHtml(String(val)) + '" ' +
-    'oninput="saveNumberAnswer(' + idx + ')" placeholder="Enter number">';
+    'oninput="saveNumberAnswer(' + idx + ')" placeholder="' + escHtml(tr('enterNumber')) + '">';
 }
 
 function saveNumberAnswer(idx) {
@@ -1232,7 +1525,7 @@ function saveNumberAnswer(idx) {
 
 function renderFreeText(saved, idx) {
   var val = saved || '';
-  return '<textarea class="free-text-input" id="text-answer" oninput="saveTextAnswer(' + idx + ')" placeholder="Type your answer...">' +
+  return '<textarea class="free-text-input" id="text-answer" oninput="saveTextAnswer(' + idx + ')" placeholder="' + escHtml(tr('typeAnswer')) + '">' +
     escHtml(val) + '</textarea>';
 }
 
@@ -1249,8 +1542,8 @@ function nextQuestion() {
   if (testState.currentIndex >= testState.questions.length - 1) {
     // Last question — confirm finish
     var unanswered = testState.answers.filter(function(a) { return a === null || a === undefined || a === ''; }).length;
-    var msg = 'Submit your test?';
-    if (unanswered > 0) msg = unanswered + ' question' + (unanswered > 1 ? 's' : '') + ' unanswered. Submit anyway?';
+    var msg = tr('submitTest');
+    if (unanswered > 0) msg = trFmt('unansweredWarning', unanswered);
     if (confirm(msg)) {
       finishTest();
     }
@@ -1404,7 +1697,7 @@ function gradeWithAI(aiQueue, results) {
   var total = aiQueue.length;
   var locale = testState.locale;
 
-  statusEl.textContent = 'Grading with AI... (0/' + total + ')';
+  statusEl.textContent = tr('gradingAI') + ' (0/' + total + ')';
 
   var promises = aiQueue.map(function(item) {
     var q = item.question;
@@ -1434,7 +1727,7 @@ function gradeWithAI(aiQueue, results) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       completed++;
-      statusEl.textContent = 'Grading with AI... (' + completed + '/' + total + ')';
+      statusEl.textContent = tr('gradingAI') + ' (' + completed + '/' + total + ')';
 
       var result = results[item.index];
       try {
@@ -1502,16 +1795,16 @@ function showResults(results) {
 
   var t = currentTest.test;
   var locale = t.default_locale || 'en';
-  document.getElementById('results-title').textContent = locStr(t.title, locale) + ' — Results';
+  document.getElementById('results-title').textContent = locStr(t.title, locale) + ' — ' + tr('results');
 
   var scoreHtml = '<div class="score-circle ' + scoreClass + '">' +
     '<span class="score-pct">' + pct + '%</span>' +
-    '<span class="score-label">Score</span>' +
+    '<span class="score-label">' + tr('score') + '</span>' +
     '</div>';
   scoreHtml += '<div class="result-summary">' +
-    correct + ' correct, ' + incorrect + ' incorrect';
-  if (skipped > 0) scoreHtml += ', ' + skipped + ' skipped';
-  if (pending > 0) scoreHtml += ', ' + pending + ' pending review';
+    correct + ' ' + tr('correct') + ', ' + incorrect + ' ' + tr('incorrect');
+  if (skipped > 0) scoreHtml += ', ' + skipped + ' ' + tr('skipped').toLowerCase();
+  if (pending > 0) scoreHtml += ', ' + pending + ' ' + tr('pendingReview');
   scoreHtml += '</div>';
   document.getElementById('score-area').innerHTML = scoreHtml;
 
@@ -1523,23 +1816,23 @@ function showResults(results) {
     detailHtml += '<div class="result-q-text">' + (i + 1) + '. ' + escHtml(r.questionText) + '</div>';
 
     if (r.status === 'skipped') {
-      detailHtml += '<div class="result-answer" style="color:#999;">Skipped</div>';
+      detailHtml += '<div class="result-answer" style="color:#999;">' + tr('skipped') + '</div>';
     } else {
       var answerDisplay = formatAnswer(r.answer, testState.questions[i], locale);
-      detailHtml += '<div class="result-answer">Your answer: <b>' + escHtml(answerDisplay) + '</b>';
+      detailHtml += '<div class="result-answer">' + tr('yourAnswer') + ': <b>' + escHtml(answerDisplay) + '</b>';
       if (r.aiScore) detailHtml += ' (AI score: ' + r.aiScore + ')';
       detailHtml += '</div>';
     }
 
     if (r.status === 'incorrect' && r.correctAnswer && showCorrectAnswer) {
-      detailHtml += '<div class="result-answer" style="color:#2a9d3a;">Correct answer: <b>' + escHtml(r.correctAnswer) + '</b></div>';
+      detailHtml += '<div class="result-answer" style="color:#2a9d3a;">' + tr('correctAnswer') + ': <b>' + escHtml(r.correctAnswer) + '</b></div>';
     }
 
     if (r.feedback) {
       detailHtml += '<div class="result-feedback">' + escHtml(r.feedback) + '</div>';
     }
     if (r.explanation && showCorrectAnswer) {
-      detailHtml += '<div class="result-feedback"><b>Explanation:</b> ' + escHtml(r.explanation) + '</div>';
+      detailHtml += '<div class="result-feedback"><b>' + tr('explanation') + '</b> ' + escHtml(r.explanation) + '</div>';
     }
 
     detailHtml += '</div>';
@@ -1589,6 +1882,7 @@ function showHistory() {
   hideAll();
   document.getElementById('history-screen').style.display = 'block';
   setBackArrow(showMenu);
+  document.getElementById('history-title').textContent = tr('testHistory');
   renderHistory();
 }
 
@@ -1604,14 +1898,14 @@ function renderHistory() {
   results.sort(function(a, b) { return b.date.localeCompare(a.date); });
 
   if (results.length === 0) {
-    container.innerHTML = '<p style="color:#888; text-align:center;">No test history yet.' +
-      (user ? ' (for ' + escHtml(user) + ')' : '') + '</p>';
+    container.innerHTML = '<p style="color:#888; text-align:center;">' + escHtml(tr('noHistory')) +
+      (user ? ' (' + escHtml(user) + ')' : '') + '</p>';
     return;
   }
 
   var html = '';
   if (user) {
-    html += '<p style="text-align:center; color:#888; font-size:0.9rem;">Showing results for ' + escHtml(user) + '</p>';
+    html += '<p style="text-align:center; color:#888; font-size:0.9rem;">' + escHtml(tr('showingResultsFor')) + ' ' + escHtml(user) + '</p>';
   }
 
   results.forEach(function(r, i) {
@@ -1682,10 +1976,98 @@ function escHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function escAttr(s) {
+  return escHtml(s).replace(/'/g, '&#39;');
+}
+
+function translateFromBtn(btn) {
+  var text = btn.getAttribute('data-translate-text');
+  var targetId = btn.getAttribute('data-target');
+  translateElement(btn, text, targetId);
+}
+
 function locStr(obj, locale) {
   if (!obj) return '';
   if (typeof obj === 'string') return obj;
   return obj[locale] || obj['en'] || obj[Object.keys(obj)[0]] || '';
+}
+
+// ── Translation ──────────────────────────────────────────────────────────────
+var translationCache = {};
+
+function getTargetLang() {
+  var lang = getUILang();
+  return lang === 'cs' ? 'Czech' : 'English';
+}
+
+function getSourceLangGuess() {
+  // The test content locale — opposite of UI lang for translation
+  var uiLang = getUILang();
+  return uiLang === 'cs' ? 'English' : 'Czech';
+}
+
+function translateText(text, targetLang, callback) {
+  var cacheKey = targetLang + ':' + text;
+  if (translationCache[cacheKey]) {
+    callback(null, translationCache[cacheKey]);
+    return;
+  }
+
+  if (!isAIEnabled()) {
+    callback('No API key configured');
+    return;
+  }
+
+  var prompt = 'Translate the following text to ' + targetLang + '. Return ONLY the translated text, nothing else.\n\n' + text;
+  var aiModel = getAiModel();
+
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': getSetting('ApiKey') },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    try {
+      var translated = data.candidates[0].content.parts[0].text.trim();
+      translationCache[cacheKey] = translated;
+      callback(null, translated);
+    } catch(e) {
+      callback('Translation failed');
+    }
+  })
+  .catch(function(err) {
+    callback('Connection error: ' + err.message);
+  });
+}
+
+function translateElement(btnEl, text, containerId) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+
+  // If translation already shown, toggle it off
+  var existing = container.querySelector('.translated-text');
+  if (existing) {
+    existing.remove();
+    return;
+  }
+
+  btnEl.disabled = true;
+  btnEl.textContent = tr('translating');
+
+  var targetLang = getTargetLang();
+  translateText(text, targetLang, function(err, translated) {
+    btnEl.disabled = false;
+    btnEl.textContent = tr('translate');
+    if (err) {
+      alert(err);
+      return;
+    }
+    var div = document.createElement('div');
+    div.className = 'translated-text';
+    div.textContent = translated;
+    container.appendChild(div);
+  });
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
