@@ -48,7 +48,6 @@ layout: null
       padding: 10px 16px;
       margin: 0 auto 10px;
       max-width: 280px;
-      cursor: pointer;
       position: relative;
     }
     .menu-user-select .user-avatar {
@@ -59,9 +58,12 @@ layout: null
       margin-right: 12px;
       font-size: 1.1rem;
       flex-shrink: 0;
+      pointer-events: none;
     }
     .menu-user-select select {
-      flex: 1;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%;
       border: none;
       background: transparent;
       font-size: 1.1rem;
@@ -71,11 +73,12 @@ layout: null
       -webkit-appearance: none;
       outline: none;
       cursor: pointer;
+      padding: 10px 40px 10px 60px;
+      border-radius: 30px;
     }
     .menu-user-select .chevron {
       color: #999;
-      font-size: 0.9rem;
-      margin-left: 8px;
+      margin-left: auto;
       pointer-events: none;
     }
     .mode-grid {
