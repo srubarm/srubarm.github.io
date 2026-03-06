@@ -315,6 +315,91 @@ layout: null
       margin-bottom: 10px;
     }
     .timer-display.warning { color: #e55; }
+
+    /* ── Results screen ── */
+    .score-circle {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+      border: 6px solid #1F96D3;
+    }
+    .score-circle.good { border-color: #2a9d3a; }
+    .score-circle.ok { border-color: #e8a020; }
+    .score-circle.poor { border-color: #e55; }
+    .score-pct { font-size: 2.2rem; font-weight: 700; color: #111; line-height: 1; }
+    .score-label { font-size: 0.85rem; color: #888; }
+    .result-summary {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .result-item {
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 10px 0;
+      text-align: left;
+    }
+    .result-item.correct { border-left: 4px solid #2a9d3a; }
+    .result-item.incorrect { border-left: 4px solid #e55; }
+    .result-item.pending { border-left: 4px solid #e8a020; }
+    .result-item.skipped { border-left: 4px solid #ccc; }
+    .result-q-text { font-weight: 600; margin-bottom: 6px; }
+    .result-answer { font-size: 0.9rem; color: #555; }
+    .result-answer b { color: #111; }
+    .result-feedback {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f8f8f8;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #555;
+    }
+    .grading-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .grading-overlay .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid #e5e5e5;
+      border-top: 4px solid #1F96D3;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .grading-overlay p { margin-top: 15px; color: #555; font-size: 1rem; }
+
+    /* History */
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      margin: 8px auto;
+      max-width: 400px;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      background: #fafafa;
+      text-align: left;
+      cursor: pointer;
+    }
+    .history-item:hover { background: #f0f8ff; }
+    .history-score { font-size: 1.3rem; font-weight: 700; }
+    .history-score.good { color: #2a9d3a; }
+    .history-score.ok { color: #e8a020; }
+    .history-score.poor { color: #e55; }
+    .history-meta { font-size: 0.8rem; color: #888; }
   </style>
 </head>
 <body>
@@ -412,12 +497,33 @@ layout: null
   </div>
 </div>
 
+<!-- RESULTS SCREEN -->
+<div id="results-screen" style="display:none">
+  <div class="app-title" id="results-title">Results</div>
+  <div id="score-area"></div>
+  <div id="results-detail"></div>
+  <button onclick="showMenu()" style="margin-top:20px; margin-left:0;">Back to Menu</button>
+</div>
+
+<!-- HISTORY SCREEN -->
+<div id="history-screen" style="display:none">
+  <div class="app-title">Test History</div>
+  <div id="history-list" style="margin-top:15px;"></div>
+</div>
+
+<!-- GRADING OVERLAY -->
+<div id="grading-overlay" class="grading-overlay" style="display:none">
+  <div class="spinner"></div>
+  <p id="grading-status">Grading...</p>
+</div>
+
 <!-- Hidden file inputs -->
 <input type="file" id="test-file-input" accept=".json" style="display:none" onchange="handleTestFile(event)">
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav" id="bottom-nav">
   <button onclick="showMenu()">Home</button>
+  <button onclick="showHistory()">History</button>
   <button onclick="showUserManagement()">Users</button>
   <button onclick="showSettings()">Settings</button>
 </div>
@@ -464,7 +570,7 @@ function saveUsers(users) {
 var backTarget = null;
 var currentTest = null;
 
-var ALL_SCREENS = ['menu', 'user-management', 'settings', 'test-ready', 'test-screen'];
+var ALL_SCREENS = ['menu', 'user-management', 'settings', 'test-ready', 'test-screen', 'results-screen', 'history-screen'];
 
 function hideAll() {
   ALL_SCREENS.forEach(function(id) {
@@ -1182,10 +1288,392 @@ function saveCurrentInput() {
 
 function finishTest() {
   stopTimer();
-  // Placeholder — grading will be in Milestone 3
-  alert('Test submitted! Grading coming in Milestone 3.\n\nAnswers collected: ' + testState.answers.filter(function(a) { return a !== null && a !== undefined && a !== ''; }).length + '/' + testState.questions.length);
+  gradeTest();
+}
+
+// ── Grading ──────────────────────────────────────────────────────────────────
+function gradeTest() {
+  var questions = testState.questions;
+  var answers = testState.answers;
+  var locale = testState.locale;
+  var results = [];
+  var aiQueue = [];
+
+  questions.forEach(function(q, i) {
+    var answer = answers[i];
+    var config = q.answer_config || {};
+    var evaluation = q.evaluation || {};
+    var result = {
+      questionId: q.id,
+      questionText: locStr(q.text, locale),
+      answer: answer,
+      weight: q.weight || 1,
+      status: 'skipped', // skipped, correct, incorrect, pending
+      score: 0,          // 0-1
+      feedback: null
+    };
+
+    if (answer === null || answer === undefined || answer === '') {
+      result.status = 'skipped';
+      results.push(result);
+      return;
+    }
+
+    if (evaluation.method === 'ai') {
+      // Queue for AI grading
+      result.status = 'pending';
+      result.aiIndex = i;
+      aiQueue.push({ index: results.length, question: q, answer: answer });
+      results.push(result);
+      return;
+    }
+
+    // Deterministic grading
+    if (q.answer_type === 'single_choice') {
+      var correct = config.correct_answer;
+      if (answer === correct) {
+        result.status = 'correct';
+        result.score = 1;
+      } else {
+        result.status = 'incorrect';
+        result.score = 0;
+        // Find correct answer text
+        var correctOpt = (config.options || []).find(function(o) { return o.id === correct; });
+        result.correctAnswer = correctOpt ? locStr(correctOpt.text, locale) : correct;
+      }
+    } else if (q.answer_type === 'number') {
+      var tolerance = config.numeric_tolerance || 0;
+      var correctNum = config.correct_answer;
+      if (typeof correctNum === 'number' && Math.abs(answer - correctNum) <= tolerance) {
+        result.status = 'correct';
+        result.score = 1;
+      } else {
+        result.status = 'incorrect';
+        result.score = 0;
+        result.correctAnswer = String(correctNum);
+      }
+    } else if (q.answer_type === 'free_text' && evaluation.method !== 'ai') {
+      // Simple deterministic text match
+      var correctText = config.correct_answer;
+      if (correctText !== null && correctText !== undefined) {
+        var caseSensitive = config.case_sensitive !== false;
+        var userAns = caseSensitive ? String(answer) : String(answer).toLowerCase();
+        var expected = caseSensitive ? String(correctText) : String(correctText).toLowerCase();
+        if (userAns.trim() === expected.trim()) {
+          result.status = 'correct';
+          result.score = 1;
+        } else {
+          result.status = 'incorrect';
+          result.score = 0;
+          result.correctAnswer = String(correctText);
+        }
+      } else {
+        // No correct answer defined, treat as pending for manual review
+        result.status = 'pending';
+      }
+    }
+
+    // Add feedback
+    if (q.feedback) {
+      if (result.status === 'correct' && q.feedback.correct_comment) {
+        result.feedback = locStr(q.feedback.correct_comment, locale);
+      }
+      if (q.feedback.explanation) {
+        result.explanation = locStr(q.feedback.explanation, locale);
+      }
+    }
+
+    results.push(result);
+  });
+
+  testState.results = results;
+
+  if (aiQueue.length > 0 && isAIEnabled()) {
+    gradeWithAI(aiQueue, results);
+  } else {
+    showResults(results);
+  }
+}
+
+function gradeWithAI(aiQueue, results) {
+  var overlay = document.getElementById('grading-overlay');
+  var statusEl = document.getElementById('grading-status');
+  overlay.style.display = 'flex';
+
+  var completed = 0;
+  var total = aiQueue.length;
+  var locale = testState.locale;
+
+  statusEl.textContent = 'Grading with AI... (0/' + total + ')';
+
+  var promises = aiQueue.map(function(item) {
+    var q = item.question;
+    var answer = item.answer;
+    var config = q.answer_config || {};
+    var evaluation = q.evaluation || {};
+
+    var promptContext = evaluation.ai_prompt_context ? locStr(evaluation.ai_prompt_context, locale) : '';
+    var resultType = evaluation.result_type || 'boolean';
+
+    var prompt = 'You are grading a test question.\n\n' +
+      'Question: ' + locStr(q.text, locale) + '\n' +
+      'Student answer: ' + String(answer) + '\n';
+    if (promptContext) prompt += 'Grading instructions: ' + promptContext + '\n';
+    if (resultType === 'percentage') {
+      prompt += '\nGrade this answer from 0 to 100 percent. Respond with ONLY a JSON object: {"score": <0-100>, "feedback": "<brief feedback>"}\n';
+    } else {
+      prompt += '\nIs this answer correct? Respond with ONLY a JSON object: {"correct": true/false, "feedback": "<brief feedback>"}\n';
+    }
+
+    var aiModel = getAiModel();
+    return fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': getSetting('ApiKey') },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      completed++;
+      statusEl.textContent = 'Grading with AI... (' + completed + '/' + total + ')';
+
+      var result = results[item.index];
+      try {
+        var text = data.candidates[0].content.parts[0].text;
+        // Extract JSON from response
+        var jsonMatch = text.match(/\{[\s\S]*?\}/);
+        if (jsonMatch) {
+          var parsed = JSON.parse(jsonMatch[0]);
+          if (resultType === 'percentage') {
+            var pct = Math.max(0, Math.min(100, parsed.score || 0));
+            result.score = pct / 100;
+            result.status = pct >= 50 ? 'correct' : 'incorrect';
+            result.feedback = parsed.feedback || '';
+            result.aiScore = pct + '%';
+          } else {
+            result.score = parsed.correct ? 1 : 0;
+            result.status = parsed.correct ? 'correct' : 'incorrect';
+            result.feedback = parsed.feedback || '';
+          }
+        } else {
+          result.status = 'pending';
+          result.feedback = 'AI could not grade this answer.';
+        }
+      } catch(e) {
+        result.status = 'pending';
+        result.feedback = 'AI grading error.';
+      }
+    })
+    .catch(function() {
+      completed++;
+      results[item.index].status = 'pending';
+      results[item.index].feedback = 'AI grading failed (connection error).';
+    });
+  });
+
+  Promise.all(promises).then(function() {
+    overlay.style.display = 'none';
+    showResults(results);
+  });
+}
+
+// ── Results Screen ───────────────────────────────────────────────────────────
+function showResults(results) {
+  // Calculate score
+  var totalWeight = 0;
+  var earnedWeight = 0;
+  results.forEach(function(r) {
+    totalWeight += r.weight;
+    earnedWeight += r.score * r.weight;
+  });
+  var pct = totalWeight > 0 ? Math.round(earnedWeight / totalWeight * 100) : 0;
+  var scoreClass = pct >= 80 ? 'good' : (pct >= 50 ? 'ok' : 'poor');
+
+  var correct = results.filter(function(r) { return r.status === 'correct'; }).length;
+  var incorrect = results.filter(function(r) { return r.status === 'incorrect'; }).length;
+  var skipped = results.filter(function(r) { return r.status === 'skipped'; }).length;
+  var pending = results.filter(function(r) { return r.status === 'pending'; }).length;
+
+  // Save result
+  saveTestResult(pct, results);
+
+  // Show screen
+  hideAll();
+  document.getElementById('results-screen').style.display = 'block';
+
+  var t = currentTest.test;
+  var locale = t.default_locale || 'en';
+  document.getElementById('results-title').textContent = locStr(t.title, locale) + ' — Results';
+
+  var scoreHtml = '<div class="score-circle ' + scoreClass + '">' +
+    '<span class="score-pct">' + pct + '%</span>' +
+    '<span class="score-label">Score</span>' +
+    '</div>';
+  scoreHtml += '<div class="result-summary">' +
+    correct + ' correct, ' + incorrect + ' incorrect';
+  if (skipped > 0) scoreHtml += ', ' + skipped + ' skipped';
+  if (pending > 0) scoreHtml += ', ' + pending + ' pending review';
+  scoreHtml += '</div>';
+  document.getElementById('score-area').innerHTML = scoreHtml;
+
+  // Detail
+  var showCorrectAnswer = testState.settings.show_correct_answer_comment !== false;
+  var detailHtml = '';
+  results.forEach(function(r, i) {
+    detailHtml += '<div class="result-item ' + r.status + '">';
+    detailHtml += '<div class="result-q-text">' + (i + 1) + '. ' + escHtml(r.questionText) + '</div>';
+
+    if (r.status === 'skipped') {
+      detailHtml += '<div class="result-answer" style="color:#999;">Skipped</div>';
+    } else {
+      var answerDisplay = formatAnswer(r.answer, testState.questions[i], locale);
+      detailHtml += '<div class="result-answer">Your answer: <b>' + escHtml(answerDisplay) + '</b>';
+      if (r.aiScore) detailHtml += ' (AI score: ' + r.aiScore + ')';
+      detailHtml += '</div>';
+    }
+
+    if (r.status === 'incorrect' && r.correctAnswer && showCorrectAnswer) {
+      detailHtml += '<div class="result-answer" style="color:#2a9d3a;">Correct answer: <b>' + escHtml(r.correctAnswer) + '</b></div>';
+    }
+
+    if (r.feedback) {
+      detailHtml += '<div class="result-feedback">' + escHtml(r.feedback) + '</div>';
+    }
+    if (r.explanation && showCorrectAnswer) {
+      detailHtml += '<div class="result-feedback"><b>Explanation:</b> ' + escHtml(r.explanation) + '</div>';
+    }
+
+    detailHtml += '</div>';
+  });
+  document.getElementById('results-detail').innerHTML = detailHtml;
+
   testState = null;
-  showMenu();
+}
+
+function formatAnswer(answer, question, locale) {
+  if (answer === null || answer === undefined) return '—';
+  if (question.answer_type === 'single_choice') {
+    var config = question.answer_config || {};
+    var opt = (config.options || []).find(function(o) { return o.id === answer; });
+    return opt ? locStr(opt.text, locale) : String(answer);
+  }
+  return String(answer);
+}
+
+// ── Test History ─────────────────────────────────────────────────────────────
+function getTestResults() {
+  var data = getAppData();
+  return data.testResults || [];
+}
+
+function saveTestResult(pct, results) {
+  var data = getAppData();
+  if (!data.testResults) data.testResults = [];
+  var t = currentTest.test;
+  var locale = t.default_locale || 'en';
+
+  data.testResults.push({
+    testId: t.id,
+    testTitle: locStr(t.title, locale),
+    user: getSelectedUser() || 'Anonymous',
+    score: pct,
+    totalQuestions: results.length,
+    correct: results.filter(function(r) { return r.status === 'correct'; }).length,
+    date: new Date().toISOString(),
+    details: results
+  });
+
+  saveAppData(data);
+}
+
+function showHistory() {
+  hideAll();
+  document.getElementById('history-screen').style.display = 'block';
+  setBackArrow(showMenu);
+  renderHistory();
+}
+
+function renderHistory() {
+  var container = document.getElementById('history-list');
+  var allResults = getTestResults();
+  var user = getSelectedUser();
+
+  // Filter by selected user if one is selected
+  var results = user ? allResults.filter(function(r) { return r.user === user; }) : allResults;
+
+  // Sort by date descending
+  results.sort(function(a, b) { return b.date.localeCompare(a.date); });
+
+  if (results.length === 0) {
+    container.innerHTML = '<p style="color:#888; text-align:center;">No test history yet.' +
+      (user ? ' (for ' + escHtml(user) + ')' : '') + '</p>';
+    return;
+  }
+
+  var html = '';
+  if (user) {
+    html += '<p style="text-align:center; color:#888; font-size:0.9rem;">Showing results for ' + escHtml(user) + '</p>';
+  }
+
+  results.forEach(function(r, i) {
+    var scoreClass = r.score >= 80 ? 'good' : (r.score >= 50 ? 'ok' : 'poor');
+    var dateStr = new Date(r.date).toLocaleDateString();
+    html += '<div class="history-item" onclick="showHistoryDetail(' + allResults.indexOf(r) + ')">';
+    html += '<div><b>' + escHtml(r.testTitle) + '</b><br>' +
+      '<span class="history-meta">' + escHtml(r.user) + ' &middot; ' + dateStr + ' &middot; ' +
+      r.correct + '/' + r.totalQuestions + '</span></div>';
+    html += '<span class="history-score ' + scoreClass + '">' + r.score + '%</span>';
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function showHistoryDetail(index) {
+  var allResults = getTestResults();
+  var r = allResults[index];
+  if (!r || !r.details) return;
+
+  hideAll();
+  document.getElementById('results-screen').style.display = 'block';
+  setBackArrow(showHistory);
+
+  document.getElementById('results-title').textContent = r.testTitle + ' — Results';
+
+  var pct = r.score;
+  var scoreClass = pct >= 80 ? 'good' : (pct >= 50 ? 'ok' : 'poor');
+
+  var scoreHtml = '<div class="score-circle ' + scoreClass + '">' +
+    '<span class="score-pct">' + pct + '%</span>' +
+    '<span class="score-label">Score</span>' +
+    '</div>';
+  scoreHtml += '<div class="result-summary">' +
+    escHtml(r.user) + ' &middot; ' + new Date(r.date).toLocaleDateString() + '<br>' +
+    r.correct + '/' + r.totalQuestions + ' correct</div>';
+  document.getElementById('score-area').innerHTML = scoreHtml;
+
+  var detailHtml = '';
+  r.details.forEach(function(d, i) {
+    detailHtml += '<div class="result-item ' + d.status + '">';
+    detailHtml += '<div class="result-q-text">' + (i + 1) + '. ' + escHtml(d.questionText) + '</div>';
+    if (d.status === 'skipped') {
+      detailHtml += '<div class="result-answer" style="color:#999;">Skipped</div>';
+    } else {
+      detailHtml += '<div class="result-answer">Answer: <b>' + escHtml(String(d.answer)) + '</b>';
+      if (d.aiScore) detailHtml += ' (AI: ' + d.aiScore + ')';
+      detailHtml += '</div>';
+    }
+    if (d.correctAnswer) {
+      detailHtml += '<div class="result-answer" style="color:#2a9d3a;">Correct: <b>' + escHtml(d.correctAnswer) + '</b></div>';
+    }
+    if (d.feedback) {
+      detailHtml += '<div class="result-feedback">' + escHtml(d.feedback) + '</div>';
+    }
+    if (d.explanation) {
+      detailHtml += '<div class="result-feedback"><b>Explanation:</b> ' + escHtml(d.explanation) + '</div>';
+    }
+    detailHtml += '</div>';
+  });
+  document.getElementById('results-detail').innerHTML = detailHtml;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
