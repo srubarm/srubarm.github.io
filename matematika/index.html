@@ -181,30 +181,21 @@ layout: null
 
   <!-- Mode selection -->
   <div id="menu">
-    <div class="mode-buttons">
-      <button onclick="startSolo()">Solo</button>
-      <button onclick="showCompSetup()">Competition</button>
+    <div id="menu-user-area"></div>
+    <div id="menu-buttons" style="display:none;">
+      <div class="mode-buttons">
+        <button onclick="startSolo()">Solo</button>
+        <button onclick="showCompSetup()">Competition</button>
+      </div>
+      <div id="ai-teacher-menu-wrap" style="margin-top:15px; display:none;">
+        <button onclick="startAITeacher()" style="background:#2a9d2a;">Practice with AI Teacher</button>
+      </div>
+      <div style="margin-top:25px">
+        <button onclick="showScoreboard()" style="font-size:0.8em; padding:6px 14px; background:#888;">Top Scores</button>
+        <button onclick="showUserManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Users</button>
+        <button onclick="showDataManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Data</button>
+      </div>
     </div>
-    <div style="margin-top:15px">
-      <button onclick="startAITeacher()" style="background:#2a9d2a;">Practice with AI Teacher</button>
-    </div>
-    <div style="margin-top:25px">
-      <button onclick="showScoreboard()" style="font-size:0.8em; padding:6px 14px; background:#888;">Top Scores</button>
-      <button onclick="showUserManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Users</button>
-      <button onclick="showDataManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Data</button>
-    </div>
-  </div>
-
-  <!-- AI Teacher: user select -->
-  <div id="ai-teacher-setup" style="display:none">
-    <p><b>Practice with AI Teacher</b></p>
-    <p>Select your name:</p>
-    <select id="ai-teacher-user-select" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">
-      <option value="">-- select user --</option>
-    </select>
-    <br>
-    <button class="btn-block" onclick="confirmAITeacherUser()">Next</button>
-    <button class="restart-btn" onclick="showMenu()" style="font-size:0.9rem; padding:6px 14px; background:#888;">Back</button>
   </div>
 
   <!-- AI Teacher: dashboard -->
@@ -228,16 +219,6 @@ layout: null
     <div class="summary" id="ai-teacher-eval-summary"></div>
     <div id="ai-teacher-eval-result"></div>
     <button class="restart-btn" onclick="showAITeacherDashboard(aiTeacherUser)">Back to Dashboard</button>
-  </div>
-
-  <!-- Solo name entry -->
-  <div id="solo-setup" style="display:none">
-    <p>Select your name:</p>
-    <select id="solo-user-select" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">
-      <option value="">-- select user --</option>
-    </select>
-    <br>
-    <button class="btn-block" onclick="confirmSoloName()">Next</button>
   </div>
 
   <!-- User management -->
@@ -296,6 +277,9 @@ layout: null
   <!-- Difficulty selection -->
   <div id="difficulty" style="display:none">
     <div id="level-buttons-container"></div>
+    <div id="solo-ai-generate-wrap" style="display:none; margin-top:20px;">
+      <button onclick="generateAITest(soloName)" style="background:#2a9d2a;">Generate test based on your previous results</button>
+    </div>
     <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:15px;">
       <button onclick="document.getElementById('custom-test-file').click()" style="font-size:0.9em; padding:6px 14px; background:#888;">Load Custom Test</button>
       <input type="file" id="custom-test-file" accept=".json" style="display:none" onchange="loadCustomTest(event)">
@@ -306,22 +290,30 @@ layout: null
     </div>
   </div>
 
-  <!-- Competition name entry -->
+  <!-- Competition: select competitor -->
   <div id="comp-setup" style="display:none">
-    <p>Select players:</p>
+    <p><b><span id="comp-player1-name"></span></b> vs ...</p>
     <div style="margin:10px 0;">
-      <label style="font-size:0.9rem; color:#888;">Player 1:</label><br>
-      <select id="comp-user-select-1" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">
-        <option value="">-- select user --</option>
-      </select>
-    </div>
-    <div style="margin:10px 0;">
-      <label style="font-size:0.9rem; color:#888;">Player 2:</label><br>
+      <label style="font-size:0.9rem; color:#888;">Select competitor:</label><br>
       <select id="comp-user-select-2" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">
         <option value="">-- select user --</option>
       </select>
     </div>
+    <div id="comp-add-user-area" style="margin:15px 0; border-top:1px solid #ddd; padding-top:15px;">
+      <p style="font-size:0.9rem; color:#888;">Competitor not in the list?</p>
+      <input type="text" id="comp-new-user-name" placeholder="Name">
+      <div style="margin:10px 0;">
+        <select id="comp-new-user-month" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
+          <option value="">Month</option>
+        </select>
+        <select id="comp-new-user-year" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
+          <option value="">Year</option>
+        </select>
+      </div>
+      <button onclick="addCompUser()" style="font-size:0.9rem; padding:6px 14px;">Add &amp; Select</button>
+    </div>
     <button class="btn-block" onclick="startComp()">Start</button>
+    <button class="restart-btn" onclick="showMenu()" style="font-size:0.9rem; padding:6px 14px; background:#888;">Back</button>
   </div>
 
   <!-- Game screen -->
@@ -511,6 +503,21 @@ layout: null
       saveAppData(data);
     }
 
+    function isAIEnabled() {
+      return !!(getSetting('ApiKey') && getSetting('apiKeyValid'));
+    }
+
+    function updateAIVisibility() {
+      var enabled = isAIEnabled();
+      var teacherWrap = document.getElementById('ai-teacher-menu-wrap');
+      if (teacherWrap) teacherWrap.style.display = enabled ? 'block' : 'none';
+      var soloAI = document.getElementById('solo-ai-generate-wrap');
+      if (soloAI) soloAI.style.display = enabled ? 'block' : 'none';
+      // Re-render user list if it's visible (to show/hide AI buttons)
+      var userMgmt = document.getElementById('user-management');
+      if (userMgmt && userMgmt.style.display !== 'none') renderUserList();
+    }
+
     // --- Problem generation ---
 
     function generateProblems() {
@@ -595,14 +602,89 @@ layout: null
     }
 
     function hideAll() {
-      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management','data-management','ai-teacher-setup','ai-teacher-dashboard','ai-teacher-loading','ai-teacher-eval'].forEach(function(id) {
+      ['menu','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management','data-management','ai-teacher-dashboard','ai-teacher-loading','ai-teacher-eval'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
+    }
+
+    function getSelectedUser() {
+      var sel = document.getElementById('menu-user-select');
+      return sel ? sel.value : '';
+    }
+
+    function renderMenuUserArea() {
+      var area = document.getElementById('menu-user-area');
+      var buttons = document.getElementById('menu-buttons');
+      var users = getUsers();
+
+      if (users.length === 0) {
+        // Inline create form
+        var h = '<div style="margin:15px 0;">';
+        h += '<p style="color:#888;">Create a user to get started:</p>';
+        h += '<input type="text" id="menu-new-name" placeholder="Name">';
+        h += '<div style="margin:10px 0;">';
+        h += '<select id="menu-new-month" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">';
+        h += '<option value="">Month</option>';
+        MONTH_NAMES.forEach(function(m, i) {
+          h += '<option value="' + (i + 1) + '">' + m + '</option>';
+        });
+        h += '</select> ';
+        h += '<select id="menu-new-year" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">';
+        h += '<option value="">Year</option>';
+        var curYear = new Date().getFullYear();
+        for (var y = curYear; y >= curYear - 25; y--) {
+          h += '<option value="' + y + '">' + y + '</option>';
+        }
+        h += '</select>';
+        h += '</div>';
+        h += '<button class="btn-block" onclick="addMenuUser()">Create User</button>';
+        h += '</div>';
+        area.innerHTML = h;
+        buttons.style.display = 'none';
+      } else {
+        // User dropdown
+        var lastUser = getSetting('lastSelectedUser') || '';
+        var h = '<div style="margin:15px 0;">';
+        h += '<select id="menu-user-select" onchange="onMenuUserChange()" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">';
+        users.forEach(function(u) {
+          var sel = u.name === lastUser ? ' selected' : '';
+          h += '<option value="' + u.name.replace(/"/g, '&quot;') + '"' + sel + '>' + u.name + '</option>';
+        });
+        h += '</select>';
+        h += '</div>';
+        area.innerHTML = h;
+        buttons.style.display = 'block';
+        // If no lastUser was saved or not found, default to first
+        var sel = document.getElementById('menu-user-select');
+        if (sel.value) setSetting('lastSelectedUser', sel.value);
+      }
+    }
+
+    function onMenuUserChange() {
+      var sel = document.getElementById('menu-user-select');
+      if (sel && sel.value) setSetting('lastSelectedUser', sel.value);
+    }
+
+    function addMenuUser() {
+      var name = document.getElementById('menu-new-name').value.trim();
+      var month = parseInt(document.getElementById('menu-new-month').value);
+      var year = parseInt(document.getElementById('menu-new-year').value);
+      if (!name) { alert('Please enter a name.'); return; }
+      if (!month || !year) { alert('Please select month and year of birth.'); return; }
+      var users = getUsers();
+      var existing = users.find(function(u) { return u.name.toLowerCase() === name.toLowerCase(); });
+      if (existing) { alert('A user with this name already exists.'); return; }
+      users.push({ id: name, name: name, dateCreated: new Date().toISOString(), birthMonth: month, birthYear: year });
+      users.sort(function(a, b) { return a.name.localeCompare(b.name); });
+      saveUsers(users);
+      setSetting('lastSelectedUser', name);
+      renderMenuUserArea();
     }
 
     function showMenu() {
       hideAll();
       document.getElementById('menu').style.display = 'block';
+      renderMenuUserArea();
     }
 
     function isDivmod() {
@@ -720,7 +802,7 @@ layout: null
         var evalDiv = document.getElementById('ai-evaluation');
         evalDiv.style.display = 'none';
         evalDiv.textContent = '';
-        if (aiGeneratedTest && getSetting('ApiKey')) {
+        if (aiGeneratedTest && isAIEnabled()) {
           lastAITestObj = testObj;
           evalWrap.style.display = 'block';
           document.getElementById('ai-evaluate-btn').disabled = false;
@@ -835,16 +917,20 @@ layout: null
         el.innerHTML = '<p class="no-users">No users added yet.</p>';
         return;
       }
+      var aiEnabled = isAIEnabled();
       var h = '';
       users.forEach(function(u, i) {
+        var escapedName = u.name.replace(/'/g, "\\'");
         h += '<div class="user-card">' +
           '<div class="user-info"><span class="user-name">' + u.name + '</span><br>' +
           '<span class="user-birth">' + MONTH_NAMES[u.birthMonth - 1] + ' ' + u.birthYear + '</span></div>' +
           '<div style="display:flex; flex-direction:column; gap:4px; margin-left:10px;">' +
-          '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button>' +
-          '<button class="remove-btn" style="background:#4a90d9;" onclick="generateTestPrompt(\'' + u.name.replace(/'/g, "\\'") + '\')">AI Prompt</button>' +
-          '<button class="remove-btn" style="background:#2a9d2a;" onclick="generateAITest(\'' + u.name.replace(/'/g, "\\'") + '\')">AI Generate</button>' +
-          '</div></div>';
+          '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button>';
+        if (aiEnabled) {
+          h += '<button class="remove-btn" style="background:#4a90d9;" onclick="generateTestPrompt(\'' + escapedName + '\')">AI Prompt</button>' +
+            '<button class="remove-btn" style="background:#2a9d2a;" onclick="generateAITest(\'' + escapedName + '\')">AI Generate</button>';
+        }
+        h += '</div></div>';
       });
       el.innerHTML = h;
     }
@@ -1169,28 +1255,9 @@ layout: null
     }
 
     function startAITeacher() {
-      if (!getSetting('ApiKey')) {
-        alert('Please set an API key in Data settings first.');
-        return;
-      }
-      hideAll();
-      document.getElementById('ai-teacher-setup').style.display = 'block';
-      populateUserSelect('ai-teacher-user-select');
-      var last = getSetting('lastAITeacherName') || '';
-      if (last) {
-        var sel = document.getElementById('ai-teacher-user-select');
-        for (var i = 0; i < sel.options.length; i++) {
-          if (sel.options[i].value === last) { sel.value = last; break; }
-        }
-      }
-    }
-
-    function confirmAITeacherUser() {
-      var sel = document.getElementById('ai-teacher-user-select');
-      var name = sel.value;
+      var name = getSelectedUser();
       if (!name) { alert('Please select a user.'); return; }
       aiTeacherUser = name;
-      setSetting('lastAITeacherName', name);
       showAITeacherDashboard(name);
     }
 
@@ -1580,37 +1647,21 @@ layout: null
       renderUserList();
     }
 
-    function populateUserSelect(selectId) {
-      var sel = document.getElementById(selectId);
-      var users = getUsers();
-      sel.innerHTML = '<option value="">-- select user --</option>';
-      users.forEach(function(u) {
-        var opt = document.createElement('option');
-        opt.value = u.name;
-        opt.textContent = u.name;
-        sel.appendChild(opt);
-      });
-    }
-
     function startSolo() {
+      var name = getSelectedUser();
+      if (!name) { alert('Please select a user.'); return; }
+      soloName = name;
       mode = 'solo';
       hideAll();
-      populateUserSelect('solo-user-select');
-      document.getElementById('solo-setup').style.display = 'block';
-      var lastName = getSetting('lastSoloName');
-      document.getElementById('solo-user-select').value = lastName;
-    }
-
-    function confirmSoloName() {
-      soloName = document.getElementById('solo-user-select').value;
-      if (!soloName) { alert('Please select a user.'); return; }
-      setSetting('lastSoloName', soloName);
-      hideAll();
       document.getElementById('difficulty').style.display = 'block';
+      var soloAI = document.getElementById('solo-ai-generate-wrap');
+      if (soloAI) soloAI.style.display = isAIEnabled() ? 'block' : 'none';
     }
 
     populateYearDropdown();
     renderLevelButtons();
+    renderMenuUserArea();
+    updateAIVisibility();
 
     // --- Scoreboard ---
 
@@ -1690,17 +1741,68 @@ layout: null
     // --- Competition setup ---
 
     function showCompSetup() {
+      var name = getSelectedUser();
+      if (!name) { alert('Please select a user.'); return; }
       hideAll();
-      populateUserSelect('comp-user-select-1');
-      populateUserSelect('comp-user-select-2');
+      document.getElementById('comp-player1-name').textContent = name;
+      // Populate competitor dropdown excluding player 1
+      var sel = document.getElementById('comp-user-select-2');
+      var users = getUsers();
+      sel.innerHTML = '<option value="">-- select user --</option>';
+      users.forEach(function(u) {
+        if (u.name !== name) {
+          var opt = document.createElement('option');
+          opt.value = u.name;
+          opt.textContent = u.name;
+          sel.appendChild(opt);
+        }
+      });
+      // Populate month dropdown for add user
+      var monthSel = document.getElementById('comp-new-user-month');
+      monthSel.innerHTML = '<option value="">Month</option>';
+      MONTH_NAMES.forEach(function(m, i) {
+        monthSel.innerHTML += '<option value="' + (i + 1) + '">' + m + '</option>';
+      });
+      // Populate year dropdown for add user
+      var yearSel = document.getElementById('comp-new-user-year');
+      yearSel.innerHTML = '<option value="">Year</option>';
+      var curYear = new Date().getFullYear();
+      for (var y = curYear; y >= curYear - 25; y--) {
+        yearSel.innerHTML += '<option value="' + y + '">' + y + '</option>';
+      }
+      document.getElementById('comp-new-user-name').value = '';
       document.getElementById('comp-setup').style.display = 'block';
     }
 
+    function addCompUser() {
+      var name = document.getElementById('comp-new-user-name').value.trim();
+      var month = parseInt(document.getElementById('comp-new-user-month').value);
+      var year = parseInt(document.getElementById('comp-new-user-year').value);
+      if (!name) { alert('Please enter a name.'); return; }
+      if (!month || !year) { alert('Please select month and year of birth.'); return; }
+      var users = getUsers();
+      var existing = users.find(function(u) { return u.name.toLowerCase() === name.toLowerCase(); });
+      if (existing) { alert('A user with this name already exists.'); return; }
+      users.push({ id: name, name: name, dateCreated: new Date().toISOString(), birthMonth: month, birthYear: year });
+      users.sort(function(a, b) { return a.name.localeCompare(b.name); });
+      saveUsers(users);
+      // Add to dropdown and select
+      var sel = document.getElementById('comp-user-select-2');
+      var opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+      sel.value = name;
+      document.getElementById('comp-new-user-name').value = '';
+      document.getElementById('comp-new-user-month').value = '';
+      document.getElementById('comp-new-user-year').value = '';
+    }
+
     function startComp() {
-      const n1 = document.getElementById('comp-user-select-1').value;
+      var n1 = getSelectedUser();
       const n2 = document.getElementById('comp-user-select-2').value;
-      if (!n1 || !n2) { alert('Please select both players.'); return; }
-      if (n1 === n2) { alert('Please select two different players.'); return; }
+      if (!n1 || !n2) { alert('Please select a competitor.'); return; }
+      if (n1 === n2) { alert('Please select a different competitor.'); return; }
       playerNames = [n1, n2];
       playerResults = [];
       mode = 'comp';
@@ -1822,8 +1924,10 @@ layout: null
       var statusEl = document.getElementById('api-key-status');
 
       if (!key) {
+        setSetting('apiKeyValid', '');
         statusEl.textContent = 'Saved (no key set).';
         statusEl.style.color = '#888';
+        updateAIVisibility();
         return;
       }
 
@@ -1850,12 +1954,16 @@ layout: null
           result.candidates[0].content && result.candidates[0].content.parts &&
           result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text;
         if (!text) throw new Error('Empty response');
+        setSetting('apiKeyValid', '1');
         statusEl.textContent = 'Saved \u2013 API key and model verified \u2713';
         statusEl.style.color = '#2a9d2a';
+        updateAIVisibility();
       })
       .catch(function(err) {
+        setSetting('apiKeyValid', '');
         statusEl.textContent = 'Saved \u2013 verification failed: ' + err.message;
         statusEl.style.color = '#e55';
+        updateAIVisibility();
       });
     }
 
