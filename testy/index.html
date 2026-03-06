@@ -16,6 +16,7 @@ layout: null
       text-align: center;
       background: #ffffff;
       color: #111;
+      position: relative;
     }
     h1 { margin: 30px 0 0; }
     .app-title {
@@ -134,14 +135,16 @@ layout: null
     .edit-user-form label { font-size: 0.85rem; color: #555; }
     .edit-user-form select, .edit-user-form input { margin: 4px 0 8px; }
     .back-arrow {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      font-size: 1.6rem;
+      position: absolute;
+      top: 12px;
+      left: 4px;
+      font-size: 1.8rem;
       color: #1F96D3;
       cursor: pointer;
       z-index: 100;
       display: none;
+      line-height: 1;
+      padding: 4px 8px;
     }
     .bottom-nav {
       position: fixed;
@@ -558,8 +561,10 @@ layout: null
   <div class="app-title" id="results-title">Results</div>
   <div id="score-area"></div>
   <div id="results-detail"></div>
-  <button id="btn-download-attempt" onclick="downloadAttemptData()" class="btn-secondary" style="margin-top:15px; margin-left:0;">Download Attempt Data</button>
-  <br>
+  <div style="margin-top:15px;">
+    <button id="btn-download-attempt" onclick="downloadAttemptData()" class="btn-secondary" style="margin-left:0;">Download Attempt Data</button>
+    <button id="btn-download-evaluation" onclick="downloadEvaluationData()" class="btn-secondary" style="margin-left:8px;">Download Evaluation Data</button>
+  </div>
   <button id="btn-back-to-menu" onclick="showMenu()" style="margin-top:10px; margin-left:0;">Back to Menu</button>
 </div>
 
@@ -646,6 +651,7 @@ var UI_STRINGS = {
     correctAnswer: 'Correct answer',
     explanation: 'Explanation:',
     downloadAttempt: 'Download Attempt Data',
+    downloadEvaluation: 'Download Evaluation Data',
     enterNumber: 'Enter number',
     typeAnswer: 'Type your answer...',
     noHistory: 'No test history yet.',
@@ -725,6 +731,7 @@ var UI_STRINGS = {
     correctAnswer: 'Správná odpověď',
     explanation: 'Vysvětlení:',
     downloadAttempt: 'Stáhnout data pokusu',
+    downloadEvaluation: 'Stáhnout data hodnocení',
     enterNumber: 'Zadejte číslo',
     typeAnswer: 'Napište odpověď...',
     noHistory: 'Zatím žádná historie testů.',
@@ -862,6 +869,7 @@ function updateUIStrings() {
 
   // Results
   el = document.getElementById('btn-download-attempt'); if (el) el.textContent = tr('downloadAttempt');
+  el = document.getElementById('btn-download-evaluation'); if (el) el.textContent = tr('downloadEvaluation');
   el = document.getElementById('btn-back-to-menu'); if (el) el.textContent = tr('backToMenu');
 
   // Test screen nav
@@ -903,9 +911,14 @@ function showMenu() {
   hideAll();
   document.getElementById('menu').style.display = 'block';
   document.getElementById('bottom-nav').style.display = 'flex';
+  setBackArrow(goHome);
   renderMenuUserArea();
   renderTestInfo();
   updateUIStrings();
+}
+
+function goHome() {
+  window.location.href = '../';
 }
 
 function showUserManagement() {
@@ -1979,6 +1992,14 @@ function gradeWithAI(aiQueue, results) {
             result.status = parsed.correct ? 'correct' : 'incorrect';
             result.feedback = parsed.feedback || '';
           }
+          // Store AI evaluation details for evaluation JSON
+          result.aiEvaluation = {
+            model: aiModel,
+            prompt_version: 'v1.0',
+            raw_response: text,
+            confidence: parsed.confidence || null,
+            evaluated_at: new Date().toISOString()
+          };
         } else {
           result.status = 'pending';
           result.feedback = 'AI could not grade this answer.';
@@ -2099,6 +2120,115 @@ function downloadAttemptData() {
   URL.revokeObjectURL(url);
 }
 
+// ── Test Evaluation JSON ─────────────────────────────────────────────────────
+var lastEvaluationJSON = null;
+
+function buildTestEvaluationJSON(gradedResults) {
+  var t = currentTest.test;
+  var ts = testState;
+  var attemptId = lastAttemptJSON ? lastAttemptJSON.test_attempt.id : null;
+  var evaluatedAt = new Date().toISOString();
+
+  var questionResults = [];
+  var totalQuestions = gradedResults.length;
+  var evaluated = 0;
+  var failedEvaluations = 0;
+  var maxWeighted = 0;
+  var achievedWeighted = 0;
+  var totalUnweightedScore = 0;
+
+  gradedResults.forEach(function(r, i) {
+    var q = ts.questions[i];
+    var evaluation = q.evaluation || {};
+    var weight = r.weight || 1;
+    var method = evaluation.method === 'ai' ? 'ai' : 'deterministic';
+    var resultType = evaluation.result_type || 'boolean';
+
+    var qr = {
+      question_id: r.questionId,
+      evaluation_method: method,
+      result_type: resultType,
+      correct: null,
+      score: r.score,
+      weight: weight
+    };
+
+    if (r.status === 'pending' || r.status === 'skipped') {
+      if (r.status === 'pending') failedEvaluations++;
+      qr.score = 0;
+    } else {
+      evaluated++;
+      if (resultType === 'boolean') {
+        qr.correct = r.status === 'correct';
+      } else {
+        // percentage — correct is null per schema
+        qr.correct = null;
+      }
+    }
+
+    // Attach AI evaluation details if present
+    if (method === 'ai' && r.aiEvaluation) {
+      qr.ai_evaluation = {
+        model: r.aiEvaluation.model,
+        prompt_version: r.aiEvaluation.prompt_version,
+        raw_response: r.aiEvaluation.raw_response,
+        confidence: r.aiEvaluation.confidence,
+        evaluated_at: r.aiEvaluation.evaluated_at
+      };
+    }
+
+    maxWeighted += weight;
+    achievedWeighted += qr.score * weight;
+    totalUnweightedScore += qr.score;
+
+    questionResults.push(qr);
+  });
+
+  var weightedScore = maxWeighted > 0 ? Math.round((achievedWeighted / maxWeighted) * 1000) / 1000 : 0;
+  var unweightedScore = totalQuestions > 0 ? Math.round((totalUnweightedScore / totalQuestions) * 10000) / 10000 : 0;
+
+  var status = 'complete';
+  if (failedEvaluations > 0 && evaluated > 0) status = 'partial';
+  if (failedEvaluations > 0 && evaluated === 0) status = 'failed';
+
+  return {
+    test_evaluation: {
+      id: 'eval_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8),
+      attempt_id: attemptId,
+      test_id: t.id,
+      test_version: t.version || 1,
+      evaluated_at: evaluatedAt,
+      status: status,
+      question_results: questionResults,
+      summary: {
+        total_questions: totalQuestions,
+        evaluated: evaluated,
+        failed_evaluations: failedEvaluations,
+        weighted_score: weightedScore,
+        unweighted_score: unweightedScore,
+        max_possible_weighted: maxWeighted,
+        achieved_weighted: Math.round(achievedWeighted * 1000) / 1000
+      }
+    }
+  };
+}
+
+function downloadEvaluationData() {
+  if (!lastEvaluationJSON) return;
+  var json = JSON.stringify(lastEvaluationJSON, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var ev = lastEvaluationJSON.test_evaluation;
+  var attemptId = ev.attempt_id || 'unknown';
+  a.href = url;
+  a.download = 'test-evaluation_' + attemptId + '_' + ev.evaluated_at.replace(/[:.]/g, '-').replace('T', '_').substr(0, 19) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 // ── Results Screen ───────────────────────────────────────────────────────────
 function showResults(results) {
   // Calculate score
@@ -2116,8 +2246,9 @@ function showResults(results) {
   var skipped = results.filter(function(r) { return r.status === 'skipped'; }).length;
   var pending = results.filter(function(r) { return r.status === 'pending'; }).length;
 
-  // Build attempt JSON before testState is cleared
+  // Build attempt & evaluation JSON before testState is cleared
   lastAttemptJSON = buildTestAttemptJSON(results);
+  lastEvaluationJSON = buildTestEvaluationJSON(results);
 
   // Save result
   saveTestResult(pct, results);
