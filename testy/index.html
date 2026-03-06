@@ -380,31 +380,6 @@ layout: null
     @keyframes spin { to { transform: rotate(360deg); } }
     .grading-overlay p { margin-top: 15px; color: #555; font-size: 1rem; }
 
-    /* Translate button */
-    .btn-translate {
-      display: inline-block;
-      font-size: 0.8rem;
-      padding: 4px 10px;
-      background: #e8f4fb;
-      color: #055585;
-      border: 1px solid #1F96D3;
-      border-radius: 14px;
-      cursor: pointer;
-      margin-left: 6px;
-      vertical-align: middle;
-    }
-    .btn-translate:hover { background: #d0ecf8; }
-    .btn-translate:disabled { opacity: 0.5; cursor: default; }
-    .translated-text {
-      margin-top: 8px;
-      padding: 8px 12px;
-      background: #f0f8ff;
-      border-left: 3px solid #1F96D3;
-      border-radius: 4px;
-      font-size: 0.95rem;
-      color: #333;
-    }
-
     /* History */
     .history-item {
       display: flex;
@@ -614,8 +589,6 @@ var UI_STRINGS = {
     typeAnswer: 'Type your answer...',
     noHistory: 'No test history yet.',
     showingResultsFor: 'Showing results for',
-    translate: 'Translate',
-    translating: 'Translating...',
     savedNoKey: 'Saved (no key set).',
     validating: 'Validating...',
     keyValid: 'Key is valid.',
@@ -689,8 +662,6 @@ var UI_STRINGS = {
     typeAnswer: 'Napište odpověď...',
     noHistory: 'Zatím žádná historie testů.',
     showingResultsFor: 'Výsledky pro',
-    translate: 'Přeložit',
-    translating: 'Překládám...',
     savedNoKey: 'Uloženo (klíč není nastaven).',
     validating: 'Ověřování...',
     keyValid: 'Klíč je platný.',
@@ -872,7 +843,7 @@ function showTestReady() {
   setBackArrow(showMenu);
 
   var t = currentTest.test;
-  var locale = t.default_locale || 'en';
+  var locale = getUILang();
 
   document.getElementById('test-ready-title').textContent = locStr(t.title, locale);
 
@@ -944,7 +915,7 @@ function populateMonthSelect(id) {
   var months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
   sel.innerHTML = '<option value="">' + tr('month') + '</option>';
   months.forEach(function(m, i) {
-    sel.innerHTML += '<option value="' + (i + 1) + '">' + t(m) + '</option>';
+    sel.innerHTML += '<option value="' + (i + 1) + '">' + tr(m) + '</option>';
   });
 }
 
@@ -1191,7 +1162,7 @@ function renderTestInfo() {
     return;
   }
   var t = currentTest.test;
-  var locale = t.default_locale || 'en';
+  var locale = getUILang();
   var html = '<div class="test-info">' +
     '<h3>' + escHtml(locStr(t.title, locale)) + '</h3>';
   if (t.description) {
@@ -1209,7 +1180,7 @@ var testState = null; // { questions, answers, currentIndex, locale, mediaMap, s
 
 function startTest() {
   var t = currentTest.test;
-  var locale = t.default_locale || 'en';
+  var locale = getUILang();
 
   // Build ordered question list (respecting sections or flat)
   var orderedQuestions = buildQuestionOrder(t);
@@ -1362,12 +1333,7 @@ function renderQuestion() {
   var prevSection = idx > 0 ? testState.sectionMap[testState.questions[idx - 1].id] : null;
   var isNewSection = section && (!prevSection || prevSection.id !== section.id);
   if (isNewSection) {
-    var secTitle = locStr(section.title, locale);
-    var sh = '<div class="section-header" id="section-hdr-wrap"><h3>' + escHtml(secTitle);
-    if (isAIEnabled()) {
-      sh += ' <button class="btn-translate" style="color:#fff; border-color:#fff; background:rgba(255,255,255,0.2);" data-translate-text="' + escAttr(secTitle) + '" data-target="section-hdr-wrap" onclick="translateFromBtn(this)">' + escHtml(tr('translate')) + '</button>';
-    }
-    sh += '</h3>';
+    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + '</h3>';
     if (section.instructions) {
       sh += '<p>' + escHtml(locStr(section.instructions, locale)) + '</p>';
     }
@@ -1385,14 +1351,8 @@ function renderQuestion() {
     html += renderMediaRefs(q.media_refs, locale);
   }
 
-  // Question text with translate button
-  var qText = locStr(q.text, locale);
-  html += '<div id="q-text-wrap">';
-  html += '<div class="question-text">' + escHtml(qText);
-  if (isAIEnabled()) {
-    html += ' <button class="btn-translate" data-translate-text="' + escAttr(qText) + '" data-target="q-text-wrap" onclick="translateFromBtn(this)">' + escHtml(tr('translate')) + '</button>';
-  }
-  html += '</div></div>';
+  // Question text
+  html += '<div class="question-text">' + escHtml(locStr(q.text, locale)) + '</div>';
 
   // Hint
   if (testState.settings.show_hints && q.feedback && q.feedback.hint) {
@@ -1474,19 +1434,13 @@ function renderSingleChoice(config, saved, idx, locale) {
     options = shuffle(options);
   }
 
-  var aiOn = isAIEnabled();
   var html = '<ul class="option-list">';
-  options.forEach(function(opt, oi) {
+  options.forEach(function(opt) {
     var sel = (saved === opt.id) ? ' selected' : '';
-    var optWrapId = 'opt-wrap-' + oi;
-    html += '<li class="option-item' + sel + '" id="' + optWrapId + '" onclick="selectOption(' + idx + ',\'' + escHtml(opt.id) + '\')">';
+    html += '<li class="option-item' + sel + '" onclick="selectOption(' + idx + ',\'' + escHtml(opt.id) + '\')">';
     html += '<span class="option-radio"></span>';
     html += '<span>';
-    var optText = locStr(opt.text, locale);
-    html += escHtml(optText);
-    if (aiOn) {
-      html += ' <button class="btn-translate" data-translate-text="' + escAttr(optText) + '" data-target="' + optWrapId + '" onclick="event.stopPropagation(); translateFromBtn(this)">' + escHtml(tr('translate')) + '</button>';
-    }
+    html += escHtml(locStr(opt.text, locale));
     // Option media
     if (opt.media_ref && testState.mediaMap[opt.media_ref]) {
       var m = testState.mediaMap[opt.media_ref];
@@ -1794,7 +1748,7 @@ function showResults(results) {
   document.getElementById('results-screen').style.display = 'block';
 
   var t = currentTest.test;
-  var locale = t.default_locale || 'en';
+  var locale = getUILang();
   document.getElementById('results-title').textContent = locStr(t.title, locale) + ' — ' + tr('results');
 
   var scoreHtml = '<div class="score-circle ' + scoreClass + '">' +
@@ -1862,7 +1816,7 @@ function saveTestResult(pct, results) {
   var data = getAppData();
   if (!data.testResults) data.testResults = [];
   var t = currentTest.test;
-  var locale = t.default_locale || 'en';
+  var locale = getUILang();
 
   data.testResults.push({
     testId: t.id,
@@ -1976,98 +1930,13 @@ function escHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function escAttr(s) {
-  return escHtml(s).replace(/'/g, '&#39;');
-}
-
-function translateFromBtn(btn) {
-  var text = btn.getAttribute('data-translate-text');
-  var targetId = btn.getAttribute('data-target');
-  translateElement(btn, text, targetId);
-}
-
 function locStr(obj, locale) {
   if (!obj) return '';
   if (typeof obj === 'string') return obj;
-  return obj[locale] || obj['en'] || obj[Object.keys(obj)[0]] || '';
-}
-
-// ── Translation ──────────────────────────────────────────────────────────────
-var translationCache = {};
-
-function getTargetLang() {
-  var lang = getUILang();
-  return lang === 'cs' ? 'Czech' : 'English';
-}
-
-function getSourceLangGuess() {
-  // The test content locale — opposite of UI lang for translation
-  var uiLang = getUILang();
-  return uiLang === 'cs' ? 'English' : 'Czech';
-}
-
-function translateText(text, targetLang, callback) {
-  var cacheKey = targetLang + ':' + text;
-  if (translationCache[cacheKey]) {
-    callback(null, translationCache[cacheKey]);
-    return;
-  }
-
-  if (!isAIEnabled()) {
-    callback('No API key configured');
-    return;
-  }
-
-  var prompt = 'Translate the following text to ' + targetLang + '. Return ONLY the translated text, nothing else.\n\n' + text;
-  var aiModel = getAiModel();
-
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': getSetting('ApiKey') },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    try {
-      var translated = data.candidates[0].content.parts[0].text.trim();
-      translationCache[cacheKey] = translated;
-      callback(null, translated);
-    } catch(e) {
-      callback('Translation failed');
-    }
-  })
-  .catch(function(err) {
-    callback('Connection error: ' + err.message);
-  });
-}
-
-function translateElement(btnEl, text, containerId) {
-  var container = document.getElementById(containerId);
-  if (!container) return;
-
-  // If translation already shown, toggle it off
-  var existing = container.querySelector('.translated-text');
-  if (existing) {
-    existing.remove();
-    return;
-  }
-
-  btnEl.disabled = true;
-  btnEl.textContent = tr('translating');
-
-  var targetLang = getTargetLang();
-  translateText(text, targetLang, function(err, translated) {
-    btnEl.disabled = false;
-    btnEl.textContent = tr('translate');
-    if (err) {
-      alert(err);
-      return;
-    }
-    var div = document.createElement('div');
-    div.className = 'translated-text';
-    div.textContent = translated;
-    container.appendChild(div);
-  });
+  if (obj[locale]) return obj[locale];
+  // Fallback: test default_locale, then 'en', then first available
+  var defLocale = currentTest && currentTest.test ? currentTest.test.default_locale : null;
+  return (defLocale && obj[defLocale]) || obj['en'] || obj[Object.keys(obj)[0]] || '';
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
