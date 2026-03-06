@@ -296,6 +296,9 @@ layout: null
   <!-- Difficulty selection -->
   <div id="difficulty" style="display:none">
     <div id="level-buttons-container"></div>
+    <div id="solo-ai-generate-wrap" style="display:none; margin-top:20px;">
+      <button onclick="generateAITest(soloName)" style="background:#2a9d2a;">Generate test based on your previous results</button>
+    </div>
     <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:15px;">
       <button onclick="document.getElementById('custom-test-file').click()" style="font-size:0.9em; padding:6px 14px; background:#888;">Load Custom Test</button>
       <input type="file" id="custom-test-file" accept=".json" style="display:none" onchange="loadCustomTest(event)">
@@ -519,6 +522,8 @@ layout: null
       var enabled = isAIEnabled();
       var teacherWrap = document.getElementById('ai-teacher-menu-wrap');
       if (teacherWrap) teacherWrap.style.display = enabled ? 'block' : 'none';
+      var soloAI = document.getElementById('solo-ai-generate-wrap');
+      if (soloAI) soloAI.style.display = enabled ? 'block' : 'none';
       // Re-render user list if it's visible (to show/hide AI buttons)
       var userMgmt = document.getElementById('user-management');
       if (userMgmt && userMgmt.style.display !== 'none') renderUserList();
@@ -1620,6 +1625,8 @@ layout: null
       setSetting('lastSoloName', soloName);
       hideAll();
       document.getElementById('difficulty').style.display = 'block';
+      var soloAI = document.getElementById('solo-ai-generate-wrap');
+      if (soloAI) soloAI.style.display = isAIEnabled() ? 'block' : 'none';
     }
 
     populateYearDropdown();
