@@ -174,9 +174,43 @@ layout: null
       font-size: 0.95rem;
       line-height: 1.5;
     }
+    .back-arrow {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 1.6rem;
+      color: #4a90d9;
+      cursor: pointer;
+      z-index: 100;
+      padding: 4px 10px;
+      line-height: 1;
+      user-select: none;
+    }
+    .back-arrow:hover { color: #2a6db5; }
+    .review-table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      text-align: left;
+      width: 100%;
+      max-width: 400px;
+    }
+    .review-table th {
+      padding: 6px 10px;
+      border-bottom: 2px solid #ddd;
+      color: #4a90d9;
+      font-size: 0.85rem;
+    }
+    .review-table td {
+      padding: 5px 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .review-table tr.review-wrong td { color: #c33; }
+    .review-table tr.review-correct td { color: #333; }
   </style>
 </head>
 <body>
+  <div class="back-arrow" id="back-arrow" style="display:none" onclick="goBack()">&lsaquo;</div>
   <h1>Matematika</h1>
 
   <!-- Mode selection -->
@@ -217,6 +251,7 @@ layout: null
   <!-- AI Teacher: post-test evaluation -->
   <div id="ai-teacher-eval" style="display:none">
     <div class="summary" id="ai-teacher-eval-summary"></div>
+    <div id="ai-teacher-problem-review"></div>
     <div id="ai-teacher-eval-result"></div>
     <button class="restart-btn" onclick="showAITeacherDashboard(aiTeacherUser)">Back to Dashboard</button>
   </div>
@@ -299,18 +334,20 @@ layout: null
         <option value="">-- select user --</option>
       </select>
     </div>
-    <div id="comp-add-user-area" style="margin:15px 0; border-top:1px solid #ddd; padding-top:15px;">
-      <p style="font-size:0.9rem; color:#888;">Competitor not in the list?</p>
-      <input type="text" id="comp-new-user-name" placeholder="Name">
-      <div style="margin:10px 0;">
-        <select id="comp-new-user-month" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
-          <option value="">Month</option>
-        </select>
-        <select id="comp-new-user-year" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
-          <option value="">Year</option>
-        </select>
+    <div id="comp-add-user-area" style="margin:15px 0;">
+      <button id="comp-add-user-btn" onclick="document.getElementById('comp-add-user-btn').style.display='none'; document.getElementById('comp-add-user-form').style.display='block';" style="font-size:0.9rem; padding:6px 14px; background:#888;">Add new user</button>
+      <div id="comp-add-user-form" style="display:none; border-top:1px solid #ddd; padding-top:15px; margin-top:10px;">
+        <input type="text" id="comp-new-user-name" placeholder="Name">
+        <div style="margin:10px 0;">
+          <select id="comp-new-user-month" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
+            <option value="">Month</option>
+          </select>
+          <select id="comp-new-user-year" style="font-size:1rem; padding:6px; border:2px solid #ccc; border-radius:6px;">
+            <option value="">Year</option>
+          </select>
+        </div>
+        <button onclick="addCompUser()" style="font-size:0.9rem; padding:6px 14px;">Add &amp; Select</button>
       </div>
-      <button onclick="addCompUser()" style="font-size:0.9rem; padding:6px 14px;">Add &amp; Select</button>
     </div>
     <button class="btn-block" onclick="startComp()">Start</button>
     <button class="restart-btn" onclick="showMenu()" style="font-size:0.9rem; padding:6px 14px; background:#888;">Back</button>
@@ -335,6 +372,7 @@ layout: null
   <!-- Solo done -->
   <div id="done" style="display:none">
     <div class="summary" id="summary"></div>
+    <div id="problem-review"></div>
     <div id="personal-best"></div>
     <div id="ai-evaluate-wrap" style="display:none; margin-top:15px;">
       <button id="ai-evaluate-btn" onclick="requestAIEvaluation()" style="font-size:1rem; padding:8px 18px; background:#2a9d2a; color:white; border:none; border-radius:6px; cursor:pointer;">AI Evaluate</button>
@@ -381,6 +419,7 @@ layout: null
         <td id="t2"></td>
       </tr>
     </table>
+    <div id="comp-problem-review"></div>
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
 
@@ -394,6 +433,38 @@ layout: null
     let compSessionId = null;
     let customTestProblems = null; // session-only: loaded custom test problems
     let customTestName = null;     // session-only: loaded custom test name
+    var backTarget = null; // function to call when back arrow is clicked
+
+    function setBackArrow(fn) {
+      var arrow = document.getElementById('back-arrow');
+      if (fn) {
+        backTarget = fn;
+        arrow.style.display = '';
+      } else {
+        backTarget = null;
+        arrow.style.display = 'none';
+      }
+    }
+
+    function goBack() {
+      if (backTarget) backTarget();
+    }
+
+    function buildProblemReview(problemList) {
+      var h = '<table class="review-table"><tr><th>#</th><th>Problem</th><th>Answer</th><th></th></tr>';
+      problemList.forEach(function(p, i) {
+        var cls = p.correct ? 'review-correct' : 'review-wrong';
+        var answerCol = p.userAnswer;
+        var correctCol = '';
+        if (!p.correct) {
+          correctCol = p.correctAnswer || formatCorrectAnswer(p);
+        }
+        var probStr = p.problem || formatProblemString(p);
+        h += '<tr class="' + cls + '"><td>' + (i + 1) + '</td><td>' + probStr + '</td><td>' + answerCol + '</td><td>' + correctCol + '</td></tr>';
+      });
+      h += '</table>';
+      return h;
+    }
 
     function randInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -605,6 +676,7 @@ layout: null
       ['menu','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management','data-management','ai-teacher-dashboard','ai-teacher-loading','ai-teacher-eval'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
+      setBackArrow(null);
     }
 
     function getSelectedUser() {
@@ -788,11 +860,13 @@ layout: null
         addTestResult(testObj);
         var scores = getTopScores(level, 20);
         hideAll();
+        setBackArrow(showMenu);
         document.getElementById('done').style.display = 'block';
         document.getElementById('summary').innerHTML =
           '<b>' + soloName + '</b><br>' +
           'Mistakes: <b>' + mistakes + '</b><br>' +
           'Time: <b>' + formatTime(elapsed) + '</b>';
+        document.getElementById('problem-review').innerHTML = buildProblemReview(testObj.problems);
         document.getElementById('personal-best').innerHTML =
           '<p><b>Top scores \u2013 ' + (LEVEL_LABELS[level] || level) + '</b></p>' +
           buildScoreTable(scores.slice(0, 5));
@@ -817,7 +891,7 @@ layout: null
         var currentPlayerIndex = playerResults.length;
         var testObj = buildTestObject(playerNames[currentPlayerIndex], true);
         addTestResult(testObj);
-        playerResults.push({ mistakes: mistakes, time: elapsed });
+        playerResults.push({ mistakes: mistakes, time: elapsed, problems: testObj.problems });
         if (playerResults.length === 1) {
           hideAll();
           document.getElementById('handoff').style.display = 'block';
@@ -833,6 +907,7 @@ layout: null
 
     function showCompResults() {
       hideAll();
+      setBackArrow(showMenu);
       document.getElementById('comp-done').style.display = 'block';
       const r1 = playerResults[0];
       const r2 = playerResults[1];
@@ -868,6 +943,16 @@ layout: null
       } else {
         banner.textContent = playerNames[winner] + ' wins!';
       }
+
+      // Problem review for both players
+      var reviewHtml = '';
+      playerResults.forEach(function(pr, idx) {
+        if (pr.problems) {
+          reviewHtml += '<p style="margin-top:20px;"><b>' + playerNames[idx] + '</b></p>';
+          reviewHtml += buildProblemReview(pr.problems);
+        }
+      });
+      document.getElementById('comp-problem-review').innerHTML = reviewHtml;
     }
 
     // --- Mode launchers ---
@@ -1272,6 +1357,7 @@ layout: null
     function showAITeacherDashboard(userName) {
       hideAll();
       document.getElementById('ai-teacher-dashboard').style.display = 'block';
+      setBackArrow(showMenu);
       document.getElementById('ai-teacher-name').textContent = userName;
       aiTeacherUser = userName;
 
@@ -1546,6 +1632,7 @@ layout: null
       // Show summary while evaluating
       hideAll();
       document.getElementById('ai-teacher-eval').style.display = 'block';
+      setBackArrow(function() { showAITeacherDashboard(aiTeacherUser); });
 
       var correctCount = 0;
       testObj.problems.forEach(function(p) { if (p.correct) correctCount++; });
@@ -1556,6 +1643,7 @@ layout: null
         '<b>' + escapeHtml(aiTeacherUser) + '</b><br>' +
         'Score: <b>' + correctCount + '/' + testObj.problems.length + '</b><br>' +
         'Time: <b>' + formatTime(elapsed) + '</b>';
+      document.getElementById('ai-teacher-problem-review').innerHTML = buildProblemReview(testObj.problems);
 
       var evalResultEl = document.getElementById('ai-teacher-eval-result');
       evalResultEl.innerHTML = '<div class="ai-eval-box"><span style="color:#888;">Analyzing performance and updating assessment...</span></div>';
@@ -1644,6 +1732,7 @@ layout: null
     function showUserManagement() {
       hideAll();
       document.getElementById('user-management').style.display = 'block';
+      setBackArrow(showMenu);
       renderUserList();
     }
 
@@ -1654,6 +1743,7 @@ layout: null
       mode = 'solo';
       hideAll();
       document.getElementById('difficulty').style.display = 'block';
+      setBackArrow(showMenu);
       var soloAI = document.getElementById('solo-ai-generate-wrap');
       if (soloAI) soloAI.style.display = isAIEnabled() ? 'block' : 'none';
     }
@@ -1723,6 +1813,7 @@ layout: null
     function showScoreboard() {
       hideAll();
       document.getElementById('scoreboard').style.display = 'block';
+      setBackArrow(showMenu);
       document.getElementById('user-leaderboard').innerHTML = buildUserLeaderboard();
       var btns = '';
       Object.keys(LEVEL_LABELS).forEach(function(lv) {
@@ -1771,7 +1862,10 @@ layout: null
         yearSel.innerHTML += '<option value="' + y + '">' + y + '</option>';
       }
       document.getElementById('comp-new-user-name').value = '';
+      document.getElementById('comp-add-user-btn').style.display = '';
+      document.getElementById('comp-add-user-form').style.display = 'none';
       document.getElementById('comp-setup').style.display = 'block';
+      setBackArrow(showMenu);
     }
 
     function addCompUser() {
@@ -1796,6 +1890,8 @@ layout: null
       document.getElementById('comp-new-user-name').value = '';
       document.getElementById('comp-new-user-month').value = '';
       document.getElementById('comp-new-user-year').value = '';
+      document.getElementById('comp-add-user-form').style.display = 'none';
+      document.getElementById('comp-add-user-btn').style.display = '';
     }
 
     function startComp() {
@@ -1808,6 +1904,7 @@ layout: null
       mode = 'comp';
       hideAll();
       document.getElementById('difficulty').style.display = 'block';
+      setBackArrow(function() { showCompSetup(); });
     }
 
     function pickLevel(lv) {
@@ -1911,6 +2008,7 @@ layout: null
     function showDataManagement() {
       hideAll();
       document.getElementById('data-management').style.display = 'block';
+      setBackArrow(showMenu);
       document.getElementById('api-key-input').value = getSetting('ApiKey');
       document.getElementById('ai-model-input').value = getSetting('AiModel') || '';
       document.getElementById('api-key-status').textContent = '';
