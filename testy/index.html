@@ -16,6 +16,7 @@ layout: null
       text-align: center;
       background: #ffffff;
       color: #111;
+      position: relative;
     }
     h1 { margin: 30px 0 0; }
     .app-title {
@@ -134,14 +135,16 @@ layout: null
     .edit-user-form label { font-size: 0.85rem; color: #555; }
     .edit-user-form select, .edit-user-form input { margin: 4px 0 8px; }
     .back-arrow {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      font-size: 1.6rem;
+      position: absolute;
+      top: 12px;
+      left: 4px;
+      font-size: 1.8rem;
       color: #1F96D3;
       cursor: pointer;
       z-index: 100;
       display: none;
+      line-height: 1;
+      padding: 4px 8px;
     }
     .bottom-nav {
       position: fixed;
@@ -908,9 +911,14 @@ function showMenu() {
   hideAll();
   document.getElementById('menu').style.display = 'block';
   document.getElementById('bottom-nav').style.display = 'flex';
+  setBackArrow(goHome);
   renderMenuUserArea();
   renderTestInfo();
   updateUIStrings();
+}
+
+function goHome() {
+  window.location.href = '../';
 }
 
 function showUserManagement() {
