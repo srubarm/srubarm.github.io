@@ -166,6 +166,155 @@ layout: null
       font-size: 0.9rem;
     }
     .api-status { font-size: 0.85rem; color: #1F96D3; margin-top: 4px; }
+
+    /* ── Test-taking screen ── */
+    .question-screen { text-align: left; }
+    .progress-bar-wrap {
+      background: #e5e5e5;
+      border-radius: 6px;
+      height: 8px;
+      margin: 15px 0 10px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: #1F96D3;
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.3s;
+    }
+    .progress-text {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .section-header {
+      background: #055585;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+    .section-header h3 { margin: 0; font-size: 1.05rem; }
+    .section-header p { margin: 4px 0 0; font-size: 0.85rem; opacity: 0.85; }
+    .question-text {
+      font-size: 1.15rem;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      color: #111;
+    }
+    .question-hint {
+      background: #e8f4fb;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #055585;
+      margin-bottom: 15px;
+    }
+    .question-media { margin-bottom: 15px; text-align: center; }
+    .question-media img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
+    }
+    .question-media audio { width: 100%; }
+
+    /* Single-choice options */
+    .option-list { list-style: none; padding: 0; margin: 0; }
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      margin: 8px 0;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 1.05rem;
+    }
+    .option-item:hover { border-color: #1F96D3; background: #f0f8ff; }
+    .option-item.selected { border-color: #1F96D3; background: #e8f4fb; }
+    .option-item .option-radio {
+      width: 22px; height: 22px;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .option-item.selected .option-radio {
+      border-color: #1F96D3;
+      background: #1F96D3;
+    }
+    .option-item.selected .option-radio::after {
+      content: '';
+      width: 10px; height: 10px;
+      background: #fff;
+      border-radius: 50%;
+    }
+    .option-item .option-media { margin-top: 8px; }
+    .option-item .option-media img {
+      max-width: 120px;
+      border-radius: 6px;
+    }
+
+    /* Number input */
+    .number-input {
+      font-size: 1.5rem;
+      width: 160px;
+      text-align: center;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    /* Free text input */
+    .free-text-input {
+      font-size: 1.1rem;
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    /* Nav buttons */
+    .question-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+      gap: 12px;
+    }
+    .question-nav button {
+      flex: 1;
+      margin-left: 0;
+    }
+    .btn-skip {
+      background: #e5e5e5;
+      color: #555;
+    }
+    .btn-prev {
+      background: #fff;
+      color: #1F96D3;
+      border: 2px solid #1F96D3;
+    }
+
+    /* Timer */
+    .timer-display {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #055585;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .timer-display.warning { color: #e55; }
   </style>
 </head>
 <body>
@@ -249,6 +398,20 @@ layout: null
   <button onclick="startTest()" style="font-size:1.3rem; padding:12px 40px; margin-top:15px;">Start Test</button>
 </div>
 
+<!-- TEST-TAKING SCREEN -->
+<div id="test-screen" style="display:none" class="question-screen">
+  <div id="test-timer" class="timer-display" style="display:none"></div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+  <div class="progress-text" id="progress-text"></div>
+  <div id="section-header-area"></div>
+  <div id="question-area"></div>
+  <div class="question-nav">
+    <button class="btn-prev" id="btn-prev" onclick="prevQuestion()">Back</button>
+    <button class="btn-skip" id="btn-skip" onclick="skipQuestion()">Skip</button>
+    <button id="btn-next" onclick="nextQuestion()">Next</button>
+  </div>
+</div>
+
 <!-- Hidden file inputs -->
 <input type="file" id="test-file-input" accept=".json" style="display:none" onchange="handleTestFile(event)">
 
@@ -301,7 +464,7 @@ function saveUsers(users) {
 var backTarget = null;
 var currentTest = null;
 
-var ALL_SCREENS = ['menu', 'user-management', 'settings', 'test-ready'];
+var ALL_SCREENS = ['menu', 'user-management', 'settings', 'test-ready', 'test-screen'];
 
 function hideAll() {
   ALL_SCREENS.forEach(function(id) {
@@ -664,9 +827,365 @@ function renderTestInfo() {
   area.innerHTML = html;
 }
 
+// ── Test Engine ──────────────────────────────────────────────────────────────
+var testState = null; // { questions, answers, currentIndex, locale, mediaMap, sectionMap, timer }
+
 function startTest() {
-  // Placeholder — will be implemented in Milestone 2
-  alert('Test would start here! (Coming in Milestone 2)');
+  var t = currentTest.test;
+  var locale = t.default_locale || 'en';
+
+  // Build ordered question list (respecting sections or flat)
+  var orderedQuestions = buildQuestionOrder(t);
+
+  // Build media lookup
+  var mediaMap = {};
+  if (t.media && Array.isArray(t.media)) {
+    t.media.forEach(function(m) { mediaMap[m.id] = m; });
+  }
+
+  // Build section lookup for each question
+  var sectionMap = {};
+  if (t.sections && Array.isArray(t.sections)) {
+    t.sections.forEach(function(s) {
+      if (s.question_ids) {
+        s.question_ids.forEach(function(qid) {
+          sectionMap[qid] = s;
+        });
+      }
+    });
+  }
+
+  // Initialise answers array
+  var answers = orderedQuestions.map(function() { return null; });
+
+  testState = {
+    questions: orderedQuestions,
+    answers: answers,
+    currentIndex: 0,
+    locale: locale,
+    mediaMap: mediaMap,
+    sectionMap: sectionMap,
+    settings: t.settings || {},
+    timer: null,
+    timerSeconds: 0,
+    timerLimit: (t.settings && t.settings.default_time_limit_seconds) || null
+  };
+
+  showTestScreen();
+}
+
+function buildQuestionOrder(t) {
+  var questions;
+
+  if (t.sections && t.sections.length > 0) {
+    // Use section ordering
+    var qById = {};
+    t.questions.forEach(function(q) { qById[q.id] = q; });
+
+    questions = [];
+    t.sections.forEach(function(s) {
+      var sectionQs = (s.question_ids || []).map(function(id) { return qById[id]; }).filter(Boolean);
+      if (s.shuffle_questions) sectionQs = shuffle(sectionQs);
+      questions = questions.concat(sectionQs);
+    });
+
+    // Add any questions not in any section
+    var inSection = {};
+    t.sections.forEach(function(s) {
+      (s.question_ids || []).forEach(function(id) { inSection[id] = true; });
+    });
+    t.questions.forEach(function(q) {
+      if (!inSection[q.id]) questions.push(q);
+    });
+  } else {
+    questions = t.questions.slice();
+    if (t.settings && t.settings.shuffle_questions) questions = shuffle(questions);
+  }
+
+  return questions;
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function showTestScreen() {
+  hideAll();
+  document.getElementById('test-screen').style.display = 'block';
+  setBackArrow(confirmQuitTest);
+
+  // Start timer if time limited
+  if (testState.timerLimit) {
+    testState.timerSeconds = testState.timerLimit;
+    startTimer();
+  }
+
+  renderQuestion();
+}
+
+function confirmQuitTest() {
+  if (confirm('Are you sure you want to quit the test? Your answers will be lost.')) {
+    stopTimer();
+    testState = null;
+    showMenu();
+  }
+}
+
+// ── Timer ────────────────────────────────────────────────────────────────────
+function startTimer() {
+  var el = document.getElementById('test-timer');
+  el.style.display = 'block';
+  updateTimerDisplay();
+  testState.timer = setInterval(function() {
+    testState.timerSeconds--;
+    updateTimerDisplay();
+    if (testState.timerSeconds <= 0) {
+      stopTimer();
+      finishTest();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (testState && testState.timer) {
+    clearInterval(testState.timer);
+    testState.timer = null;
+  }
+  document.getElementById('test-timer').style.display = 'none';
+}
+
+function updateTimerDisplay() {
+  var el = document.getElementById('test-timer');
+  var s = testState.timerSeconds;
+  var m = Math.floor(s / 60);
+  var sec = s % 60;
+  el.textContent = m + ':' + (sec < 10 ? '0' : '') + sec;
+  el.className = 'timer-display' + (s <= 60 ? ' warning' : '');
+}
+
+// ── Question Rendering ──────────────────────────────────────────────────────
+function renderQuestion() {
+  var idx = testState.currentIndex;
+  var total = testState.questions.length;
+  var q = testState.questions[idx];
+  var locale = testState.locale;
+
+  // Progress
+  document.getElementById('progress-fill').style.width = ((idx + 1) / total * 100) + '%';
+  document.getElementById('progress-text').textContent = 'Question ' + (idx + 1) + ' of ' + total;
+
+  // Section header
+  var sectionArea = document.getElementById('section-header-area');
+  var section = testState.sectionMap[q.id];
+  if (section) {
+    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + '</h3>';
+    if (section.instructions) {
+      sh += '<p>' + escHtml(locStr(section.instructions, locale)) + '</p>';
+    }
+    sh += '</div>';
+    sectionArea.innerHTML = sh;
+  } else {
+    sectionArea.innerHTML = '';
+  }
+
+  // Build question area
+  var html = '';
+
+  // Media
+  if (q.media_refs && q.media_refs.length > 0) {
+    html += renderMediaRefs(q.media_refs, locale);
+  }
+
+  // Question text
+  html += '<div class="question-text">' + escHtml(locStr(q.text, locale)) + '</div>';
+
+  // Hint
+  if (testState.settings.show_hints && q.feedback && q.feedback.hint) {
+    html += '<div class="question-hint">' + escHtml(locStr(q.feedback.hint, locale)) + '</div>';
+  }
+
+  // Answer input
+  html += renderAnswerInput(q, idx, locale);
+
+  document.getElementById('question-area').innerHTML = html;
+
+  // Nav buttons
+  document.getElementById('btn-prev').style.display = idx > 0 ? '' : 'none';
+  document.getElementById('btn-skip').style.display = (testState.settings.allow_skip !== false) ? '' : 'none';
+
+  var isLast = idx === total - 1;
+  var nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = isLast ? 'Finish' : 'Next';
+}
+
+function renderMediaRefs(refs, locale) {
+  var html = '';
+  refs.forEach(function(refId) {
+    var m = testState.mediaMap[refId];
+    if (!m) return;
+    html += renderMedia(m, locale);
+  });
+  return html;
+}
+
+function renderMedia(m, locale) {
+  var html = '<div class="question-media">';
+  if (m.type === 'image') {
+    var src = '';
+    if (m.url) {
+      src = locStr(m.url, locale);
+    } else if (m.data) {
+      var b64 = locStr(m.data, locale);
+      src = 'data:' + (m.mime_type || 'image/png') + ';base64,' + b64;
+    }
+    var alt = m.alt_text ? escHtml(locStr(m.alt_text, locale)) : '';
+    if (src) html += '<img src="' + escHtml(src) + '" alt="' + alt + '">';
+  } else if (m.type === 'audio') {
+    var audioSrc = '';
+    if (m.url) {
+      audioSrc = locStr(m.url, locale);
+    } else if (m.data) {
+      var b64a = locStr(m.data, locale);
+      audioSrc = 'data:' + (m.mime_type || 'audio/mpeg') + ';base64,' + b64a;
+    }
+    if (audioSrc) html += '<audio controls src="' + escHtml(audioSrc) + '"></audio>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderAnswerInput(q, idx, locale) {
+  var type = q.answer_type;
+  var config = q.answer_config || {};
+  var saved = testState.answers[idx];
+
+  if (type === 'single_choice') {
+    return renderSingleChoice(config, saved, idx, locale);
+  } else if (type === 'number') {
+    return renderNumberInput(saved, idx);
+  } else if (type === 'free_text') {
+    return renderFreeText(saved, idx);
+  }
+  return '<p style="color:#888;">Unknown answer type: ' + escHtml(type) + '</p>';
+}
+
+function renderSingleChoice(config, saved, idx, locale) {
+  var options = config.options || [];
+  if (config.shuffle_options) {
+    // Shuffle but keep consistent for this question by seeding from question index
+    options = shuffle(options);
+  }
+
+  var html = '<ul class="option-list">';
+  options.forEach(function(opt) {
+    var sel = (saved === opt.id) ? ' selected' : '';
+    html += '<li class="option-item' + sel + '" onclick="selectOption(' + idx + ',\'' + escHtml(opt.id) + '\')">';
+    html += '<span class="option-radio"></span>';
+    html += '<span>';
+    html += escHtml(locStr(opt.text, locale));
+    // Option media
+    if (opt.media_ref && testState.mediaMap[opt.media_ref]) {
+      var m = testState.mediaMap[opt.media_ref];
+      if (m.type === 'image') {
+        var src = '';
+        if (m.url) src = locStr(m.url, locale);
+        else if (m.data) src = 'data:' + (m.mime_type || 'image/png') + ';base64,' + locStr(m.data, locale);
+        if (src) html += '<div class="option-media"><img src="' + escHtml(src) + '" alt="' + escHtml(locStr(m.alt_text, locale) || '') + '"></div>';
+      }
+    }
+    html += '</span>';
+    html += '</li>';
+  });
+  html += '</ul>';
+  return html;
+}
+
+function selectOption(idx, optId) {
+  testState.answers[idx] = optId;
+  renderQuestion();
+}
+
+function renderNumberInput(saved, idx) {
+  var val = (saved !== null && saved !== undefined) ? saved : '';
+  return '<input type="number" class="number-input" id="number-answer" value="' + escHtml(String(val)) + '" ' +
+    'oninput="saveNumberAnswer(' + idx + ')" placeholder="Enter number">';
+}
+
+function saveNumberAnswer(idx) {
+  var el = document.getElementById('number-answer');
+  if (el) {
+    var v = el.value.trim();
+    testState.answers[idx] = v === '' ? null : parseFloat(v);
+  }
+}
+
+function renderFreeText(saved, idx) {
+  var val = saved || '';
+  return '<textarea class="free-text-input" id="text-answer" oninput="saveTextAnswer(' + idx + ')" placeholder="Type your answer...">' +
+    escHtml(val) + '</textarea>';
+}
+
+function saveTextAnswer(idx) {
+  var el = document.getElementById('text-answer');
+  if (el) testState.answers[idx] = el.value;
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+function nextQuestion() {
+  // Save any pending input
+  saveCurrentInput();
+
+  if (testState.currentIndex >= testState.questions.length - 1) {
+    // Last question — confirm finish
+    var unanswered = testState.answers.filter(function(a) { return a === null || a === undefined || a === ''; }).length;
+    var msg = 'Submit your test?';
+    if (unanswered > 0) msg = unanswered + ' question' + (unanswered > 1 ? 's' : '') + ' unanswered. Submit anyway?';
+    if (confirm(msg)) {
+      finishTest();
+    }
+    return;
+  }
+
+  testState.currentIndex++;
+  renderQuestion();
+}
+
+function prevQuestion() {
+  saveCurrentInput();
+  if (testState.currentIndex > 0) {
+    testState.currentIndex--;
+    renderQuestion();
+  }
+}
+
+function skipQuestion() {
+  if (testState.currentIndex < testState.questions.length - 1) {
+    testState.currentIndex++;
+    renderQuestion();
+  }
+}
+
+function saveCurrentInput() {
+  var idx = testState.currentIndex;
+  var q = testState.questions[idx];
+  if (q.answer_type === 'number') {
+    saveNumberAnswer(idx);
+  } else if (q.answer_type === 'free_text') {
+    saveTextAnswer(idx);
+  }
+}
+
+function finishTest() {
+  stopTimer();
+  // Placeholder — grading will be in Milestone 3
+  alert('Test submitted! Grading coming in Milestone 3.\n\nAnswers collected: ' + testState.answers.filter(function(a) { return a !== null && a !== undefined && a !== ''; }).length + '/' + testState.questions.length);
+  testState = null;
+  showMenu();
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
