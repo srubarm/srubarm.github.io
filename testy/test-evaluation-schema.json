@@ -1,0 +1,69 @@
+{
+  "test_evaluation": {
+    "id": "eval_uuid",
+    "attempt_id": "attempt_uuid",
+    "test_id": "uuid",
+    "test_version": 1,
+    "evaluated_at": "ISO8601",
+    "status": "complete | partial | failed",
+
+    "question_results": [
+      {
+        "question_id": "q_001",
+        "evaluation_method": "deterministic",
+        "result_type": "boolean",
+        "correct": true,
+        "score": 1.0,
+        "weight": 2
+      },
+      {
+        "question_id": "q_002",
+        "evaluation_method": "deterministic",
+        "result_type": "boolean",
+        "correct": true,
+        "score": 1.0,
+        "weight": 1
+      },
+      {
+        "question_id": "q_003",
+        "evaluation_method": "ai",
+        "result_type": "percentage",
+        "correct": null,
+        "score": 0.75,
+        "weight": 3,
+        "ai_evaluation": {
+          "model": "claude-sonnet-4-20250514",
+          "prompt_version": "v1.2",
+          "raw_response": "The student demonstrates understanding of the core process but omitted the role of chlorophyll...",
+          "confidence": 0.9,
+          "evaluated_at": "ISO8601"
+        }
+      },
+      {
+        "question_id": "q_004",
+        "evaluation_method": "ai",
+        "result_type": "boolean",
+        "correct": true,
+        "score": 1.0,
+        "weight": 1,
+        "ai_evaluation": {
+          "model": "claude-sonnet-4-20250514",
+          "prompt_version": "v1.2",
+          "raw_response": "The student correctly identified that the cell membrane controls what enters and exits the cell.",
+          "confidence": 0.95,
+          "evaluated_at": "ISO8601"
+        }
+      }
+    ],
+
+    "summary": {
+      "total_questions": 4,
+      "evaluated": 4,
+      "failed_evaluations": 0,
+      "weighted_score": 0.893,
+      "unweighted_score": 0.9375,
+      "max_possible_weighted": 7,
+      "achieved_weighted": 6.25
+    }
+  }
+}
