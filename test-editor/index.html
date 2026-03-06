@@ -265,6 +265,7 @@ layout: null
       border-radius: 20px;
     }
     .bottom-bar button:hover { background: #e8f4fb; }
+    .bottom-bar button.active { background: #1F96D3; color: #fff; border-color: #1F96D3; }
     .alert-error {
       background: #ffeaea;
       color: #c33;
@@ -376,11 +377,6 @@ layout: null
   <div class="app-title">Questions</div>
   <div id="question-list-area"></div>
   <button class="btn-block" onclick="addQuestion()">+ Add Question</button>
-  <div id="question-list-bottom-bar" class="bottom-bar">
-    <button onclick="showSectionManager()">Sections</button>
-    <button onclick="showMediaManager()">Media</button>
-    <button onclick="showExport()">Export JSON</button>
-  </div>
 </div>
 
 <!-- QUESTION EDITOR -->
@@ -408,6 +404,15 @@ layout: null
 <div id="export-screen" style="display:none">
   <div class="app-title">Export Test</div>
   <div id="export-area"></div>
+</div>
+
+<!-- GLOBAL BOTTOM NAV -->
+<div id="bottom-nav" class="bottom-bar" style="display:none">
+  <button id="nav-info" onclick="showMetadata()">Info</button>
+  <button id="nav-questions" onclick="showQuestionList()">Questions</button>
+  <button id="nav-media" onclick="showMediaManager()">Media</button>
+  <button id="nav-sections" onclick="showSectionManager()">Sections</button>
+  <button id="nav-export" onclick="showExport()">Export</button>
 </div>
 
 <script>
@@ -463,8 +468,16 @@ function hideAll() {
     document.getElementById(id).style.display = 'none';
   });
   setBackArrow(null);
-  var bb = document.getElementById('question-list-bottom-bar');
-  if (bb) bb.style.display = 'none';
+  document.getElementById('bottom-nav').style.display = 'none';
+}
+
+function showBottomNav(activeId) {
+  var nav = document.getElementById('bottom-nav');
+  nav.style.display = 'flex';
+  ['nav-info','nav-questions','nav-media','nav-sections','nav-export'].forEach(function(id) {
+    document.getElementById(id).classList.remove('active');
+  });
+  if (activeId) document.getElementById(activeId).classList.add('active');
 }
 
 function setBackArrow(fn) {
@@ -485,14 +498,15 @@ function showMetadata() {
   hideAll();
   document.getElementById('test-metadata').style.display = 'block';
   setBackArrow(showEditorHome);
+  showBottomNav('nav-info');
   renderMetadataForm();
 }
 
 function showQuestionList() {
   hideAll();
   document.getElementById('question-list').style.display = 'block';
-  document.getElementById('question-list-bottom-bar').style.display = 'flex';
   setBackArrow(showMetadata);
+  showBottomNav('nav-questions');
   renderQuestionList();
 }
 
@@ -501,6 +515,7 @@ function showQuestionEditor(index) {
   hideAll();
   document.getElementById('question-editor').style.display = 'block';
   setBackArrow(showQuestionList);
+  showBottomNav('nav-questions');
   document.getElementById('qe-title').textContent = index < testData.questions.length ? 'Edit Question' : 'New Question';
   renderQuestionEditorForm();
 }
@@ -509,6 +524,7 @@ function showMediaManager() {
   hideAll();
   document.getElementById('media-manager').style.display = 'block';
   setBackArrow(showQuestionList);
+  showBottomNav('nav-media');
   renderMediaList();
 }
 
@@ -516,6 +532,7 @@ function showSectionManager() {
   hideAll();
   document.getElementById('section-manager').style.display = 'block';
   setBackArrow(showQuestionList);
+  showBottomNav('nav-sections');
   renderSectionList();
 }
 
@@ -523,6 +540,7 @@ function showExport() {
   hideAll();
   document.getElementById('export-screen').style.display = 'block';
   setBackArrow(showQuestionList);
+  showBottomNav('nav-export');
   renderExport();
 }
 
