@@ -1,0 +1,1429 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Editor</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+      text-align: center;
+      background: #ffffff;
+      color: #111;
+    }
+    .app-title {
+      font-size: 1.6rem;
+      color: #055585;
+      font-weight: 700;
+      margin: 8px 0 0;
+    }
+    button {
+      font-size: 1rem;
+      padding: 8px 24px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #1F96D3;
+      color: white;
+    }
+    button:active { opacity: 0.85; }
+    .btn-block { display: block; margin: 15px auto; }
+    .btn-secondary { background: #888; font-size: 0.9rem; padding: 6px 14px; }
+    .btn-danger { background: #e55; }
+    .btn-success { background: #2a9d3a; }
+    .btn-small { font-size: 0.8rem; padding: 4px 10px; }
+    .menu-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 25px 20px;
+      margin: 15px 0;
+      border: 1px solid #e5e5e5;
+    }
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .mode-card {
+      background: #e8f4fb;
+      border-radius: 16px;
+      padding: 20px 10px 15px;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.1s, box-shadow 0.1s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .mode-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .mode-card:active { transform: scale(0.97); }
+    .mode-label { font-size: 1rem; font-weight: 600; color: #055585; }
+    .mode-icon { font-size: 2rem; }
+    .back-arrow {
+      position: fixed;
+      top: 12px;
+      left: max(4px, calc(50% - 250px + 4px));
+      font-size: 1.8rem;
+      color: #1F96D3;
+      cursor: pointer;
+      z-index: 100;
+      display: none;
+      line-height: 1;
+      padding: 4px 8px;
+    }
+    input[type="text"], input[type="number"], input[type="password"] {
+      font-size: 1rem;
+      padding: 8px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      margin: 4px 0;
+      box-sizing: border-box;
+    }
+    textarea {
+      font-size: 1rem;
+      padding: 8px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      margin: 4px 0;
+      box-sizing: border-box;
+      font-family: inherit;
+      resize: vertical;
+    }
+    select {
+      font-size: 1rem;
+      padding: 6px 10px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      margin: 4px 0;
+    }
+    .form-group {
+      text-align: left;
+      margin: 12px 0;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 4px;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+    }
+    .form-group textarea { min-height: 60px; }
+    .locale-field {
+      margin: 6px 0;
+      padding: 8px;
+      background: #f8f8f8;
+      border-radius: 6px;
+    }
+    .locale-field .locale-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #1F96D3;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .locale-field input, .locale-field textarea {
+      width: 100%;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 8px 0;
+      text-align: left;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-title { font-weight: 600; font-size: 1rem; flex: 1; }
+    .card-subtitle { font-size: 0.85rem; color: #888; margin-top: 4px; }
+    .card-actions { display: flex; gap: 4px; align-items: center; }
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .badge-type { background: #e8f4fb; color: #055585; }
+    .badge-diff-easy { background: #e8f8e8; color: #2a7a2a; }
+    .badge-diff-medium { background: #fff8e0; color: #996600; }
+    .badge-diff-hard { background: #ffeaea; color: #c33; }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label { font-size: 0.9rem; color: #333; }
+    .toggle-switch {
+      position: relative;
+      width: 44px; height: 24px;
+      background: #ccc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-switch.active { background: #1F96D3; }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 20px; height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: left 0.2s;
+    }
+    .toggle-switch.active::after { left: 22px; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      background: #e8f4fb;
+      color: #055585;
+      border-radius: 10px;
+    }
+    .tag .remove-tag { cursor: pointer; font-weight: 700; color: #c33; }
+    .section-heading {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #055585;
+      margin: 18px 0 6px;
+      text-align: left;
+    }
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin: 6px 0;
+      background: #fafafa;
+    }
+    .option-item.correct { border-color: #2a9d3a; background: #f0fff0; }
+    .option-content { flex: 1; }
+    .media-thumb {
+      width: 80px; height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #e5e5e5;
+    }
+    .media-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      margin: 8px 0;
+      text-align: left;
+    }
+    .media-info { flex: 1; }
+    .media-info .filename { font-weight: 600; font-size: 0.9rem; }
+    .media-info .meta { font-size: 0.75rem; color: #888; }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: #fff;
+      border-top: 1px solid #e5e5e5;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px 12px;
+      z-index: 50;
+    }
+    .bottom-bar button {
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      background: #fff;
+      color: #055585;
+      border: 1px solid #e5e5e5;
+      border-radius: 20px;
+    }
+    .bottom-bar button:hover { background: #e8f4fb; }
+    .alert-error {
+      background: #ffeaea;
+      color: #c33;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .alert-warn {
+      background: #fff8e0;
+      color: #996600;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .alert-success {
+      background: #e8f8e8;
+      color: #2a7a2a;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .json-preview {
+      text-align: left;
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: #f8f8f8;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 12px;
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .empty-state {
+      color: #888;
+      font-size: 0.95rem;
+      padding: 30px 10px;
+    }
+    .reorder-btn {
+      background: none;
+      border: 1px solid #ddd;
+      color: #888;
+      font-size: 0.9rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .reorder-btn:hover { background: #f0f0f0; color: #333; }
+    .inline-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .inline-row .form-group { flex: 1; }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: #1F96D3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="back-arrow" id="back-arrow" onclick="goBack()">&lsaquo;</div>
+
+<input type="file" id="json-file-input" accept=".json" style="display:none" onchange="handleLoadFile(event)">
+<input type="file" id="image-file-input" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+
+<!-- EDITOR HOME -->
+<div id="editor-home">
+  <div class="app-title">Test Editor</div>
+  <div class="menu-card">
+    <div class="mode-grid">
+      <button class="mode-card" onclick="newTest()">
+        <span class="mode-icon">+</span>
+        <span class="mode-label">New Test</span>
+      </button>
+      <button class="mode-card" onclick="document.getElementById('json-file-input').click()">
+        <span class="mode-icon">&#128194;</span>
+        <span class="mode-label">Load Test</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TEST METADATA -->
+<div id="test-metadata" style="display:none">
+  <div class="app-title">Test Info</div>
+  <div id="metadata-form"></div>
+  <button class="btn-block" onclick="saveMetadata()">Save & Continue</button>
+</div>
+
+<!-- QUESTION LIST -->
+<div id="question-list" style="display:none">
+  <div class="app-title">Questions</div>
+  <div id="question-list-area"></div>
+  <button class="btn-block" onclick="addQuestion()">+ Add Question</button>
+  <div id="question-list-bottom-bar" class="bottom-bar">
+    <button onclick="showSectionManager()">Sections</button>
+    <button onclick="showMediaManager()">Media</button>
+    <button onclick="showExport()">Export JSON</button>
+  </div>
+</div>
+
+<!-- QUESTION EDITOR -->
+<div id="question-editor" style="display:none">
+  <div class="app-title" id="qe-title">Edit Question</div>
+  <div id="question-editor-form"></div>
+  <button class="btn-block" onclick="saveQuestion()">Save Question</button>
+</div>
+
+<!-- MEDIA MANAGER -->
+<div id="media-manager" style="display:none">
+  <div class="app-title">Media Library</div>
+  <div id="media-list-area"></div>
+  <button class="btn-block" onclick="triggerImageUpload()">+ Upload Image</button>
+</div>
+
+<!-- SECTION MANAGER -->
+<div id="section-manager" style="display:none">
+  <div class="app-title">Sections</div>
+  <div id="section-list-area"></div>
+  <button class="btn-block" onclick="addSection()">+ Add Section</button>
+</div>
+
+<!-- EXPORT SCREEN -->
+<div id="export-screen" style="display:none">
+  <div class="app-title">Export Test</div>
+  <div id="export-area"></div>
+</div>
+
+<script>
+// ==================== STATE ====================
+var testData = null;
+var editingQuestionIndex = -1;
+var backTarget = null;
+var imageUploadLocale = null;
+var editingMediaId = null;
+
+var ALL_SCREENS = ['editor-home','test-metadata','question-list','question-editor','media-manager','section-manager','export-screen'];
+
+// ==================== UTILITIES ====================
+function genId(prefix) {
+  var id = '';
+  try { id = crypto.randomUUID(); } catch(e) {
+    id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16);
+    });
+  }
+  return prefix ? prefix + '_' + id.slice(0,8) : id;
+}
+
+function nowISO() { return new Date().toISOString(); }
+
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function locObj(text) {
+  var o = {};
+  if (testData) o[testData.default_locale] = text || '';
+  return o;
+}
+
+function locStr(obj, locale) {
+  if (!obj) return '';
+  if (typeof obj === 'string') return obj;
+  if (obj[locale]) return obj[locale];
+  if (testData && obj[testData.default_locale]) return obj[testData.default_locale];
+  var keys = Object.keys(obj);
+  return keys.length ? obj[keys[0]] : '';
+}
+
+function getLocales() {
+  return testData ? (testData.supported_locales || [testData.default_locale]) : ['en'];
+}
+
+// ==================== NAVIGATION ====================
+function hideAll() {
+  ALL_SCREENS.forEach(function(id) {
+    document.getElementById(id).style.display = 'none';
+  });
+  setBackArrow(null);
+  var bb = document.getElementById('question-list-bottom-bar');
+  if (bb) bb.style.display = 'none';
+}
+
+function setBackArrow(fn) {
+  var arrow = document.getElementById('back-arrow');
+  if (fn) { backTarget = fn; arrow.style.display = ''; }
+  else { backTarget = null; arrow.style.display = 'none'; }
+}
+
+function goBack() { if (backTarget) backTarget(); }
+
+function showEditorHome() {
+  hideAll();
+  document.getElementById('editor-home').style.display = 'block';
+  setBackArrow(function() { window.location.href = '../testy/'; });
+}
+
+function showMetadata() {
+  hideAll();
+  document.getElementById('test-metadata').style.display = 'block';
+  setBackArrow(showEditorHome);
+  renderMetadataForm();
+}
+
+function showQuestionList() {
+  hideAll();
+  document.getElementById('question-list').style.display = 'block';
+  document.getElementById('question-list-bottom-bar').style.display = 'flex';
+  setBackArrow(showMetadata);
+  renderQuestionList();
+}
+
+function showQuestionEditor(index) {
+  editingQuestionIndex = index;
+  hideAll();
+  document.getElementById('question-editor').style.display = 'block';
+  setBackArrow(showQuestionList);
+  document.getElementById('qe-title').textContent = index < testData.questions.length ? 'Edit Question' : 'New Question';
+  renderQuestionEditorForm();
+}
+
+function showMediaManager() {
+  hideAll();
+  document.getElementById('media-manager').style.display = 'block';
+  setBackArrow(showQuestionList);
+  renderMediaList();
+}
+
+function showSectionManager() {
+  hideAll();
+  document.getElementById('section-manager').style.display = 'block';
+  setBackArrow(showQuestionList);
+  renderSectionList();
+}
+
+function showExport() {
+  hideAll();
+  document.getElementById('export-screen').style.display = 'block';
+  setBackArrow(showQuestionList);
+  renderExport();
+}
+
+// ==================== INIT / LOAD ====================
+function initNewTest() {
+  testData = {
+    id: genId(),
+    default_locale: 'en',
+    supported_locales: ['en'],
+    title: { en: '' },
+    description: { en: '' },
+    instructions: { en: '' },
+    version: 1,
+    status: 'draft',
+    tags: [],
+    created_by: '',
+    created_at: nowISO(),
+    updated_at: nowISO(),
+    settings: {
+      default_time_limit_seconds: null,
+      shuffle_questions: false,
+      allow_skip: true,
+      show_hints: true,
+      show_correct_answer_comment: true
+    },
+    media: [],
+    questions: [],
+    sections: []
+  };
+}
+
+function newTest() {
+  initNewTest();
+  showMetadata();
+}
+
+function handleLoadFile(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (data.test) data = data.test;
+      if (!data.id || !data.questions) {
+        alert('Invalid test file: missing id or questions.');
+        return;
+      }
+      if (!data.title) data.title = {};
+      if (!data.default_locale) data.default_locale = 'en';
+      if (!data.supported_locales) data.supported_locales = [data.default_locale];
+      if (!data.description) data.description = {};
+      if (!data.instructions) data.instructions = {};
+      if (!data.settings) data.settings = {};
+      if (!data.media) data.media = [];
+      if (!data.sections) data.sections = [];
+      if (!data.tags) data.tags = [];
+      testData = data;
+      showMetadata();
+    } catch(err) {
+      alert('Error parsing file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ==================== LOCALE FIELD RENDERING ====================
+function renderLocaleInputs(id, obj, type) {
+  var locales = getLocales();
+  var html = '';
+  locales.forEach(function(loc) {
+    var val = obj ? escHtml(locStr(obj, loc) || '') : '';
+    html += '<div class="locale-field">';
+    html += '<div class="locale-label">' + escHtml(loc) + '</div>';
+    if (type === 'textarea') {
+      html += '<textarea id="' + id + '-' + loc + '">' + val + '</textarea>';
+    } else {
+      html += '<input type="text" id="' + id + '-' + loc + '" value="' + val + '">';
+    }
+    html += '</div>';
+  });
+  return html;
+}
+
+function collectLocaleInputs(id) {
+  var locales = getLocales();
+  var obj = {};
+  locales.forEach(function(loc) {
+    var el = document.getElementById(id + '-' + loc);
+    if (el) obj[loc] = el.value;
+  });
+  return obj;
+}
+
+// ==================== TEST METADATA SCREEN ====================
+function renderMetadataForm() {
+  var s = testData.settings || {};
+  var html = '';
+
+  // Locales
+  html += '<div class="card">';
+  html += '<div class="section-heading">Locales</div>';
+  html += '<div class="form-group"><label>Default Locale</label>';
+  html += '<input type="text" id="meta-default-locale" value="' + escHtml(testData.default_locale) + '" style="width:80px">';
+  html += '</div>';
+  html += '<div class="form-group"><label>Supported Locales (comma-separated)</label>';
+  html += '<input type="text" id="meta-locales" value="' + escHtml(testData.supported_locales.join(', ')) + '">';
+  html += '</div>';
+  html += '<button class="btn-small btn-secondary" onclick="updateLocales()">Update Locales</button>';
+  html += '</div>';
+
+  // Title, Description, Instructions
+  html += '<div class="card">';
+  html += '<div class="section-heading">Title</div>';
+  html += renderLocaleInputs('meta-title', testData.title, 'text');
+  html += '<div class="section-heading">Description</div>';
+  html += renderLocaleInputs('meta-desc', testData.description, 'textarea');
+  html += '<div class="section-heading">Instructions</div>';
+  html += renderLocaleInputs('meta-instr', testData.instructions, 'textarea');
+  html += '</div>';
+
+  // Other info
+  html += '<div class="card">';
+  html += '<div class="form-group"><label>Created By</label>';
+  html += '<input type="text" id="meta-created-by" value="' + escHtml(testData.created_by || '') + '"></div>';
+  html += '<div class="form-group"><label>Tags (comma-separated)</label>';
+  html += '<input type="text" id="meta-tags" value="' + escHtml((testData.tags || []).join(', ')) + '"></div>';
+  html += '</div>';
+
+  // Settings
+  html += '<div class="card">';
+  html += '<div class="section-heading">Settings</div>';
+  html += renderToggleRow('set-shuffle', 'Shuffle Questions', !!s.shuffle_questions);
+  html += renderToggleRow('set-skip', 'Allow Skip', s.allow_skip !== false);
+  html += renderToggleRow('set-hints', 'Show Hints', s.show_hints !== false);
+  html += renderToggleRow('set-correct', 'Show Correct Answer Comment', s.show_correct_answer_comment !== false);
+  html += '<div class="form-group" style="margin-top:8px"><label>Default Time Limit (seconds, blank = none)</label>';
+  html += '<input type="number" id="set-time" value="' + (s.default_time_limit_seconds || '') + '" min="0" style="width:120px"></div>';
+  html += '</div>';
+
+  document.getElementById('metadata-form').innerHTML = html;
+}
+
+function renderToggleRow(id, label, active) {
+  return '<div class="toggle-row">' +
+    '<span class="toggle-label">' + escHtml(label) + '</span>' +
+    '<div class="toggle-switch' + (active ? ' active' : '') + '" id="' + id + '" onclick="toggleSwitch(\'' + id + '\')"></div>' +
+    '</div>';
+}
+
+function toggleSwitch(id) {
+  var el = document.getElementById(id);
+  el.classList.toggle('active');
+}
+
+function isToggleOn(id) {
+  var el = document.getElementById(id);
+  return el && el.classList.contains('active');
+}
+
+function updateLocales() {
+  var dl = document.getElementById('meta-default-locale').value.trim() || 'en';
+  var locs = document.getElementById('meta-locales').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  if (locs.indexOf(dl) < 0) locs.unshift(dl);
+  testData.default_locale = dl;
+  testData.supported_locales = locs;
+  renderMetadataForm();
+}
+
+function saveMetadata() {
+  testData.title = collectLocaleInputs('meta-title');
+  testData.description = collectLocaleInputs('meta-desc');
+  testData.instructions = collectLocaleInputs('meta-instr');
+  testData.created_by = document.getElementById('meta-created-by').value.trim();
+  testData.tags = document.getElementById('meta-tags').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  testData.settings = {
+    shuffle_questions: isToggleOn('set-shuffle'),
+    allow_skip: isToggleOn('set-skip'),
+    show_hints: isToggleOn('set-hints'),
+    show_correct_answer_comment: isToggleOn('set-correct'),
+    default_time_limit_seconds: parseInt(document.getElementById('set-time').value) || null
+  };
+  testData.updated_at = nowISO();
+  showQuestionList();
+}
+
+// ==================== QUESTION LIST SCREEN ====================
+function renderQuestionList() {
+  var qs = testData.questions;
+  var area = document.getElementById('question-list-area');
+  if (!qs.length) {
+    area.innerHTML = '<div class="empty-state">No questions yet. Add one to get started.</div>';
+    return;
+  }
+  var html = '';
+  qs.forEach(function(q, i) {
+    var text = locStr(q.text, testData.default_locale) || '(no text)';
+    if (text.length > 60) text = text.substring(0, 60) + '...';
+    var diffClass = 'badge-diff-' + (q.difficulty || 'medium');
+    html += '<div class="card">';
+    html += '<div class="card-header">';
+    html += '<span class="card-title">' + (i+1) + '. ' + escHtml(text) + '</span>';
+    html += '<div class="card-actions">';
+    html += '<button class="reorder-btn" onclick="moveQuestion(' + i + ',-1)" ' + (i===0?'disabled':'') + '>&#9650;</button>';
+    html += '<button class="reorder-btn" onclick="moveQuestion(' + i + ',1)" ' + (i===qs.length-1?'disabled':'') + '>&#9660;</button>';
+    html += '</div></div>';
+    html += '<div class="card-subtitle">';
+    html += '<span class="badge badge-type">' + escHtml(q.answer_type) + '</span> ';
+    if (q.difficulty) html += '<span class="badge ' + diffClass + '">' + escHtml(q.difficulty) + '</span> ';
+    if (q.weight) html += '<span class="badge badge-type">w:' + q.weight + '</span> ';
+    html += '</div>';
+    html += '<div class="card-actions" style="margin-top:8px">';
+    html += '<button class="btn-small" onclick="showQuestionEditor(' + i + ')">Edit</button> ';
+    html += '<button class="btn-small btn-danger" onclick="deleteQuestion(' + i + ')">Delete</button>';
+    html += '</div></div>';
+  });
+  area.innerHTML = html;
+}
+
+function addQuestion() {
+  var q = {
+    id: genId('q'),
+    text: locObj(''),
+    media_refs: [],
+    answer_type: 'single_choice',
+    required: true,
+    difficulty: 'medium',
+    tags: [],
+    weight: 1,
+    time_limit_seconds: null,
+    answer_config: {
+      options: [
+        { id: genId('opt'), text: locObj(''), media_ref: null },
+        { id: genId('opt'), text: locObj(''), media_ref: null }
+      ],
+      correct_answer: null,
+      shuffle_options: false
+    },
+    evaluation: { method: 'deterministic', result_type: 'boolean', ai_prompt_context: null },
+    feedback: { hint: null, correct_comment: null, explanation: null }
+  };
+  testData.questions.push(q);
+  showQuestionEditor(testData.questions.length - 1);
+}
+
+function deleteQuestion(i) {
+  if (!confirm('Delete question ' + (i+1) + '?')) return;
+  var qid = testData.questions[i].id;
+  testData.questions.splice(i, 1);
+  // Remove from sections
+  (testData.sections || []).forEach(function(s) {
+    var idx = s.question_ids.indexOf(qid);
+    if (idx >= 0) s.question_ids.splice(idx, 1);
+  });
+  renderQuestionList();
+}
+
+function moveQuestion(i, dir) {
+  var j = i + dir;
+  if (j < 0 || j >= testData.questions.length) return;
+  var tmp = testData.questions[i];
+  testData.questions[i] = testData.questions[j];
+  testData.questions[j] = tmp;
+  renderQuestionList();
+}
+
+// ==================== QUESTION EDITOR SCREEN ====================
+function renderQuestionEditorForm() {
+  var q = testData.questions[editingQuestionIndex];
+  if (!q) return;
+  var html = '';
+
+  // Question text
+  html += '<div class="card">';
+  html += '<div class="section-heading">Question Text</div>';
+  html += renderLocaleInputs('qe-text', q.text, 'textarea');
+  html += '</div>';
+
+  // Media refs
+  html += '<div class="card">';
+  html += '<div class="section-heading">Attached Media</div>';
+  html += renderMediaRefSelector('qe-media', q.media_refs);
+  html += '</div>';
+
+  // Answer type
+  html += '<div class="card">';
+  html += '<div class="form-group"><label>Answer Type</label>';
+  html += '<select id="qe-answer-type" onchange="onAnswerTypeChange()">';
+  ['single_choice','multi_choice','number','free_text'].forEach(function(t) {
+    html += '<option value="' + t + '"' + (q.answer_type===t?' selected':'') + '>' + t + '</option>';
+  });
+  html += '</select></div>';
+
+  // Answer config
+  html += '<div id="qe-answer-config">';
+  html += renderAnswerConfig(q);
+  html += '</div>';
+  html += '</div>';
+
+  // Evaluation
+  html += '<div class="card">';
+  html += '<div class="section-heading">Evaluation</div>';
+  var ev = q.evaluation || {};
+  html += '<div class="inline-row">';
+  html += '<div class="form-group"><label>Method</label><select id="qe-eval-method" onchange="onEvalMethodChange()">';
+  html += '<option value="deterministic"' + (ev.method!=='ai'?' selected':'') + '>Deterministic</option>';
+  html += '<option value="ai"' + (ev.method==='ai'?' selected':'') + '>AI</option>';
+  html += '</select></div>';
+  html += '<div class="form-group"><label>Result Type</label><select id="qe-eval-result">';
+  html += '<option value="boolean"' + (ev.result_type!=='percentage'?' selected':'') + '>Boolean</option>';
+  html += '<option value="percentage"' + (ev.result_type==='percentage'?' selected':'') + '>Percentage</option>';
+  html += '</select></div>';
+  html += '</div>';
+  html += '<div id="qe-ai-context" style="' + (ev.method==='ai'?'':'display:none') + '">';
+  html += '<div class="section-heading">AI Prompt Context</div>';
+  html += renderLocaleInputs('qe-ai-ctx', ev.ai_prompt_context, 'textarea');
+  html += '</div>';
+  html += '</div>';
+
+  // Feedback
+  html += '<div class="card">';
+  html += '<div class="section-heading">Feedback</div>';
+  var fb = q.feedback || {};
+  html += '<div class="section-heading" style="font-size:0.85rem">Hint</div>';
+  html += renderLocaleInputs('qe-fb-hint', fb.hint, 'text');
+  html += '<div class="section-heading" style="font-size:0.85rem">Correct Comment</div>';
+  html += renderLocaleInputs('qe-fb-correct', fb.correct_comment, 'text');
+  html += '<div class="section-heading" style="font-size:0.85rem">Explanation</div>';
+  html += renderLocaleInputs('qe-fb-expl', fb.explanation, 'textarea');
+  html += '</div>';
+
+  // Other properties
+  html += '<div class="card">';
+  html += '<div class="section-heading">Properties</div>';
+  html += renderToggleRow('qe-required', 'Required', q.required !== false);
+  html += '<div class="inline-row">';
+  html += '<div class="form-group"><label>Difficulty</label><select id="qe-difficulty">';
+  ['easy','medium','hard'].forEach(function(d) {
+    html += '<option value="' + d + '"' + (q.difficulty===d?' selected':'') + '>' + d + '</option>';
+  });
+  html += '</select></div>';
+  html += '<div class="form-group"><label>Weight</label>';
+  html += '<input type="number" id="qe-weight" value="' + (q.weight||1) + '" min="0" style="width:60px"></div>';
+  html += '<div class="form-group"><label>Time (s)</label>';
+  html += '<input type="number" id="qe-time" value="' + (q.time_limit_seconds||'') + '" min="0" style="width:70px"></div>';
+  html += '</div>';
+  html += '<div class="form-group"><label>Tags (comma-separated)</label>';
+  html += '<input type="text" id="qe-tags" value="' + escHtml((q.tags||[]).join(', ')) + '"></div>';
+  html += '</div>';
+
+  document.getElementById('question-editor-form').innerHTML = html;
+}
+
+function renderAnswerConfig(q) {
+  var type = q.answer_type;
+  var cfg = q.answer_config || {};
+  var html = '';
+
+  if (type === 'single_choice' || type === 'multi_choice') {
+    var opts = cfg.options || [];
+    html += '<div class="section-heading">Options</div>';
+    opts.forEach(function(opt, i) {
+      var isCorrect = false;
+      if (type === 'single_choice') isCorrect = cfg.correct_answer === opt.id;
+      else isCorrect = (cfg.correct_answers || []).indexOf(opt.id) >= 0;
+
+      html += '<div class="option-item' + (isCorrect ? ' correct' : '') + '" id="opt-item-' + i + '">';
+      if (type === 'single_choice') {
+        html += '<input type="radio" name="correct-opt" value="' + escHtml(opt.id) + '"' + (isCorrect?' checked':'') + ' style="margin-top:4px">';
+      } else {
+        html += '<input type="checkbox" class="correct-multi-opt" value="' + escHtml(opt.id) + '"' + (isCorrect?' checked':'') + ' style="margin-top:4px">';
+      }
+      html += '<div class="option-content">';
+      html += renderLocaleInputs('opt-text-' + i, opt.text, 'text');
+      // Media ref per option
+      html += '<div class="form-group"><label>Media</label>';
+      html += '<select id="opt-media-' + i + '">';
+      html += '<option value="">None</option>';
+      (testData.media || []).forEach(function(m) {
+        html += '<option value="' + escHtml(m.id) + '"' + (opt.media_ref===m.id?' selected':'') + '>' + escHtml(m.filename || m.id) + '</option>';
+      });
+      html += '</select></div>';
+      html += '</div>';
+      html += '<button class="btn-small btn-danger" onclick="removeOption(' + i + ')" style="margin-top:4px">X</button>';
+      html += '</div>';
+    });
+    html += '<button class="btn-small" onclick="addOption()" style="margin-top:6px">+ Add Option</button>';
+    html += renderToggleRow('qe-shuffle-opts', 'Shuffle Options', !!cfg.shuffle_options);
+  } else if (type === 'number') {
+    html += '<div class="inline-row">';
+    html += '<div class="form-group"><label>Correct Answer</label>';
+    html += '<input type="number" id="qe-num-correct" value="' + (cfg.correct_answer!=null?cfg.correct_answer:'') + '"></div>';
+    html += '<div class="form-group"><label>Tolerance</label>';
+    html += '<input type="number" id="qe-num-tolerance" value="' + (cfg.numeric_tolerance||0) + '" min="0"></div>';
+    html += '</div>';
+  } else if (type === 'free_text') {
+    html += '<div class="section-heading">Correct Answer</div>';
+    html += renderLocaleInputs('qe-ft-correct', cfg.correct_answer, 'text');
+    html += '<div class="form-group"><label>Alternatives (comma-separated)</label>';
+    html += '<input type="text" id="qe-ft-alts" value="' + escHtml((cfg.alternatives||[]).join(', ')) + '"></div>';
+    html += renderToggleRow('qe-ft-case', 'Case Sensitive', !!cfg.case_sensitive);
+  }
+  return html;
+}
+
+function renderMediaRefSelector(id, refs) {
+  refs = refs || [];
+  var html = '<div id="' + id + '-container">';
+  if (testData.media.length === 0) {
+    html += '<div style="font-size:0.85rem;color:#888">No media uploaded yet. Go to Media to add images.</div>';
+  } else {
+    // Show currently attached
+    refs.forEach(function(refId, i) {
+      var m = testData.media.find(function(x){return x.id===refId;});
+      if (m) {
+        var src = getMediaThumbSrc(m);
+        html += '<div class="media-card">';
+        if (src) html += '<img src="' + escHtml(src) + '" class="media-thumb">';
+        html += '<div class="media-info"><div class="filename">' + escHtml(m.filename||m.id) + '</div></div>';
+        html += '<button class="btn-small btn-danger" onclick="removeMediaRef(\'' + id + '\',' + i + ')">X</button>';
+        html += '</div>';
+      }
+    });
+    // Add new ref
+    html += '<div class="form-group"><label>Attach Media</label>';
+    html += '<select id="' + id + '-add">';
+    html += '<option value="">-- Select --</option>';
+    testData.media.forEach(function(m) {
+      if (refs.indexOf(m.id) < 0) {
+        html += '<option value="' + escHtml(m.id) + '">' + escHtml(m.filename||m.id) + '</option>';
+      }
+    });
+    html += '</select> ';
+    html += '<button class="btn-small" onclick="addMediaRef(\'' + id + '\')">Attach</button>';
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function getMediaThumbSrc(m) {
+  var loc = testData.default_locale;
+  if (m.data) {
+    var b64 = locStr(m.data, loc);
+    if (b64 && b64.indexOf('<') < 0) return 'data:' + (m.mime_type||'image/png') + ';base64,' + b64;
+  }
+  if (m.url) {
+    var u = locStr(m.url, loc);
+    if (u) return u;
+  }
+  return '';
+}
+
+function addMediaRef(id) {
+  var sel = document.getElementById(id + '-add');
+  if (!sel || !sel.value) return;
+  var q = testData.questions[editingQuestionIndex];
+  if (!q) return;
+  q.media_refs.push(sel.value);
+  renderQuestionEditorForm();
+}
+
+function removeMediaRef(id, i) {
+  var q = testData.questions[editingQuestionIndex];
+  if (!q) return;
+  q.media_refs.splice(i, 1);
+  renderQuestionEditorForm();
+}
+
+function onAnswerTypeChange() {
+  var q = testData.questions[editingQuestionIndex];
+  if (!q) return;
+  collectQuestionBasics(q);
+  var newType = document.getElementById('qe-answer-type').value;
+  if (newType !== q.answer_type) {
+    q.answer_type = newType;
+    q.answer_config = getDefaultAnswerConfig(newType);
+  }
+  document.getElementById('qe-answer-config').innerHTML = renderAnswerConfig(q);
+}
+
+function onEvalMethodChange() {
+  var method = document.getElementById('qe-eval-method').value;
+  document.getElementById('qe-ai-context').style.display = method === 'ai' ? '' : 'none';
+}
+
+function getDefaultAnswerConfig(type) {
+  if (type === 'single_choice') return { options: [{id:genId('opt'),text:locObj(''),media_ref:null},{id:genId('opt'),text:locObj(''),media_ref:null}], correct_answer: null, shuffle_options: false };
+  if (type === 'multi_choice') return { options: [{id:genId('opt'),text:locObj(''),media_ref:null},{id:genId('opt'),text:locObj(''),media_ref:null}], correct_answers: [], shuffle_options: false };
+  if (type === 'number') return { correct_answer: null, numeric_tolerance: 0 };
+  if (type === 'free_text') return { correct_answer: null, alternatives: null, case_sensitive: false };
+  return {};
+}
+
+function addOption() {
+  var q = testData.questions[editingQuestionIndex];
+  if (!q) return;
+  collectAnswerConfig(q);
+  q.answer_config.options.push({ id: genId('opt'), text: locObj(''), media_ref: null });
+  document.getElementById('qe-answer-config').innerHTML = renderAnswerConfig(q);
+}
+
+function removeOption(i) {
+  var q = testData.questions[editingQuestionIndex];
+  if (!q) return;
+  collectAnswerConfig(q);
+  if (q.answer_config.options.length <= 2) { alert('Minimum 2 options required.'); return; }
+  q.answer_config.options.splice(i, 1);
+  document.getElementById('qe-answer-config').innerHTML = renderAnswerConfig(q);
+}
+
+function collectQuestionBasics(q) {
+  q.text = collectLocaleInputs('qe-text');
+  q.required = isToggleOn('qe-required');
+  q.difficulty = document.getElementById('qe-difficulty') ? document.getElementById('qe-difficulty').value : 'medium';
+  q.weight = parseInt(document.getElementById('qe-weight') ? document.getElementById('qe-weight').value : '1') || 1;
+  q.time_limit_seconds = parseInt(document.getElementById('qe-time') ? document.getElementById('qe-time').value : '') || null;
+  q.tags = document.getElementById('qe-tags') ? document.getElementById('qe-tags').value.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
+}
+
+function collectAnswerConfig(q) {
+  var type = q.answer_type;
+  var cfg = q.answer_config;
+  if (type === 'single_choice' || type === 'multi_choice') {
+    (cfg.options || []).forEach(function(opt, i) {
+      opt.text = collectLocaleInputs('opt-text-' + i);
+      var msel = document.getElementById('opt-media-' + i);
+      opt.media_ref = msel && msel.value ? msel.value : null;
+    });
+    if (type === 'single_choice') {
+      var checked = document.querySelector('input[name="correct-opt"]:checked');
+      cfg.correct_answer = checked ? checked.value : null;
+    } else {
+      cfg.correct_answers = [];
+      document.querySelectorAll('.correct-multi-opt:checked').forEach(function(cb) {
+        cfg.correct_answers.push(cb.value);
+      });
+    }
+    cfg.shuffle_options = isToggleOn('qe-shuffle-opts');
+  } else if (type === 'number') {
+    var cv = document.getElementById('qe-num-correct');
+    cfg.correct_answer = cv && cv.value !== '' ? parseFloat(cv.value) : null;
+    var tv = document.getElementById('qe-num-tolerance');
+    cfg.numeric_tolerance = tv ? parseFloat(tv.value) || 0 : 0;
+  } else if (type === 'free_text') {
+    cfg.correct_answer = collectLocaleInputs('qe-ft-correct');
+    var emptyCorrect = Object.values(cfg.correct_answer).every(function(v){return !v;});
+    if (emptyCorrect) cfg.correct_answer = null;
+    var alts = document.getElementById('qe-ft-alts');
+    cfg.alternatives = alts && alts.value ? alts.value.split(',').map(function(s){return s.trim();}).filter(Boolean) : null;
+    cfg.case_sensitive = isToggleOn('qe-ft-case');
+  }
+}
+
+function saveQuestion() {
+  var q = testData.questions[editingQuestionIndex];
+  if (!q) return;
+  collectQuestionBasics(q);
+  q.answer_type = document.getElementById('qe-answer-type').value;
+  collectAnswerConfig(q);
+
+  // Evaluation
+  q.evaluation = {
+    method: document.getElementById('qe-eval-method').value,
+    result_type: document.getElementById('qe-eval-result').value,
+    ai_prompt_context: null
+  };
+  if (q.evaluation.method === 'ai') {
+    var ctx = collectLocaleInputs('qe-ai-ctx');
+    var hasContent = Object.values(ctx).some(function(v){return !!v;});
+    q.evaluation.ai_prompt_context = hasContent ? ctx : null;
+  }
+
+  // Feedback
+  var hint = collectLocaleInputs('qe-fb-hint');
+  var correct = collectLocaleInputs('qe-fb-correct');
+  var expl = collectLocaleInputs('qe-fb-expl');
+  q.feedback = {
+    hint: Object.values(hint).some(function(v){return !!v;}) ? hint : null,
+    correct_comment: Object.values(correct).some(function(v){return !!v;}) ? correct : null,
+    explanation: Object.values(expl).some(function(v){return !!v;}) ? expl : null
+  };
+
+  testData.updated_at = nowISO();
+  showQuestionList();
+}
+
+// ==================== MEDIA MANAGER ====================
+function renderMediaList() {
+  var media = testData.media || [];
+  var area = document.getElementById('media-list-area');
+  if (!media.length) {
+    area.innerHTML = '<div class="empty-state">No media uploaded yet.</div>';
+    return;
+  }
+  var html = '';
+  media.forEach(function(m, i) {
+    var src = getMediaThumbSrc(m);
+    html += '<div class="media-card">';
+    if (src) html += '<img src="' + escHtml(src) + '" class="media-thumb">';
+    html += '<div class="media-info">';
+    html += '<div class="filename">' + escHtml(m.filename || m.id) + '</div>';
+    html += '<div class="meta">' + escHtml(m.type) + ' &middot; ' + escHtml(m.mime_type || '') + '</div>';
+    html += '<div class="meta">ID: ' + escHtml(m.id) + '</div>';
+    // Show which locales have data
+    if (m.data) {
+      var dataLocs = Object.keys(m.data).filter(function(k){return m.data[k] && m.data[k].indexOf('<') < 0;});
+      html += '<div class="meta">Data: ' + (dataLocs.length ? dataLocs.join(', ') : 'none') + '</div>';
+    }
+    html += '</div>';
+    html += '<div style="display:flex;flex-direction:column;gap:4px">';
+    html += '<button class="btn-small" onclick="editMediaAlt(' + i + ')">Alt</button>';
+    html += '<button class="btn-small btn-secondary" onclick="uploadMediaLocale(' + i + ')">+Loc</button>';
+    html += '<button class="btn-small btn-danger" onclick="deleteMedia(' + i + ')">Del</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  area.innerHTML = html;
+}
+
+function triggerImageUpload() {
+  imageUploadLocale = testData.default_locale;
+  editingMediaId = null;
+  document.getElementById('image-file-input').click();
+}
+
+function uploadMediaLocale(i) {
+  var m = testData.media[i];
+  if (!m) return;
+  var loc = prompt('Upload image for which locale? (' + getLocales().join(', ') + ')');
+  if (!loc || getLocales().indexOf(loc) < 0) { alert('Invalid locale.'); return; }
+  imageUploadLocale = loc;
+  editingMediaId = m.id;
+  document.getElementById('image-file-input').click();
+}
+
+function handleImageUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    var parts = dataUrl.split(',');
+    var b64 = parts[1];
+    var mimeMatch = parts[0].match(/data:(.*?);/);
+    var mime = mimeMatch ? mimeMatch[1] : 'image/png';
+
+    if (editingMediaId) {
+      // Adding locale variant to existing media
+      var m = testData.media.find(function(x){return x.id===editingMediaId;});
+      if (m) {
+        if (!m.data) m.data = {};
+        m.data[imageUploadLocale] = b64;
+      }
+    } else {
+      // New media
+      var newMedia = {
+        id: genId('media'),
+        type: 'image',
+        mime_type: mime,
+        filename: file.name,
+        data: {},
+        url: null,
+        alt_text: locObj('')
+      };
+      newMedia.data[imageUploadLocale] = b64;
+      testData.media.push(newMedia);
+    }
+    renderMediaList();
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function editMediaAlt(i) {
+  var m = testData.media[i];
+  if (!m) return;
+  var locales = getLocales();
+  var newAlt = {};
+  locales.forEach(function(loc) {
+    var current = m.alt_text ? locStr(m.alt_text, loc) : '';
+    var val = prompt('Alt text for [' + loc + ']:', current);
+    if (val !== null) newAlt[loc] = val;
+    else newAlt[loc] = current;
+  });
+  m.alt_text = newAlt;
+  renderMediaList();
+}
+
+function deleteMedia(i) {
+  var m = testData.media[i];
+  if (!m) return;
+  // Check references
+  var refs = [];
+  testData.questions.forEach(function(q, qi) {
+    if ((q.media_refs||[]).indexOf(m.id) >= 0) refs.push('Q' + (qi+1));
+    if (q.answer_config && q.answer_config.options) {
+      q.answer_config.options.forEach(function(opt) {
+        if (opt.media_ref === m.id) refs.push('Q' + (qi+1) + ' option');
+      });
+    }
+  });
+  var msg = 'Delete "' + (m.filename||m.id) + '"?';
+  if (refs.length) msg += '\n\nWarning: Referenced by ' + refs.join(', ') + '. References will be removed.';
+  if (!confirm(msg)) return;
+
+  // Remove references
+  testData.questions.forEach(function(q) {
+    q.media_refs = (q.media_refs||[]).filter(function(r){return r!==m.id;});
+    if (q.answer_config && q.answer_config.options) {
+      q.answer_config.options.forEach(function(opt) {
+        if (opt.media_ref === m.id) opt.media_ref = null;
+      });
+    }
+  });
+  testData.media.splice(i, 1);
+  renderMediaList();
+}
+
+// ==================== SECTION MANAGER ====================
+function renderSectionList() {
+  var sections = testData.sections || [];
+  var area = document.getElementById('section-list-area');
+  if (!sections.length) {
+    area.innerHTML = '<div class="empty-state">No sections. Questions will be presented as a flat list.</div>';
+    return;
+  }
+  var html = '';
+  sections.forEach(function(s, i) {
+    var title = locStr(s.title, testData.default_locale) || '(untitled)';
+    html += '<div class="card">';
+    html += '<div class="card-header">';
+    html += '<span class="card-title">' + escHtml(title) + '</span>';
+    html += '<div class="card-actions">';
+    html += '<button class="btn-small" onclick="editSection(' + i + ')">Edit</button> ';
+    html += '<button class="btn-small btn-danger" onclick="deleteSection(' + i + ')">Del</button>';
+    html += '</div></div>';
+    html += '<div class="card-subtitle">' + (s.question_ids||[]).length + ' questions</div>';
+    html += '</div>';
+  });
+  area.innerHTML = html;
+}
+
+function addSection() {
+  var s = {
+    id: genId('section'),
+    title: locObj(''),
+    description: null,
+    instructions: null,
+    question_ids: [],
+    shuffle_questions: false,
+    time_limit_seconds: null
+  };
+  testData.sections.push(s);
+  editSection(testData.sections.length - 1);
+}
+
+function deleteSection(i) {
+  if (!confirm('Delete this section?')) return;
+  testData.sections.splice(i, 1);
+  renderSectionList();
+}
+
+function editSection(i) {
+  var s = testData.sections[i];
+  if (!s) return;
+  var area = document.getElementById('section-list-area');
+  var html = '<div class="card">';
+  html += '<div class="section-heading">Section Title</div>';
+  html += renderLocaleInputs('sec-title-' + i, s.title, 'text');
+  html += '<div class="section-heading">Description</div>';
+  html += renderLocaleInputs('sec-desc-' + i, s.description, 'textarea');
+  html += '<div class="section-heading">Instructions</div>';
+  html += renderLocaleInputs('sec-instr-' + i, s.instructions, 'textarea');
+
+  html += renderToggleRow('sec-shuffle-' + i, 'Shuffle Questions', !!s.shuffle_questions);
+  html += '<div class="form-group"><label>Time Limit (seconds)</label>';
+  html += '<input type="number" id="sec-time-' + i + '" value="' + (s.time_limit_seconds||'') + '" min="0" style="width:100px"></div>';
+
+  html += '<div class="section-heading">Assign Questions</div>';
+  testData.questions.forEach(function(q, qi) {
+    var text = locStr(q.text, testData.default_locale) || '(no text)';
+    if (text.length > 40) text = text.substring(0, 40) + '...';
+    var checked = (s.question_ids || []).indexOf(q.id) >= 0;
+    html += '<div class="checkbox-row">';
+    html += '<input type="checkbox" class="sec-q-check-' + i + '" value="' + escHtml(q.id) + '"' + (checked?' checked':'') + '>';
+    html += '<span>Q' + (qi+1) + ': ' + escHtml(text) + '</span>';
+    html += '</div>';
+  });
+
+  html += '<div style="margin-top:12px">';
+  html += '<button onclick="saveSection(' + i + ')">Save Section</button> ';
+  html += '<button class="btn-secondary" onclick="renderSectionList()">Cancel</button>';
+  html += '</div></div>';
+  area.innerHTML = html;
+}
+
+function saveSection(i) {
+  var s = testData.sections[i];
+  if (!s) return;
+  s.title = collectLocaleInputs('sec-title-' + i);
+  s.description = collectLocaleInputs('sec-desc-' + i);
+  var descEmpty = Object.values(s.description).every(function(v){return !v;});
+  if (descEmpty) s.description = null;
+  s.instructions = collectLocaleInputs('sec-instr-' + i);
+  var instrEmpty = Object.values(s.instructions).every(function(v){return !v;});
+  if (instrEmpty) s.instructions = null;
+  s.shuffle_questions = isToggleOn('sec-shuffle-' + i);
+  s.time_limit_seconds = parseInt(document.getElementById('sec-time-' + i).value) || null;
+  s.question_ids = [];
+  document.querySelectorAll('.sec-q-check-' + i + ':checked').forEach(function(cb) {
+    s.question_ids.push(cb.value);
+  });
+  renderSectionList();
+}
+
+// ==================== EXPORT ====================
+function renderExport() {
+  var area = document.getElementById('export-area');
+  var warnings = validateTest();
+  var html = '';
+
+  if (warnings.length) {
+    html += '<div class="alert-warn"><strong>Warnings:</strong><ul style="margin:4px 0;padding-left:18px">';
+    warnings.forEach(function(w) { html += '<li>' + escHtml(w) + '</li>'; });
+    html += '</ul></div>';
+  } else {
+    html += '<div class="alert-success">Test looks good!</div>';
+  }
+
+  var output = { test: testData };
+  var jsonStr = JSON.stringify(output, null, 2);
+
+  html += '<button class="btn-block btn-success" onclick="downloadJson()">Download JSON</button>';
+  html += '<div class="json-preview">' + escHtml(jsonStr) + '</div>';
+  area.innerHTML = html;
+}
+
+function validateTest() {
+  var w = [];
+  if (!testData.id) w.push('Test has no ID.');
+  var title = locStr(testData.title, testData.default_locale);
+  if (!title) w.push('Title is empty for default locale.');
+  if (!testData.questions.length) w.push('No questions added.');
+
+  testData.questions.forEach(function(q, i) {
+    var qt = locStr(q.text, testData.default_locale);
+    if (!qt) w.push('Q' + (i+1) + ': question text is empty.');
+    if (q.answer_type === 'single_choice' && !q.answer_config.correct_answer) {
+      w.push('Q' + (i+1) + ': no correct answer selected.');
+    }
+    if (q.answer_type === 'multi_choice' && !(q.answer_config.correct_answers||[]).length) {
+      w.push('Q' + (i+1) + ': no correct answers selected.');
+    }
+    // Check media refs
+    (q.media_refs||[]).forEach(function(ref) {
+      if (!testData.media.find(function(m){return m.id===ref;})) {
+        w.push('Q' + (i+1) + ': media ref "' + ref + '" not found.');
+      }
+    });
+    if (q.answer_config && q.answer_config.options) {
+      q.answer_config.options.forEach(function(opt) {
+        if (opt.media_ref && !testData.media.find(function(m){return m.id===opt.media_ref;})) {
+          w.push('Q' + (i+1) + ': option media ref "' + opt.media_ref + '" not found.');
+        }
+      });
+    }
+  });
+
+  // Check section refs
+  (testData.sections||[]).forEach(function(s, si) {
+    (s.question_ids||[]).forEach(function(qid) {
+      if (!testData.questions.find(function(q){return q.id===qid;})) {
+        w.push('Section ' + (si+1) + ': question "' + qid + '" not found.');
+      }
+    });
+  });
+
+  return w;
+}
+
+function downloadJson() {
+  testData.updated_at = nowISO();
+  var output = { test: testData };
+  var jsonStr = JSON.stringify(output, null, 2);
+  var blob = new Blob([jsonStr], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var title = locStr(testData.title, testData.default_locale) || 'test';
+  title = title.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 40);
+  a.href = url;
+  a.download = title + '_v' + (testData.version || 1) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ==================== INIT ====================
+showEditorHome();
+</script>
+</body>
+</html>
