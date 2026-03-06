@@ -134,6 +134,46 @@ layout: null
       padding: 4px 10px; cursor: pointer; font-size: 0.85rem; margin-left: 10px;
     }
     .no-users { color: #999; font-style: italic; margin: 15px 0; }
+    .ai-dashboard-card {
+      text-align: left;
+      max-width: 400px;
+      margin: 15px auto;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .ai-grade { font-size: 1.3rem; font-weight: bold; color: #4a90d9; margin-bottom: 8px; }
+    .ai-skills { font-size: 0.9rem; line-height: 1.8; }
+    .ai-skill-line { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 2px 0; }
+    .ai-skill-name { color: #555; }
+    .ai-skill-level { font-weight: bold; }
+    .ai-skill-level.strong { color: #2a9d2a; }
+    .ai-skill-level.developing { color: #e8a020; }
+    .ai-skill-level.emerging { color: #d97a2a; }
+    .ai-skill-level.not-started { color: #999; }
+    .ai-history-item {
+      text-align: left;
+      max-width: 400px;
+      margin: 8px auto;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      font-size: 0.9rem;
+    }
+    .ai-history-item .test-name { font-weight: bold; }
+    .ai-history-item .test-detail { color: #888; font-size: 0.85rem; }
+    .ai-eval-box {
+      text-align: left;
+      max-width: 400px;
+      margin: 15px auto;
+      padding: 12px;
+      background: #f0f7f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -145,11 +185,49 @@ layout: null
       <button onclick="startSolo()">Solo</button>
       <button onclick="showCompSetup()">Competition</button>
     </div>
+    <div style="margin-top:15px">
+      <button onclick="startAITeacher()" style="background:#2a9d2a;">Practice with AI Teacher</button>
+    </div>
     <div style="margin-top:25px">
       <button onclick="showScoreboard()" style="font-size:0.8em; padding:6px 14px; background:#888;">Top Scores</button>
       <button onclick="showUserManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Users</button>
       <button onclick="showDataManagement()" style="font-size:0.8em; padding:6px 14px; background:#888; margin-left:8px;">Data</button>
     </div>
+  </div>
+
+  <!-- AI Teacher: user select -->
+  <div id="ai-teacher-setup" style="display:none">
+    <p><b>Practice with AI Teacher</b></p>
+    <p>Select your name:</p>
+    <select id="ai-teacher-user-select" style="font-size:1.2rem; padding:8px; border:2px solid #ccc; border-radius:6px; min-width:200px;">
+      <option value="">-- select user --</option>
+    </select>
+    <br>
+    <button class="btn-block" onclick="confirmAITeacherUser()">Next</button>
+    <button class="restart-btn" onclick="showMenu()" style="font-size:0.9rem; padding:6px 14px; background:#888;">Back</button>
+  </div>
+
+  <!-- AI Teacher: dashboard -->
+  <div id="ai-teacher-dashboard" style="display:none">
+    <p><b>AI Teacher</b> &mdash; <span id="ai-teacher-name"></span></p>
+    <div id="ai-teacher-progress"></div>
+    <div id="ai-teacher-last-eval"></div>
+    <div id="ai-teacher-history"></div>
+    <div id="ai-teacher-actions" style="margin-top:20px;"></div>
+    <button class="restart-btn" onclick="showMenu()" style="font-size:0.9rem; padding:6px 14px; background:#888;">Back to Menu</button>
+  </div>
+
+  <!-- AI Teacher: loading/generating -->
+  <div id="ai-teacher-loading" style="display:none">
+    <p id="ai-teacher-loading-msg">Generating test...</p>
+    <div style="margin-top:20px; color:#888;">This may take a few seconds.</div>
+  </div>
+
+  <!-- AI Teacher: post-test evaluation -->
+  <div id="ai-teacher-eval" style="display:none">
+    <div class="summary" id="ai-teacher-eval-summary"></div>
+    <div id="ai-teacher-eval-result"></div>
+    <button class="restart-btn" onclick="showAITeacherDashboard(aiTeacherUser)">Back to Dashboard</button>
   </div>
 
   <!-- Solo name entry -->
@@ -500,7 +578,7 @@ layout: null
     }
 
     function buildTestObject(userId, isComp) {
-      return {
+      var obj = {
         id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
         userId: userId,
         level: level,
@@ -518,6 +596,8 @@ layout: null
           };
         })
       };
+      if (aiTeacherMode) obj.isAiTeacher = true;
+      return obj;
     }
 
     // --- Game UI ---
@@ -534,7 +614,7 @@ layout: null
     }
 
     function hideAll() {
-      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management','data-management'].forEach(function(id) {
+      ['menu','solo-setup','difficulty','comp-setup','game','done','handoff','comp-done','scoreboard','user-management','data-management','ai-teacher-setup','ai-teacher-dashboard','ai-teacher-loading','ai-teacher-eval'].forEach(function(id) {
         document.getElementById(id).style.display = 'none';
       });
     }
@@ -632,6 +712,14 @@ layout: null
       clearInterval(timerInterval);
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
 
+      if (mode === 'solo' && aiTeacherMode) {
+        var testObj = buildTestObject(soloName, false);
+        addTestResult(testObj);
+        aiTeacherMode = false;
+        aiTeacherFinish(testObj);
+        return;
+      }
+
       if (mode === 'solo') {
         var testObj = buildTestObject(soloName, false);
         addTestResult(testObj);
@@ -724,6 +812,8 @@ layout: null
     var soloName = '';
     var aiGeneratedTest = false;
     var lastAITestObj = null;
+    var aiTeacherUser = '';
+    var aiTeacherMode = false;
 
     // --- User management ---
 
@@ -1070,6 +1160,425 @@ layout: null
         evalDiv.innerHTML = '<span style="color:red;">Error: ' + err.message + '</span>';
         btn.textContent = 'Retry';
         btn.disabled = false;
+      });
+    }
+
+    // --- AI Teacher ---
+
+    function getAITeacherData(userName) {
+      var data = getAppData();
+      var user = data.users.find(function(u) { return u.name === userName; });
+      if (!user) return null;
+      return user.aiTeacher || null;
+    }
+
+    function saveAITeacherData(userName, teacherData) {
+      var data = getAppData();
+      var user = data.users.find(function(u) { return u.name === userName; });
+      if (!user) return;
+      user.aiTeacher = teacherData;
+      saveAppData(data);
+    }
+
+    function getAITeacherTests(userName) {
+      var data = getAppData();
+      return data.tests
+        .filter(function(t) { return t.userId === userName && t.isAiTeacher; })
+        .sort(function(a, b) { return new Date(b.dateStarted) - new Date(a.dateStarted); });
+    }
+
+    function startAITeacher() {
+      if (!getSetting('ApiKey')) {
+        alert('Please set an API key in Data settings first.');
+        return;
+      }
+      hideAll();
+      document.getElementById('ai-teacher-setup').style.display = 'block';
+      populateUserSelect('ai-teacher-user-select');
+      var last = getSetting('lastAITeacherName') || '';
+      if (last) {
+        var sel = document.getElementById('ai-teacher-user-select');
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === last) { sel.value = last; break; }
+        }
+      }
+    }
+
+    function confirmAITeacherUser() {
+      var sel = document.getElementById('ai-teacher-user-select');
+      var name = sel.value;
+      if (!name) { alert('Please select a user.'); return; }
+      aiTeacherUser = name;
+      setSetting('lastAITeacherName', name);
+      showAITeacherDashboard(name);
+    }
+
+    function skillLevelClass(level) {
+      var l = (level || '').toLowerCase();
+      if (l === 'strong' || l === 'proficient') return 'strong';
+      if (l === 'developing' || l === 'intermediate') return 'developing';
+      if (l === 'emerging' || l === 'beginner') return 'emerging';
+      return 'not-started';
+    }
+
+    function showAITeacherDashboard(userName) {
+      hideAll();
+      document.getElementById('ai-teacher-dashboard').style.display = 'block';
+      document.getElementById('ai-teacher-name').textContent = userName;
+      aiTeacherUser = userName;
+
+      var td = getAITeacherData(userName);
+      var tests = getAITeacherTests(userName);
+      var progressEl = document.getElementById('ai-teacher-progress');
+      var lastEvalEl = document.getElementById('ai-teacher-last-eval');
+      var historyEl = document.getElementById('ai-teacher-history');
+      var actionsEl = document.getElementById('ai-teacher-actions');
+
+      if (!td) {
+        // New user - no AI Teacher data yet
+        progressEl.innerHTML = '<p style="color:#888; font-style:italic;">No assessment yet. Take your initial assessment to get started!</p>';
+        lastEvalEl.innerHTML = '';
+        historyEl.innerHTML = '';
+        actionsEl.innerHTML = '<button onclick="aiTeacherGenerateTest(true)" style="background:#2a9d2a;">Take Initial Assessment</button>';
+      } else {
+        // Show grade + skills
+        var html = '<div class="ai-dashboard-card">';
+        html += '<div class="ai-grade">' + escapeHtml(td.gradeLevel || 'Unassessed') + '</div>';
+        if (td.skills) {
+          html += '<div class="ai-skills">';
+          var skillNames = ['addition', 'subtraction', 'multiplication', 'division'];
+          var skillLabels = { addition: 'Addition', subtraction: 'Subtraction', multiplication: 'Multiplication', division: 'Division' };
+          skillNames.forEach(function(s) {
+            var val = td.skills[s] || 'Not started';
+            html += '<div class="ai-skill-line">';
+            html += '<span class="ai-skill-name">' + skillLabels[s] + '</span>';
+            html += '<span class="ai-skill-level ' + skillLevelClass(val) + '">' + escapeHtml(val) + '</span>';
+            html += '</div>';
+          });
+          html += '</div>';
+        }
+        html += '</div>';
+        progressEl.innerHTML = html;
+
+        // Show last evaluation
+        if (td.lastEvaluation) {
+          lastEvalEl.innerHTML = '<div class="ai-eval-box">' +
+            '<div style="font-weight:bold; margin-bottom:6px; color:#4a90d9;">Latest Evaluation</div>' +
+            escapeHtml(td.lastEvaluation) + '</div>';
+        } else {
+          lastEvalEl.innerHTML = '';
+        }
+
+        // Show test history
+        if (tests.length > 0) {
+          var hHtml = '<p style="margin-top:20px;"><b>Test History</b></p>';
+          tests.slice(0, 10).forEach(function(t) {
+            var correctCount = 0;
+            t.problems.forEach(function(p) { if (p.correct) correctCount++; });
+            var pct = t.problems.length > 0 ? Math.round(correctCount / t.problems.length * 100) : 0;
+            var dateStr = t.dateStarted ? t.dateStarted.slice(0, 10) : '';
+            var levelLabel = LEVEL_LABELS[t.level] || t.level;
+            hHtml += '<div class="ai-history-item">';
+            hHtml += '<div class="test-name">' + escapeHtml(levelLabel) + '</div>';
+            hHtml += '<div class="test-detail">' + dateStr + ' &mdash; ' + correctCount + '/' + t.problems.length + ' (' + pct + '%)</div>';
+            hHtml += '</div>';
+          });
+          historyEl.innerHTML = hHtml;
+        } else {
+          historyEl.innerHTML = '';
+        }
+
+        actionsEl.innerHTML = '<button onclick="aiTeacherGenerateTest(false)" style="background:#2a9d2a;">Next Test</button>';
+      }
+    }
+
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function buildAITeacherPrompt(userName, isInitial) {
+      var context = buildStudentContext(userName);
+      if (!context) return null;
+
+      var td = getAITeacherData(userName);
+      var aiTests = getAITeacherTests(userName).slice(0, 10);
+
+      var lines = [];
+      lines.push('You are an AI math teacher. Generate a custom math test for a student and provide a structured assessment.');
+      lines.push('');
+      lines.push(context);
+
+      if (td && td.gradeLevel) {
+        lines.push('## Current AI Teacher Assessment');
+        lines.push('- Grade Level: ' + td.gradeLevel);
+        if (td.skills) {
+          lines.push('- Addition: ' + (td.skills.addition || 'Not started'));
+          lines.push('- Subtraction: ' + (td.skills.subtraction || 'Not started'));
+          lines.push('- Multiplication: ' + (td.skills.multiplication || 'Not started'));
+          lines.push('- Division: ' + (td.skills.division || 'Not started'));
+        }
+        lines.push('');
+      }
+
+      if (aiTests.length > 0) {
+        lines.push('## AI Teacher Test History (most recent first)');
+        lines.push('');
+        aiTests.forEach(function(t, ti) {
+          var levelLabel = LEVEL_LABELS[t.level] || t.level;
+          var dateStr = t.dateStarted ? t.dateStarted.slice(0, 10) : 'unknown';
+          lines.push('### AI Test ' + (ti + 1) + ': ' + levelLabel + ' (' + dateStr + ')');
+          var correctCount = 0;
+          var totalTime = 0;
+          t.problems.forEach(function(p, pi) {
+            var mark = p.correct ? '\u2713' : '\u2717';
+            correctCount += p.correct ? 1 : 0;
+            totalTime += (p.timeTaken || 0);
+            lines.push('  ' + (pi + 1) + '. ' + p.problem + ' = ' + p.correctAnswer +
+              ', answered ' + p.userAnswer + ' ' + mark + ' (' + (p.timeTaken || 0) + 's)');
+          });
+          var pct = t.problems.length > 0 ? Math.round(correctCount / t.problems.length * 100) : 0;
+          var totalTimeSec = Math.round(totalTime);
+          var totalTimeStr = Math.floor(totalTimeSec / 60) + ':' + String(totalTimeSec % 60).padStart(2, '0');
+          lines.push('  Summary: ' + correctCount + '/' + t.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr);
+          lines.push('');
+        });
+      }
+
+      lines.push('## Instructions');
+      if (isInitial) {
+        lines.push('This is an INITIAL ASSESSMENT. Create a diagnostic test that covers a range of difficulty levels and operation types to accurately determine the student\'s current abilities.');
+      } else {
+        lines.push('Create a practice test that:');
+        lines.push('1. Focuses on problem types where the student struggled (made mistakes or was slow)');
+        lines.push('2. Includes a mix of easier problems for confidence and harder problems for growth');
+        lines.push('3. Adjusts difficulty appropriately for the student\'s current level');
+      }
+      lines.push('4. Contains 10-15 problems');
+      lines.push('');
+      lines.push('Output ONLY a valid JSON object in this exact format:');
+      lines.push('{');
+      lines.push('  "name": "<descriptive test name>",');
+      lines.push('  "problems": [');
+      lines.push('    { "a": <integer>, "b": <integer>, "op": "<operator>" }');
+      lines.push('  ]');
+      lines.push('}');
+      lines.push('');
+      lines.push('Valid operators: "+" (addition), "-" (subtraction), "*" (multiplication), "/" (exact division), "/r" (division with remainder)');
+      lines.push('Rules: b must be > 0 for division. For "/" the division must be exact (no remainder). For "/r" use any integers.');
+      lines.push('Validation is strict: checks for valid operators, integer operands, division by zero, and exact divisibility for "/" (suggests "/r" if not even).');
+
+      return lines.join('\n');
+    }
+
+    function buildAITeacherEvalPrompt(userName, testObj) {
+      var context = buildStudentContext(userName);
+      if (!context) return null;
+
+      var td = getAITeacherData(userName);
+      var lines = [];
+      lines.push('You are an AI math teacher evaluating a student\'s test performance and updating their level assessment.');
+      lines.push('');
+      lines.push(context);
+
+      if (td && td.gradeLevel) {
+        lines.push('## Previous AI Teacher Assessment');
+        lines.push('- Grade Level: ' + td.gradeLevel);
+        if (td.skills) {
+          lines.push('- Addition: ' + (td.skills.addition || 'Not started'));
+          lines.push('- Subtraction: ' + (td.skills.subtraction || 'Not started'));
+          lines.push('- Multiplication: ' + (td.skills.multiplication || 'Not started'));
+          lines.push('- Division: ' + (td.skills.division || 'Not started'));
+        }
+        lines.push('');
+      }
+
+      lines.push('## Test Just Completed');
+      lines.push('Test name: ' + (LEVEL_LABELS[testObj.level] || testObj.level));
+      lines.push('Date: ' + (testObj.dateStarted ? testObj.dateStarted.slice(0, 10) : 'today'));
+      lines.push('');
+
+      var correctCount = 0;
+      var totalTime = 0;
+      testObj.problems.forEach(function(p, pi) {
+        var mark = p.correct ? '\u2713' : '\u2717';
+        correctCount += p.correct ? 1 : 0;
+        totalTime += (p.timeTaken || 0);
+        lines.push('  ' + (pi + 1) + '. ' + p.problem + ' = ' + p.correctAnswer +
+          ', answered ' + p.userAnswer + ' ' + mark + ' (' + (p.timeTaken || 0).toFixed(1) + 's)');
+      });
+      var pct = testObj.problems.length > 0 ? Math.round(correctCount / testObj.problems.length * 100) : 0;
+      var totalTimeSec = Math.round(totalTime);
+      var totalTimeStr = Math.floor(totalTimeSec / 60) + ':' + String(totalTimeSec % 60).padStart(2, '0');
+      lines.push('  Summary: ' + correctCount + '/' + testObj.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr);
+      lines.push('');
+
+      lines.push('## Instructions');
+      lines.push('Provide an evaluation and updated level assessment. Output ONLY valid JSON in this exact format:');
+      lines.push('{');
+      lines.push('  "evaluation": "<3-5 sentences: performance analysis, strengths, areas to improve, recommendation. Encouraging and age-appropriate. Address parent/teacher, not student.>",');
+      lines.push('  "gradeLevel": "<approximate school grade, e.g. Grade 1, Grade 2, Grade 3... up to Grade 8>",');
+      lines.push('  "skills": {');
+      lines.push('    "addition": "<Strong|Developing|Emerging|Not started>",');
+      lines.push('    "subtraction": "<Strong|Developing|Emerging|Not started>",');
+      lines.push('    "multiplication": "<Strong|Developing|Emerging|Not started>",');
+      lines.push('    "division": "<Strong|Developing|Emerging|Not started>"');
+      lines.push('  }');
+      lines.push('}');
+      lines.push('');
+      lines.push('Grade level should reflect the student\'s overall math ability mapped to school grades.');
+      lines.push('Skill levels: Strong = consistently fast and correct, Developing = mostly correct but sometimes slow or with occasional mistakes, Emerging = frequent mistakes or very slow, Not started = no evidence of this skill yet.');
+
+      return lines.join('\n');
+    }
+
+    function aiTeacherGenerateTest(isInitial) {
+      var apiKey = getSetting('ApiKey');
+      if (!apiKey) { alert('No API key configured.'); return; }
+
+      var promptText = buildAITeacherPrompt(aiTeacherUser, isInitial);
+      if (!promptText) { alert('Could not build prompt.'); return; }
+
+      hideAll();
+      document.getElementById('ai-teacher-loading').style.display = 'block';
+      document.getElementById('ai-teacher-loading-msg').textContent =
+        isInitial ? 'Generating initial assessment...' : 'Generating next test...';
+
+      var aiModel = getSetting('AiModel') || 'gemini-flash-latest';
+      fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          return response.json().then(function(err) {
+            throw new Error(err.error ? err.error.message : 'API error (HTTP ' + response.status + ')');
+          });
+        }
+        return response.json();
+      })
+      .then(function(result) {
+        var text = result.candidates && result.candidates[0] &&
+          result.candidates[0].content && result.candidates[0].content.parts &&
+          result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text;
+        if (!text) throw new Error('Empty response from AI.');
+
+        var jsonStr = text;
+        var match = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (match) jsonStr = match[1];
+        jsonStr = jsonStr.trim();
+
+        var testData = JSON.parse(jsonStr);
+        var validationError = validateCustomTest(testData);
+        if (validationError) throw new Error('AI generated invalid test: ' + validationError);
+
+        var convertedProblems = convertCustomProblems(testData);
+        var testName = testData.name.trim();
+
+        // Set up game state
+        mode = 'solo';
+        soloName = aiTeacherUser;
+        level = 'custom:' + testName;
+        problems = convertedProblems;
+        aiTeacherMode = true;
+        aiGeneratedTest = false; // Don't show the old evaluate button
+
+        // Go directly to the game
+        runGame(aiTeacherUser);
+      })
+      .catch(function(err) {
+        alert('Error: ' + err.message);
+        showAITeacherDashboard(aiTeacherUser);
+      });
+    }
+
+    function aiTeacherFinish(testObj) {
+      // Show summary while evaluating
+      hideAll();
+      document.getElementById('ai-teacher-eval').style.display = 'block';
+
+      var correctCount = 0;
+      testObj.problems.forEach(function(p) { if (p.correct) correctCount++; });
+      var elapsed = testObj.dateCompleted && testObj.dateStarted ?
+        Math.floor((new Date(testObj.dateCompleted) - new Date(testObj.dateStarted)) / 1000) : 0;
+
+      document.getElementById('ai-teacher-eval-summary').innerHTML =
+        '<b>' + escapeHtml(aiTeacherUser) + '</b><br>' +
+        'Score: <b>' + correctCount + '/' + testObj.problems.length + '</b><br>' +
+        'Time: <b>' + formatTime(elapsed) + '</b>';
+
+      var evalResultEl = document.getElementById('ai-teacher-eval-result');
+      evalResultEl.innerHTML = '<div class="ai-eval-box"><span style="color:#888;">Analyzing performance and updating assessment...</span></div>';
+
+      // Auto-evaluate
+      var apiKey = getSetting('ApiKey');
+      var evalPrompt = buildAITeacherEvalPrompt(aiTeacherUser, testObj);
+      if (!apiKey || !evalPrompt) {
+        evalResultEl.innerHTML = '<div class="ai-eval-box" style="color:red;">Could not generate evaluation.</div>';
+        return;
+      }
+
+      var aiModel = getSetting('AiModel') || 'gemini-flash-latest';
+      fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+        body: JSON.stringify({ contents: [{ parts: [{ text: evalPrompt }] }] })
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          return response.json().then(function(err) {
+            throw new Error(err.error ? err.error.message : 'API error (HTTP ' + response.status + ')');
+          });
+        }
+        return response.json();
+      })
+      .then(function(result) {
+        var text = result.candidates && result.candidates[0] &&
+          result.candidates[0].content && result.candidates[0].content.parts &&
+          result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text;
+        if (!text) throw new Error('Empty response from AI.');
+
+        var jsonStr = text;
+        var match = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (match) jsonStr = match[1];
+        jsonStr = jsonStr.trim();
+
+        var evalData = JSON.parse(jsonStr);
+
+        // Update AI Teacher data on user
+        var td = getAITeacherData(aiTeacherUser) || {};
+        td.gradeLevel = evalData.gradeLevel || td.gradeLevel || 'Unassessed';
+        td.skills = evalData.skills || td.skills || {};
+        td.lastEvaluation = evalData.evaluation || '';
+        td.lastUpdated = new Date().toISOString();
+        saveAITeacherData(aiTeacherUser, td);
+
+        // Display evaluation
+        var html = '<div class="ai-eval-box">';
+        html += '<div style="font-weight:bold; margin-bottom:6px; color:#4a90d9;">Evaluation</div>';
+        html += escapeHtml(evalData.evaluation || 'No evaluation text.');
+        html += '</div>';
+        html += '<div class="ai-dashboard-card" style="margin-top:10px;">';
+        html += '<div class="ai-grade">' + escapeHtml(td.gradeLevel) + '</div>';
+        if (td.skills) {
+          html += '<div class="ai-skills">';
+          var skillLabels = { addition: 'Addition', subtraction: 'Subtraction', multiplication: 'Multiplication', division: 'Division' };
+          ['addition', 'subtraction', 'multiplication', 'division'].forEach(function(s) {
+            var val = td.skills[s] || 'Not started';
+            html += '<div class="ai-skill-line">';
+            html += '<span class="ai-skill-name">' + skillLabels[s] + '</span>';
+            html += '<span class="ai-skill-level ' + skillLevelClass(val) + '">' + escapeHtml(val) + '</span>';
+            html += '</div>';
+          });
+          html += '</div>';
+        }
+        html += '</div>';
+        evalResultEl.innerHTML = html;
+      })
+      .catch(function(err) {
+        evalResultEl.innerHTML = '<div class="ai-eval-box" style="color:red;">Evaluation error: ' + escapeHtml(err.message) + '</div>';
       });
     }
 
