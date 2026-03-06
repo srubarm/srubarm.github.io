@@ -14,13 +14,13 @@ layout: null
       margin: 0 auto;
       padding: 0 20px 80px;
       text-align: center;
-      background: #f0f2f5;
-      color: #333;
+      background: #ffffff;
+      color: #111;
     }
     h1 {
       margin: 30px 0 15px;
       font-size: 2rem;
-      color: #2e7d6f;
+      color: #055585;
       font-weight: 700;
     }
 
@@ -30,7 +30,7 @@ layout: null
       border-radius: 20px;
       padding: 25px 20px;
       margin: 15px 0;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid #e5e5e5;
     }
     .menu-user-select {
       display: flex;
@@ -46,7 +46,7 @@ layout: null
     }
     .menu-user-select .user-avatar {
       width: 32px; height: 32px;
-      background: #d0e8f2;
+      background: #d4eaf7;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       margin-right: 12px;
@@ -59,7 +59,7 @@ layout: null
       background: transparent;
       font-size: 1.1rem;
       font-weight: 600;
-      color: #333;
+      color: #111;
       appearance: none;
       -webkit-appearance: none;
       outline: none;
@@ -69,6 +69,7 @@ layout: null
       color: #999;
       font-size: 0.9rem;
       margin-left: 8px;
+      pointer-events: none;
     }
     .mode-grid {
       display: grid;
@@ -77,7 +78,7 @@ layout: null
       margin-bottom: 12px;
     }
     .mode-card {
-      background: #e3f0fb;
+      background: #e8f4fb;
       border-radius: 16px;
       padding: 20px 10px 15px;
       cursor: pointer;
@@ -93,7 +94,7 @@ layout: null
     .mode-card .mode-icon { font-size: 1.8rem; }
     .mode-card .mode-label { font-size: 1rem; font-weight: 600; color: #333; }
     .mode-card-ai {
-      background: #2e7d4a;
+      background: #055585;
       border-radius: 16px;
       padding: 18px 10px 15px;
       cursor: pointer;
@@ -133,13 +134,13 @@ layout: null
       gap: 3px;
       margin: 0;
     }
-    .bottom-nav button:hover { color: #2e7d6f; }
+    .bottom-nav button:hover { color: #055585; }
     .bottom-nav .nav-icon { font-size: 1.3rem; }
 
     /* --- General elements --- */
     .progress { font-size: 1rem; color: #888; margin-bottom: 20px; }
     .timer { font-size: 1.1rem; color: #555; margin-bottom: 10px; }
-    .player-label { font-size: 1.4rem; color: #4a90d9; font-weight: bold; margin-bottom: 10px; }
+    .player-label { font-size: 1.4rem; color: #1F96D3; font-weight: bold; margin-bottom: 10px; }
     .problem { font-size: 2.5rem; margin: 30px 0; }
     input[type="tel"] {
       font-size: 1.5rem;
@@ -165,7 +166,7 @@ layout: null
       cursor: pointer;
       border: none;
       border-radius: 6px;
-      background: #4a90d9;
+      background: #1F96D3;
       color: white;
     }
     .btn-block {
@@ -187,7 +188,7 @@ layout: null
       cursor: pointer;
       border: none;
       border-radius: 6px;
-      background: #4a90d9;
+      background: #1F96D3;
       color: white;
     }
     .mode-buttons { margin: 30px 0; }
@@ -208,7 +209,7 @@ layout: null
       padding: 10px 25px;
       border-bottom: 1px solid #ddd;
     }
-    .comparison-table th { color: #4a90d9; }
+    .comparison-table th { color: #1F96D3; }
     .winner-cell { font-weight: bold; color: green; }
     .loser-cell { color: #999; }
     .winner-banner {
@@ -232,7 +233,7 @@ layout: null
       border-bottom: 1px solid #ddd;
       text-align: center;
     }
-    .score-table th { color: #4a90d9; }
+    .score-table th { color: #1F96D3; }
     #personal-best { margin-top: 25px; }
     #score-table-wrap { margin-top: 20px; }
     .user-card {
@@ -264,12 +265,12 @@ layout: null
       border-radius: 8px;
       background: #fafafa;
     }
-    .ai-grade { font-size: 1.3rem; font-weight: bold; color: #4a90d9; margin-bottom: 8px; }
+    .ai-grade { font-size: 1.3rem; font-weight: bold; color: #1F96D3; margin-bottom: 8px; }
     .ai-skills { font-size: 0.9rem; line-height: 1.8; }
     .ai-skill-line { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 2px 0; }
     .ai-skill-name { color: #555; }
     .ai-skill-level { font-weight: bold; }
-    .ai-skill-level.strong { color: #2a9d2a; }
+    .ai-skill-level.strong { color: #055585; }
     .ai-skill-level.developing { color: #e8a020; }
     .ai-skill-level.emerging { color: #d97a2a; }
     .ai-skill-level.not-started { color: #999; }
@@ -300,14 +301,14 @@ layout: null
       top: 15px;
       left: 15px;
       font-size: 1.6rem;
-      color: #4a90d9;
+      color: #1F96D3;
       cursor: pointer;
       z-index: 100;
       padding: 4px 10px;
       line-height: 1;
       user-select: none;
     }
-    .back-arrow:hover { color: #2a6db5; }
+    .back-arrow:hover { color: #055585; }
     .review-table {
       margin: 20px auto;
       border-collapse: collapse;
@@ -319,7 +320,7 @@ layout: null
     .review-table th {
       padding: 6px 10px;
       border-bottom: 2px solid #ddd;
-      color: #4a90d9;
+      color: #1F96D3;
       font-size: 0.85rem;
     }
     .review-table td {
@@ -445,7 +446,7 @@ layout: null
       <input type="text" id="ai-model-input" placeholder="gemini-flash-latest" style="font-size:1rem; width:250px; padding:6px; border:2px solid #ccc; border-radius:6px; margin:5px 0;">
       <br>
       <button onclick="saveAISettings()" style="font-size:0.9rem; padding:6px 14px;">Save</button>
-      <div id="api-key-status" style="font-size:0.85rem; color:#4a90d9; margin-top:4px;"></div>
+      <div id="api-key-status" style="font-size:0.85rem; color:#1F96D3; margin-top:4px;"></div>
     </div>
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
   </div>
@@ -454,12 +455,12 @@ layout: null
   <div id="difficulty" style="display:none">
     <div id="level-buttons-container"></div>
     <div id="solo-ai-generate-wrap" style="display:none; margin-top:20px;">
-      <button onclick="generateAITest(soloName)" style="background:#2a9d2a;">Generate test based on your previous results</button>
+      <button onclick="generateAITest(soloName)" style="background:#055585;">Generate test based on your previous results</button>
     </div>
     <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:15px;">
       <button onclick="document.getElementById('custom-test-file').click()" style="font-size:0.9em; padding:6px 14px; background:#888;">Load Custom Test</button>
       <input type="file" id="custom-test-file" accept=".json" style="display:none" onchange="loadCustomTest(event)">
-      <div id="custom-test-name" style="margin-top:8px; font-size:0.9rem; color:#4a90d9;"></div>
+      <div id="custom-test-name" style="margin-top:8px; font-size:0.9rem; color:#1F96D3;"></div>
       <div id="custom-test-start" style="display:none; margin-top:8px;">
         <button onclick="pickCustomTest()">Start Custom Test</button>
       </div>
@@ -516,7 +517,7 @@ layout: null
     <div id="problem-review"></div>
     <div id="personal-best"></div>
     <div id="ai-evaluate-wrap" style="display:none; margin-top:15px;">
-      <button id="ai-evaluate-btn" onclick="requestAIEvaluation()" style="font-size:1rem; padding:8px 18px; background:#2a9d2a; color:white; border:none; border-radius:6px; cursor:pointer;">AI Evaluate</button>
+      <button id="ai-evaluate-btn" onclick="requestAIEvaluation()" style="font-size:1rem; padding:8px 18px; background:#055585; color:white; border:none; border-radius:6px; cursor:pointer;">AI Evaluate</button>
       <div id="ai-evaluation" style="margin-top:12px; padding:12px; background:#f5f5f5; border-radius:8px; font-size:0.95rem; line-height:1.5; text-align:left; display:none;"></div>
     </div>
     <button class="restart-btn" onclick="showMenu()">Back to Menu</button>
@@ -1158,8 +1159,8 @@ layout: null
           '<div style="display:flex; flex-direction:column; gap:4px; margin-left:10px;">' +
           '<button class="remove-btn" onclick="removeUser(' + i + ')">Remove</button>';
         if (aiEnabled) {
-          h += '<button class="remove-btn" style="background:#4a90d9;" onclick="generateTestPrompt(\'' + escapedName + '\')">AI Prompt</button>' +
-            '<button class="remove-btn" style="background:#2a9d2a;" onclick="generateAITest(\'' + escapedName + '\')">AI Generate</button>';
+          h += '<button class="remove-btn" style="background:#1F96D3;" onclick="generateTestPrompt(\'' + escapedName + '\')">AI Prompt</button>' +
+            '<button class="remove-btn" style="background:#055585;" onclick="generateAITest(\'' + escapedName + '\')">AI Generate</button>';
         }
         h += '</div></div>';
       });
@@ -1519,7 +1520,7 @@ layout: null
         progressEl.innerHTML = '<p style="color:#888; font-style:italic;">No assessment yet. Take your initial assessment to get started!</p>';
         lastEvalEl.innerHTML = '';
         historyEl.innerHTML = '';
-        actionsEl.innerHTML = '<button onclick="aiTeacherGenerateTest(true)" style="background:#2a9d2a;">Take Initial Assessment</button>';
+        actionsEl.innerHTML = '<button onclick="aiTeacherGenerateTest(true)" style="background:#055585;">Take Initial Assessment</button>';
       } else {
         // Show grade + skills
         var html = '<div class="ai-dashboard-card">';
@@ -1543,7 +1544,7 @@ layout: null
         // Show last evaluation
         if (td.lastEvaluation) {
           lastEvalEl.innerHTML = '<div class="ai-eval-box">' +
-            '<div style="font-weight:bold; margin-bottom:6px; color:#4a90d9;">Latest Evaluation</div>' +
+            '<div style="font-weight:bold; margin-bottom:6px; color:#1F96D3;">Latest Evaluation</div>' +
             escapeHtml(td.lastEvaluation) + '</div>';
         } else {
           lastEvalEl.innerHTML = '';
@@ -1568,7 +1569,7 @@ layout: null
           historyEl.innerHTML = '';
         }
 
-        actionsEl.innerHTML = '<button onclick="aiTeacherGenerateTest(false)" style="background:#2a9d2a;">Next Test</button>';
+        actionsEl.innerHTML = '<button onclick="aiTeacherGenerateTest(false)" style="background:#055585;">Next Test</button>';
       }
     }
 
@@ -1839,7 +1840,7 @@ layout: null
 
         // Display evaluation
         var html = '<div class="ai-eval-box">';
-        html += '<div style="font-weight:bold; margin-bottom:6px; color:#4a90d9;">Evaluation</div>';
+        html += '<div style="font-weight:bold; margin-bottom:6px; color:#1F96D3;">Evaluation</div>';
         html += escapeHtml(evalData.evaluation || 'No evaluation text.');
         html += '</div>';
         html += '<div class="ai-dashboard-card" style="margin-top:10px;">';
@@ -2200,7 +2201,7 @@ layout: null
         if (!text) throw new Error('Empty response');
         setSetting('apiKeyValid', '1');
         statusEl.textContent = 'Saved \u2013 API key and model verified \u2713';
-        statusEl.style.color = '#2a9d2a';
+        statusEl.style.color = '#055585';
         updateAIVisibility();
       })
       .catch(function(err) {
