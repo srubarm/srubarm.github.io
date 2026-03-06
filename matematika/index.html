@@ -1819,7 +1819,44 @@ layout: null
       var model = document.getElementById('ai-model-input').value.trim();
       setSetting('ApiKey', key);
       setSetting('AiModel', model);
-      document.getElementById('api-key-status').textContent = 'Saved.';
+      var statusEl = document.getElementById('api-key-status');
+
+      if (!key) {
+        statusEl.textContent = 'Saved (no key set).';
+        statusEl.style.color = '#888';
+        return;
+      }
+
+      statusEl.textContent = 'Verifying...';
+      statusEl.style.color = '#888';
+
+      var aiModel = model || 'gemini-flash-latest';
+      fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({ contents: [{ parts: [{ text: 'Say hi' }] }] })
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          return response.json().then(function(err) {
+            var msg = err.error ? err.error.message : 'HTTP ' + response.status;
+            throw new Error(msg);
+          });
+        }
+        return response.json();
+      })
+      .then(function(result) {
+        var text = result.candidates && result.candidates[0] &&
+          result.candidates[0].content && result.candidates[0].content.parts &&
+          result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text;
+        if (!text) throw new Error('Empty response');
+        statusEl.textContent = 'Saved \u2013 API key and model verified \u2713';
+        statusEl.style.color = '#2a9d2a';
+      })
+      .catch(function(err) {
+        statusEl.textContent = 'Saved \u2013 verification failed: ' + err.message;
+        statusEl.style.color = '#e55';
+      });
     }
 
     // --- Export / Import ---
