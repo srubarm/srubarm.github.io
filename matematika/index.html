@@ -295,35 +295,7 @@ layout: null
 
   <!-- Difficulty selection -->
   <div id="difficulty" style="display:none">
-    <p><b>+ / &minus;</b></p>
-    <div class="level-buttons">
-      <button onclick="pickLevel('add10')">up to 10</button>
-      <button onclick="pickLevel('add50')">up to 50</button>
-      <button onclick="pickLevel('add200')">up to 200</button>
-    </div>
-    <p><b>&times;</b></p>
-    <div class="level-buttons">
-      <button onclick="pickLevel('mul5x5')">1–5 &times; 1–5</button>
-      <button onclick="pickLevel('mul5x10')">1–5 &times; 1–10</button>
-      <button onclick="pickLevel('mul10x10')">1–10 &times; 1–10</button>
-      <button onclick="pickLevel('mul10x20')">1–10 &times; 1–20</button>
-      <button onclick="pickLevel('mul10x50')">1–10 &times; 1–50</button>
-      <button onclick="pickLevel('mul10x100')">1–10 &times; 1–100</button>
-    </div>
-    <p><b>&divide;</b></p>
-    <div class="level-buttons">
-      <button onclick="pickLevel('div50d5')">up to 50 &divide; 1–5</button>
-      <button onclick="pickLevel('div100d5')">up to 100 &divide; 1–5</button>
-      <button onclick="pickLevel('div50d10')">up to 50 &divide; 1–10</button>
-      <button onclick="pickLevel('div100d10')">up to 100 &divide; 1–10</button>
-    </div>
-    <p><b>&divide; with remainder</b></p>
-    <div class="level-buttons">
-      <button onclick="pickLevel('divmod50d5')">up to 50 &divide; 1–5</button>
-      <button onclick="pickLevel('divmod100d5')">up to 100 &divide; 1–5</button>
-      <button onclick="pickLevel('divmod50d10')">up to 50 &divide; 1–10</button>
-      <button onclick="pickLevel('divmod100d10')">up to 100 &divide; 1–10</button>
-    </div>
+    <div id="level-buttons-container"></div>
     <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:15px;">
       <button onclick="document.getElementById('custom-test-file').click()" style="font-size:0.9em; padding:6px 14px; background:#888;">Load Custom Test</button>
       <input type="file" id="custom-test-file" accept=".json" style="display:none" onchange="loadCustomTest(event)">
@@ -435,45 +407,54 @@ layout: null
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    var LEVELS = {
-      add10:    { type: 'add', max: 10 },
-      add50:    { type: 'add', max: 50 },
-      add200:   { type: 'add', max: 200 },
-      mul5x5:   { type: 'mul', maxA: 5,  maxB: 5 },
-      mul5x10:  { type: 'mul', maxA: 5,  maxB: 10 },
-      mul10x10: { type: 'mul', maxA: 10, maxB: 10 },
-      mul10x20: { type: 'mul', maxA: 10, maxB: 20 },
-      mul10x50: { type: 'mul', maxA: 10, maxB: 50 },
-      mul10x100:{ type: 'mul', maxA: 10, maxB: 100 },
-      div50d5:    { type: 'div', maxDividend: 50,  maxDivisor: 5 },
-      div100d5:   { type: 'div', maxDividend: 100, maxDivisor: 5 },
-      div50d10:   { type: 'div', maxDividend: 50,  maxDivisor: 10 },
-      div100d10:  { type: 'div', maxDividend: 100, maxDivisor: 10 },
-      divmod50d5:   { type: 'divmod', maxDividend: 50,  maxDivisor: 5 },
-      divmod100d5:  { type: 'divmod', maxDividend: 100, maxDivisor: 5 },
-      divmod50d10:  { type: 'divmod', maxDividend: 50,  maxDivisor: 10 },
-      divmod100d10: { type: 'divmod', maxDividend: 100, maxDivisor: 10 },
-    };
+    // Level definitions: grouped by category for menu rendering
+    var LEVEL_GROUPS = [
+      { title: '+ / \u2212', levels: [
+        { id: 'add10',       label: 'up to 10',              type: 'add', max: 10 },
+        { id: 'add50',       label: 'up to 50',              type: 'add', max: 50 },
+        { id: 'add200',      label: 'up to 200',             type: 'add', max: 200 },
+      ]},
+      { title: '\u00d7', levels: [
+        { id: 'mul5x5',      label: '1\u20135 \u00d7 1\u20135',       type: 'mul', minA: 1, maxA: 5,  minB: 1, maxB: 5 },
+        { id: 'mul10x10',    label: '1\u201310 \u00d7 1\u201310',     type: 'mul', minA: 1, maxA: 10, minB: 1, maxB: 10 },
+        { id: 'mul12x12',    label: '1\u201312 \u00d7 1\u201312',     type: 'mul', minA: 1, maxA: 12, minB: 1, maxB: 12 },
+        { id: 'mul12x50',    label: '2\u201312 \u00d7 11\u201350',    type: 'mul', minA: 2, maxA: 12, minB: 11, maxB: 50 },
+        { id: 'mul20x100',   label: '2\u201320 \u00d7 10\u2013100',   type: 'mul', minA: 2, maxA: 20, minB: 10, maxB: 100 },
+      ]},
+      { title: '\u00f7', levels: [
+        { id: 'div50d5',     label: 'up to 50 \u00f7 1\u20135',       type: 'div', maxDividend: 50,  minDivisor: 1, maxDivisor: 5 },
+        { id: 'div100d10',   label: 'up to 100 \u00f7 1\u201310',     type: 'div', maxDividend: 100, minDivisor: 1, maxDivisor: 10 },
+        { id: 'div200d10',   label: 'up to 200 \u00f7 1\u201310',     type: 'div', maxDividend: 200, minDivisor: 1, maxDivisor: 10 },
+      ]},
+      { title: '\u00f7 with remainder', levels: [
+        { id: 'divmod50d5',  label: 'up to 50 \u00f7 2\u20135',       type: 'divmod', maxDividend: 50,  minDivisor: 2, maxDivisor: 5 },
+        { id: 'divmod100d10',label: 'up to 100 \u00f7 2\u201310',     type: 'divmod', maxDividend: 100, minDivisor: 2, maxDivisor: 10 },
+        { id: 'divmod200d10',label: 'up to 200 \u00f7 2\u201310',     type: 'divmod', maxDividend: 200, minDivisor: 2, maxDivisor: 10 },
+      ]},
+    ];
 
-    var LEVEL_LABELS = {
-      add10: '+ / \u2212 up to 10',
-      add50: '+ / \u2212 up to 50',
-      add200: '+ / \u2212 up to 200',
-      mul5x5: '1\u20135 \u00d7 1\u20135',
-      mul5x10: '1\u20135 \u00d7 1\u201310',
-      mul10x10: '1\u201310 \u00d7 1\u201310',
-      mul10x20: '1\u201310 \u00d7 1\u201320',
-      mul10x50: '1\u201310 \u00d7 1\u201350',
-      mul10x100: '1\u201310 \u00d7 1\u2013100',
-      div50d5: '\u00f7 up to 50 by 1\u20135',
-      div100d5: '\u00f7 up to 100 by 1\u20135',
-      div50d10: '\u00f7 up to 50 by 1\u201310',
-      div100d10: '\u00f7 up to 100 by 1\u201310',
-      divmod50d5: '\u00f7r up to 50 by 1\u20135',
-      divmod100d5: '\u00f7r up to 100 by 1\u20135',
-      divmod50d10: '\u00f7r up to 50 by 1\u201310',
-      divmod100d10: '\u00f7r up to 100 by 1\u201310',
-    };
+    // Build flat lookups from LEVEL_GROUPS
+    var LEVELS = {};
+    var LEVEL_LABELS = {};
+    LEVEL_GROUPS.forEach(function(g) {
+      g.levels.forEach(function(lv) {
+        LEVELS[lv.id] = lv;
+        LEVEL_LABELS[lv.id] = g.title + ' ' + lv.label;
+      });
+    });
+
+    function renderLevelButtons() {
+      var container = document.getElementById('level-buttons-container');
+      var html = '';
+      LEVEL_GROUPS.forEach(function(g) {
+        html += '<p><b>' + g.title + '</b></p><div class="level-buttons">';
+        g.levels.forEach(function(lv) {
+          html += '<button onclick="pickLevel(\'' + lv.id + '\')">' + lv.label + '</button>';
+        });
+        html += '</div>';
+      });
+      container.innerHTML = html;
+    }
 
     // --- Unified data layer ---
 
@@ -538,18 +519,18 @@ layout: null
       for (let i = 0; i < TOTAL; i++) {
         let a, b, op, answer;
         if (cfg.type === 'mul') {
-          a = randInt(1, cfg.maxA);
-          b = randInt(1, cfg.maxB);
+          a = randInt(cfg.minA || 1, cfg.maxA);
+          b = randInt(cfg.minB || 1, cfg.maxB);
           op = '\u00d7';
           answer = a * b;
         } else if (cfg.type === 'div') {
-          b = randInt(1, cfg.maxDivisor);
+          b = randInt(cfg.minDivisor || 1, cfg.maxDivisor);
           var quotient = randInt(1, Math.floor(cfg.maxDividend / b));
           a = b * quotient;
           op = '\u00f7';
           answer = quotient;
         } else if (cfg.type === 'divmod') {
-          b = randInt(2, cfg.maxDivisor);
+          b = randInt(cfg.minDivisor || 2, cfg.maxDivisor);
           a = randInt(1, cfg.maxDividend);
           op = '\u00f7';
           answer = Math.floor(a / b);
@@ -1629,6 +1610,7 @@ layout: null
     }
 
     populateYearDropdown();
+    renderLevelButtons();
 
     // --- Scoreboard ---
 
