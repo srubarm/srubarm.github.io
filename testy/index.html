@@ -558,7 +558,9 @@ layout: null
   <div class="app-title" id="results-title">Results</div>
   <div id="score-area"></div>
   <div id="results-detail"></div>
-  <button id="btn-back-to-menu" onclick="showMenu()" style="margin-top:20px; margin-left:0;">Back to Menu</button>
+  <button id="btn-download-attempt" onclick="downloadAttemptData()" class="btn-secondary" style="margin-top:15px; margin-left:0;">Download Attempt Data</button>
+  <br>
+  <button id="btn-back-to-menu" onclick="showMenu()" style="margin-top:10px; margin-left:0;">Back to Menu</button>
 </div>
 
 <!-- HISTORY SCREEN -->
@@ -643,6 +645,7 @@ var UI_STRINGS = {
     yourAnswer: 'Your answer',
     correctAnswer: 'Correct answer',
     explanation: 'Explanation:',
+    downloadAttempt: 'Download Attempt Data',
     enterNumber: 'Enter number',
     typeAnswer: 'Type your answer...',
     noHistory: 'No test history yet.',
@@ -721,6 +724,7 @@ var UI_STRINGS = {
     yourAnswer: 'Vaše odpověď',
     correctAnswer: 'Správná odpověď',
     explanation: 'Vysvětlení:',
+    downloadAttempt: 'Stáhnout data pokusu',
     enterNumber: 'Zadejte číslo',
     typeAnswer: 'Napište odpověď...',
     noHistory: 'Zatím žádná historie testů.',
@@ -857,6 +861,7 @@ function updateUIStrings() {
   el = document.getElementById('btn-start-test'); if (el) el.textContent = tr('startTest');
 
   // Results
+  el = document.getElementById('btn-download-attempt'); if (el) el.textContent = tr('downloadAttempt');
   el = document.getElementById('btn-back-to-menu'); if (el) el.textContent = tr('backToMenu');
 
   // Test screen nav
@@ -1375,8 +1380,18 @@ function startTest() {
     settings: t.settings || {},
     timer: null,
     timerSeconds: 0,
-    timerLimit: (t.settings && t.settings.default_time_limit_seconds) || null
+    timerLimit: (t.settings && t.settings.default_time_limit_seconds) || null,
+    // Attempt tracking
+    startedAt: new Date().toISOString(),
+    navigationPath: [],
+    questionEvents: {},    // keyed by question id
+    questionTimers: {}     // track time per question
   };
+
+  // Init per-question event arrays
+  orderedQuestions.forEach(function(q) {
+    testState.questionEvents[q.id] = [];
+  });
 
   showTestScreen();
 }
@@ -1478,7 +1493,7 @@ function updateTimerDisplay() {
 // ── Translation Toggle ──────────────────────────────────────────────────────
 var translationCounter = 0;
 
-function makeTranslateBtnMulti(locObjs) {
+function makeTranslateBtnMulti(locObjs, element) {
   // Creates one translate button that reveals translations for multiple localized objects
   if (!testState || !testState.translationLocale) return '';
   var parts = [];
@@ -1489,8 +1504,9 @@ function makeTranslateBtnMulti(locObjs) {
   });
   if (parts.length === 0) return '';
   var id = 'trans-' + (++translationCounter);
+  var elemType = element || 'question_text';
   var content = parts.map(function(p) { return '<p>' + escHtml(p) + '</p>'; }).join('');
-  return ' <button class="btn-translate" onclick="event.stopPropagation(); toggleTranslation(\'' + id + '\')">' +
+  return ' <button class="btn-translate" onclick="event.stopPropagation(); toggleTranslation(\'' + id + '\',\'' + elemType + '\')">' +
     escHtml(tr('translate')) + '</button>' +
     '<div class="translated-text" id="' + id + '" style="display:none;">' + content + '</div>';
 }
@@ -1508,22 +1524,59 @@ function makeTranslateBtnOptions(options, locale) {
   if (parts.length === 0) return '';
   var id = 'trans-' + (++translationCounter);
   var content = parts.map(function(p) { return '<p>' + escHtml(p) + '</p>'; }).join('');
-  return '<div style="margin:8px 0 4px;"><button class="btn-translate" onclick="event.stopPropagation(); toggleTranslation(\'' + id + '\')">' +
+  return '<div style="margin:8px 0 4px;"><button class="btn-translate" onclick="event.stopPropagation(); toggleTranslation(\'' + id + '\',\'option\')">' +
     escHtml(tr('translate')) + '</button>' +
     '<div class="translated-text" id="' + id + '" style="display:none;">' + content + '</div></div>';
 }
 
-function toggleTranslation(id) {
+function toggleTranslation(id, element) {
   var el = document.getElementById(id);
-  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  if (!el) return;
+  var showing = el.style.display === 'none';
+  el.style.display = showing ? 'block' : 'none';
+  if (showing && testState) {
+    var q = testState.questions[testState.currentIndex];
+    trackEvent(q.id, 'translation_requested', {
+      element: element || 'question_text',
+      from_locale: testState.locale,
+      to_locale: testState.translationLocale
+    });
+  }
 }
 
 // ── Question Rendering ──────────────────────────────────────────────────────
+function trackEvent(qId, type, detail) {
+  if (!testState || !testState.questionEvents[qId]) return;
+  var evt = { type: type, timestamp: new Date().toISOString() };
+  if (detail) evt.detail = detail;
+  testState.questionEvents[qId].push(evt);
+}
+
+function exitCurrentQuestion() {
+  if (!testState) return;
+  var q = testState.questions[testState.currentIndex];
+  trackEvent(q.id, 'question_exited');
+  // Accumulate time spent
+  if (testState.questionTimers[q.id]) {
+    if (!testState.questionTimers[q.id].total) testState.questionTimers[q.id].total = 0;
+    testState.questionTimers[q.id].total += (Date.now() - testState.questionTimers[q.id].entered) / 1000;
+  }
+}
+
 function renderQuestion() {
   var idx = testState.currentIndex;
   var total = testState.questions.length;
   var q = testState.questions[idx];
   var locale = testState.locale;
+
+  // Track navigation — only on actual question change
+  var lastNav = testState.navigationPath[testState.navigationPath.length - 1];
+  if (lastNav !== q.id) {
+    testState.navigationPath.push(q.id);
+    trackEvent(q.id, 'question_displayed');
+    testState.questionTimers[q.id] = testState.questionTimers[q.id] || { total: 0 };
+    testState.questionTimers[q.id].entered = Date.now();
+  }
 
   // Progress
   document.getElementById('progress-fill').style.width = ((idx + 1) / total * 100) + '%';
@@ -1537,7 +1590,7 @@ function renderQuestion() {
   if (isNewSection) {
     var secTransObjs = [section.title];
     if (section.instructions) secTransObjs.push(section.instructions);
-    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + makeTranslateBtnMulti(secTransObjs) + '</h3>';
+    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + makeTranslateBtnMulti(secTransObjs, 'section_title') + '</h3>';
     if (section.instructions) {
       sh += '<p>' + escHtml(locStr(section.instructions, locale)) + '</p>';
     }
@@ -1673,6 +1726,13 @@ function renderSingleChoice(config, saved, idx, locale) {
 }
 
 function selectOption(idx, optId) {
+  var q = testState.questions[idx];
+  var prev = testState.answers[idx];
+  if (prev && prev !== optId) {
+    trackEvent(q.id, 'answer_changed', { previous_answer: prev, new_answer: optId });
+  } else if (!prev) {
+    trackEvent(q.id, 'answer_submitted', { answer: optId });
+  }
   testState.answers[idx] = optId;
   renderQuestion();
 }
@@ -1713,11 +1773,13 @@ function nextQuestion() {
     var msg = tr('submitTest');
     if (unanswered > 0) msg = trFmt('unansweredWarning', unanswered);
     if (confirm(msg)) {
+      exitCurrentQuestion();
       finishTest();
     }
     return;
   }
 
+  exitCurrentQuestion();
   testState.currentIndex++;
   renderQuestion();
 }
@@ -1725,6 +1787,7 @@ function nextQuestion() {
 function prevQuestion() {
   saveCurrentInput();
   if (testState.currentIndex > 0) {
+    exitCurrentQuestion();
     testState.currentIndex--;
     renderQuestion();
   }
@@ -1732,6 +1795,7 @@ function prevQuestion() {
 
 function skipQuestion() {
   if (testState.currentIndex < testState.questions.length - 1) {
+    exitCurrentQuestion();
     testState.currentIndex++;
     renderQuestion();
   }
@@ -1937,6 +2001,104 @@ function gradeWithAI(aiQueue, results) {
   });
 }
 
+// ── Test Attempt JSON ────────────────────────────────────────────────────────
+var lastAttemptJSON = null;
+
+function buildTestAttemptJSON(gradedResults) {
+  var t = currentTest.test;
+  var ts = testState;
+  var finishedAt = new Date().toISOString();
+  var startedAt = ts.startedAt;
+  var durationSeconds = Math.round((new Date(finishedAt) - new Date(startedAt)) / 1000);
+
+  var attempt = {
+    test_attempt: {
+      id: 'attempt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8),
+      test_id: t.id,
+      test_version: t.version || 1,
+      participant_id: getSelectedUser() || 'anonymous',
+      locale: ts.locale,
+      status: 'completed',
+
+      device: {
+        platform: 'web',
+        screen_size: window.innerWidth + 'x' + window.innerHeight,
+        user_agent: navigator.userAgent
+      },
+
+      active_settings: {
+        shuffle_questions: !!(t.settings && t.settings.shuffle_questions),
+        shuffle_options: ts.questions.some(function(q) { return q.answer_config && q.answer_config.shuffle_options; }),
+        show_hints: !!(ts.settings && ts.settings.show_hints),
+        time_limit_seconds: ts.timerLimit || null
+      },
+
+      timing: {
+        started_at: startedAt,
+        finished_at: finishedAt,
+        duration_seconds: durationSeconds,
+        idle_time_seconds: null
+      },
+
+      navigation_path: ts.navigationPath,
+
+      question_responses: ts.questions.map(function(q, i) {
+        var answer = ts.answers[i];
+        var events = ts.questionEvents[q.id] || [];
+        var timeSpent = ts.questionTimers[q.id] ? Math.round(ts.questionTimers[q.id].total) : 0;
+
+        // Option order for single_choice
+        var optionOrder = null;
+        if (q.answer_type === 'single_choice' && q.answer_config) {
+          var opts = q.answer_config.options || [];
+          if (q.answer_config.shuffle_options && ts.shuffledOptions && ts.shuffledOptions[i]) {
+            opts = ts.shuffledOptions[i];
+          }
+          optionOrder = opts.map(function(o) { return o.id; });
+        }
+
+        // Final answer timestamp — last answer event
+        var lastAnswerEvt = null;
+        for (var e = events.length - 1; e >= 0; e--) {
+          if (events[e].type === 'answer_submitted' || events[e].type === 'answer_changed') {
+            lastAnswerEvt = events[e].timestamp;
+            break;
+          }
+        }
+
+        var resp = {
+          question_id: q.id,
+          presented_order: i + 1,
+          option_order_presented: optionOrder,
+          final_answer: answer !== null && answer !== undefined ? answer : null,
+          final_answer_at: lastAnswerEvt,
+          time_spent_seconds: timeSpent,
+          skipped: answer === null || answer === undefined || answer === '',
+          events: events
+        };
+        return resp;
+      })
+    }
+  };
+
+  return attempt;
+}
+
+function downloadAttemptData() {
+  if (!lastAttemptJSON) return;
+  var json = JSON.stringify(lastAttemptJSON, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var t = lastAttemptJSON.test_attempt;
+  a.href = url;
+  a.download = 'test-attempt_' + (t.participant_id || 'unknown') + '_' + t.timing.started_at.replace(/[:.]/g, '-').replace('T', '_').substr(0, 19) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 // ── Results Screen ───────────────────────────────────────────────────────────
 function showResults(results) {
   // Calculate score
@@ -1953,6 +2115,9 @@ function showResults(results) {
   var incorrect = results.filter(function(r) { return r.status === 'incorrect'; }).length;
   var skipped = results.filter(function(r) { return r.status === 'skipped'; }).length;
   var pending = results.filter(function(r) { return r.status === 'pending'; }).length;
+
+  // Build attempt JSON before testState is cleared
+  lastAttemptJSON = buildTestAttemptJSON(results);
 
   // Save result
   saveTestResult(pct, results);
