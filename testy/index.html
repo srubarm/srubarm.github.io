@@ -100,6 +100,10 @@ layout: null
       background: #fafafa;
       text-align: left;
     }
+    .user-card .user-info { flex: 1; }
+    .user-card .user-name { font-weight: bold; font-size: 1.05rem; }
+    .user-card .user-detail { font-size: 0.8rem; color: #888; }
+    .user-card .user-actions { display: flex; flex-direction: column; gap: 4px; margin-left: 10px; }
     .remove-btn {
       font-size: 0.8rem;
       padding: 4px 10px;
@@ -108,8 +112,27 @@ layout: null
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      margin-left: 6px;
     }
+    .edit-btn {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      background: #1F96D3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .edit-user-form {
+      padding: 12px 15px;
+      margin: 8px auto;
+      max-width: 350px;
+      border: 2px solid #1F96D3;
+      border-radius: 8px;
+      background: #f0f8ff;
+      text-align: left;
+    }
+    .edit-user-form label { font-size: 0.85rem; color: #555; }
+    .edit-user-form select, .edit-user-form input { margin: 4px 0 8px; }
     .back-arrow {
       position: fixed;
       top: 15px;
@@ -386,14 +409,14 @@ layout: null
     /* Translate toggle */
     .btn-translate {
       display: inline-block;
-      font-size: 0.8rem;
-      padding: 4px 10px;
+      font-size: 0.7rem;
+      padding: 2px 8px;
       background: #e8f4fb;
       color: #055585;
       border: 1px solid #1F96D3;
-      border-radius: 14px;
+      border-radius: 10px;
       cursor: pointer;
-      margin-left: 6px;
+      margin-left: 4px;
       vertical-align: middle;
     }
     .btn-translate:hover { background: #d0ecf8; }
@@ -403,9 +426,11 @@ layout: null
       background: #f0f8ff;
       border-left: 3px solid #1F96D3;
       border-radius: 4px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #555;
     }
+    .translated-text p { margin: 2px 0; }
+    .translated-text p + p { margin-top: 4px; border-top: 1px solid #e0edf5; padding-top: 4px; }
 
     /* History */
     .history-item {
@@ -631,6 +656,9 @@ var UI_STRINGS = {
     dataImported: 'Data imported successfully.',
     testLanguage: 'Test language:',
     translate: 'Translate',
+    edit: 'Edit',
+    cancel: 'Cancel',
+    saveChanges: 'Save',
     enterName: 'Please enter a name.',
     userExists: 'A user with this name already exists.',
     january: 'January', february: 'February', march: 'March', april: 'April',
@@ -706,6 +734,9 @@ var UI_STRINGS = {
     dataImported: 'Data úspěšně importována.',
     testLanguage: 'Jazyk testu:',
     translate: 'Přeložit',
+    edit: 'Upravit',
+    cancel: 'Zrušit',
+    saveChanges: 'Uložit',
     enterName: 'Zadejte prosím jméno.',
     userExists: 'Uživatel s tímto jménem již existuje.',
     january: 'Leden', february: 'Únor', march: 'Březen', april: 'Duben',
@@ -1017,6 +1048,10 @@ function removeUser(name) {
   renderUserList();
 }
 
+var LANG_NAMES = { en: 'English', cs: 'Čeština' };
+var MONTH_KEYS = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+var editingUserIndex = -1;
+
 function renderUserList() {
   var container = document.getElementById('user-list');
   var users = getUsers();
@@ -1024,16 +1059,78 @@ function renderUserList() {
     container.innerHTML = '<p style="color:#888;">No users yet.</p>';
     return;
   }
-  var langNames = { en: 'English', cs: 'Čeština' };
   var html = '';
-  users.forEach(function(u) {
-    var langLabel = langNames[u.testLang] || u.testLang || '—';
-    html += '<div class="user-card">' +
-      '<span>' + escHtml(u.name) + ' <span style="font-size:0.8rem; color:#888;">(' + escHtml(langLabel) + ')</span></span>' +
-      '<button class="remove-btn" onclick="removeUser(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">' + escHtml(tr('remove')) + '</button>' +
-      '</div>';
+  users.forEach(function(u, i) {
+    if (i === editingUserIndex) {
+      html += renderUserEditForm(u, i);
+    } else {
+      var langLabel = LANG_NAMES[u.testLang] || u.testLang || '—';
+      var birthStr = '';
+      if (u.birthMonth && u.birthYear) {
+        birthStr = tr(MONTH_KEYS[parseInt(u.birthMonth) - 1]) + ' ' + u.birthYear;
+      }
+      html += '<div class="user-card">' +
+        '<div class="user-info"><span class="user-name">' + escHtml(u.name) + '</span><br>' +
+        '<span class="user-detail">' + escHtml(langLabel) + (birthStr ? ' &middot; ' + escHtml(birthStr) : '') + '</span></div>' +
+        '<div class="user-actions">' +
+        '<button class="edit-btn" onclick="startEditUser(' + i + ')">' + escHtml(tr('edit')) + '</button>' +
+        '<button class="remove-btn" onclick="removeUser(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">' + escHtml(tr('remove')) + '</button>' +
+        '</div></div>';
+    }
   });
   container.innerHTML = html;
+}
+
+function renderUserEditForm(u, index) {
+  var html = '<div class="edit-user-form">';
+  html += '<label>' + escHtml(tr('testLanguage')) + '</label><br>';
+  html += '<select id="edit-user-lang" style="font-size:1rem; padding:6px 10px; min-width:180px;">';
+  html += '<option value="en"' + (u.testLang === 'en' ? ' selected' : '') + '>English</option>';
+  html += '<option value="cs"' + (u.testLang === 'cs' ? ' selected' : '') + '>Čeština</option>';
+  html += '</select><br>';
+  html += '<label>' + escHtml(tr('birthMonthYear')) + '</label><br>';
+  html += '<select id="edit-user-month" style="font-size:1rem; padding:6px;">';
+  html += '<option value="">' + tr('month') + '</option>';
+  MONTH_KEYS.forEach(function(m, i) {
+    var sel = (parseInt(u.birthMonth) === i + 1) ? ' selected' : '';
+    html += '<option value="' + (i + 1) + '"' + sel + '>' + tr(m) + '</option>';
+  });
+  html += '</select> ';
+  html += '<select id="edit-user-year" style="font-size:1rem; padding:6px;">';
+  html += '<option value="">' + tr('year') + '</option>';
+  var currentYear = new Date().getFullYear();
+  for (var y = currentYear; y >= currentYear - 20; y--) {
+    var sel = (parseInt(u.birthYear) === y) ? ' selected' : '';
+    html += '<option value="' + y + '"' + sel + '>' + y + '</option>';
+  }
+  html += '</select><br>';
+  html += '<div style="margin-top:8px;">';
+  html += '<button class="edit-btn" onclick="saveEditUser(' + index + ')">' + escHtml(tr('saveChanges')) + '</button> ';
+  html += '<button class="remove-btn" style="background:#888;" onclick="cancelEditUser()">' + escHtml(tr('cancel')) + '</button>';
+  html += '</div></div>';
+  return html;
+}
+
+function startEditUser(index) {
+  editingUserIndex = index;
+  renderUserList();
+}
+
+function cancelEditUser() {
+  editingUserIndex = -1;
+  renderUserList();
+}
+
+function saveEditUser(index) {
+  var users = getUsers();
+  var u = users[index];
+  if (!u) return;
+  u.testLang = document.getElementById('edit-user-lang').value || 'en';
+  u.birthMonth = document.getElementById('edit-user-month').value;
+  u.birthYear = document.getElementById('edit-user-year').value;
+  saveUsers(users);
+  editingUserIndex = -1;
+  renderUserList();
 }
 
 // ── Settings / API Key ───────────────────────────────────────────────────────
@@ -1381,14 +1478,39 @@ function updateTimerDisplay() {
 // ── Translation Toggle ──────────────────────────────────────────────────────
 var translationCounter = 0;
 
-function makeTranslateBtn(locObj) {
+function makeTranslateBtnMulti(locObjs) {
+  // Creates one translate button that reveals translations for multiple localized objects
   if (!testState || !testState.translationLocale) return '';
-  var transText = locStr(locObj, testState.translationLocale);
-  if (!transText) return '';
+  var parts = [];
+  locObjs.forEach(function(obj) {
+    if (!obj) return;
+    var t = locStr(obj, testState.translationLocale);
+    if (t) parts.push(t);
+  });
+  if (parts.length === 0) return '';
   var id = 'trans-' + (++translationCounter);
+  var content = parts.map(function(p) { return '<p>' + escHtml(p) + '</p>'; }).join('');
   return ' <button class="btn-translate" onclick="event.stopPropagation(); toggleTranslation(\'' + id + '\')">' +
     escHtml(tr('translate')) + '</button>' +
-    '<div class="translated-text" id="' + id + '" style="display:none;">' + escHtml(transText) + '</div>';
+    '<div class="translated-text" id="' + id + '" style="display:none;">' + content + '</div>';
+}
+
+function makeTranslateBtnOptions(options, locale) {
+  // Creates one translate button that reveals translations for all answer options
+  if (!testState || !testState.translationLocale) return '';
+  var parts = [];
+  options.forEach(function(opt) {
+    var t = locStr(opt.text, testState.translationLocale);
+    var orig = locStr(opt.text, locale);
+    if (t && t !== orig) parts.push(orig + ' = ' + t);
+    else if (t) parts.push(t);
+  });
+  if (parts.length === 0) return '';
+  var id = 'trans-' + (++translationCounter);
+  var content = parts.map(function(p) { return '<p>' + escHtml(p) + '</p>'; }).join('');
+  return '<div style="margin:8px 0 4px;"><button class="btn-translate" onclick="event.stopPropagation(); toggleTranslation(\'' + id + '\')">' +
+    escHtml(tr('translate')) + '</button>' +
+    '<div class="translated-text" id="' + id + '" style="display:none;">' + content + '</div></div>';
 }
 
 function toggleTranslation(id) {
@@ -1413,9 +1535,11 @@ function renderQuestion() {
   var prevSection = idx > 0 ? testState.sectionMap[testState.questions[idx - 1].id] : null;
   var isNewSection = section && (!prevSection || prevSection.id !== section.id);
   if (isNewSection) {
-    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + makeTranslateBtn(section.title) + '</h3>';
+    var secTransObjs = [section.title];
+    if (section.instructions) secTransObjs.push(section.instructions);
+    var sh = '<div class="section-header"><h3>' + escHtml(locStr(section.title, locale)) + makeTranslateBtnMulti(secTransObjs) + '</h3>';
     if (section.instructions) {
-      sh += '<p>' + escHtml(locStr(section.instructions, locale)) + makeTranslateBtn(section.instructions) + '</p>';
+      sh += '<p>' + escHtml(locStr(section.instructions, locale)) + '</p>';
     }
     sh += '</div>';
     sectionArea.innerHTML = sh;
@@ -1431,12 +1555,16 @@ function renderQuestion() {
     html += renderMediaRefs(q.media_refs, locale);
   }
 
-  // Question text
-  html += '<div class="question-text">' + escHtml(locStr(q.text, locale)) + makeTranslateBtn(q.text) + '</div>';
+  // Question text + combined translate button for question and hint
+  var qTransObjs = [q.text];
+  if (testState.settings.show_hints && q.feedback && q.feedback.hint) {
+    qTransObjs.push(q.feedback.hint);
+  }
+  html += '<div class="question-text">' + escHtml(locStr(q.text, locale)) + makeTranslateBtnMulti(qTransObjs) + '</div>';
 
   // Hint
   if (testState.settings.show_hints && q.feedback && q.feedback.hint) {
-    html += '<div class="question-hint">' + escHtml(locStr(q.feedback.hint, locale)) + makeTranslateBtn(q.feedback.hint) + '</div>';
+    html += '<div class="question-hint">' + escHtml(locStr(q.feedback.hint, locale)) + '</div>';
   }
 
   // Answer input
@@ -1510,8 +1638,12 @@ function renderAnswerInput(q, idx, locale) {
 function renderSingleChoice(config, saved, idx, locale) {
   var options = config.options || [];
   if (config.shuffle_options) {
-    // Shuffle but keep consistent for this question by seeding from question index
-    options = shuffle(options);
+    // Shuffle once and cache so re-renders keep the same order
+    if (!testState.shuffledOptions) testState.shuffledOptions = {};
+    if (!testState.shuffledOptions[idx]) {
+      testState.shuffledOptions[idx] = shuffle(options);
+    }
+    options = testState.shuffledOptions[idx];
   }
 
   var html = '<ul class="option-list">';
@@ -1520,7 +1652,7 @@ function renderSingleChoice(config, saved, idx, locale) {
     html += '<li class="option-item' + sel + '" onclick="selectOption(' + idx + ',\'' + escHtml(opt.id) + '\')">';
     html += '<span class="option-radio"></span>';
     html += '<span>';
-    html += escHtml(locStr(opt.text, locale)) + makeTranslateBtn(opt.text);
+    html += escHtml(locStr(opt.text, locale));
     // Option media
     if (opt.media_ref && testState.mediaMap[opt.media_ref]) {
       var m = testState.mediaMap[opt.media_ref];
@@ -1535,6 +1667,8 @@ function renderSingleChoice(config, saved, idx, locale) {
     html += '</li>';
   });
   html += '</ul>';
+  // Single translate button for all options
+  html += makeTranslateBtnOptions(options, locale);
   return html;
 }
 
