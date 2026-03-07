@@ -12,6 +12,18 @@
     "questions": 7
   },
   {
+    "file": "test-zivocichove-mini.json",
+    "title": {
+      "cs": "Živočichové – Výběr 20 otázek",
+      "en": "Animals – 20 Selected Questions"
+    },
+    "description": {
+      "cs": "Zkrácený test: třídění živočichů, obratlovci, bezobratlí a poznávačka.",
+      "en": "Shorter test: animal classification, vertebrates, invertebrates and image ID."
+    },
+    "questions": 20
+  },
+  {
     "file": "test-zivocichove.json",
     "title": {
       "cs": "Živočichové",
