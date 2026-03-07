@@ -141,10 +141,11 @@ layout: null
       color: #1F96D3;
       cursor: pointer;
       z-index: 100;
-      display: none;
       line-height: 1;
       padding: 4px 8px;
+      user-select: none;
     }
+    .back-arrow:hover { color: #055585; }
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -497,7 +498,7 @@ layout: null
 </head>
 <body>
 
-<div class="back-arrow" id="back-arrow" onclick="goBack()">&lsaquo;</div>
+<div class="back-arrow" id="back-arrow" style="display:none" onclick="goBack()">&lsaquo;</div>
 
 <!-- MENU SCREEN -->
 <div id="menu">
