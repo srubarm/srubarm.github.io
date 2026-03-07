@@ -1148,8 +1148,12 @@ function renderMediaList() {
     html += '<div class="meta">ID: ' + escHtml(m.id) + '</div>';
     // Show which locales have data
     if (m.data) {
-      var dataLocs = Object.keys(m.data).filter(function(k){return m.data[k] && m.data[k].indexOf('<') < 0;});
-      html += '<div class="meta">Data: ' + (dataLocs.length ? dataLocs.join(', ') : 'none') + '</div>';
+      if (typeof m.data === 'string') {
+        html += '<div class="meta">Data: (shared)</div>';
+      } else {
+        var dataLocs = Object.keys(m.data).filter(function(k){return m.data[k] && m.data[k].indexOf('<') < 0;});
+        html += '<div class="meta">Data: ' + (dataLocs.length ? dataLocs.join(', ') : 'none') + '</div>';
+      }
     }
     html += '</div>';
     html += '<div style="display:flex;flex-direction:column;gap:4px">';
@@ -1194,6 +1198,12 @@ function handleImageUpload(event) {
       var m = testData.media.find(function(x){return x.id===editingMediaId;});
       if (m) {
         if (!m.data) m.data = {};
+        // Convert plain string data to locale object
+        if (typeof m.data === 'string') {
+          var old = m.data;
+          m.data = {};
+          m.data[testData.default_locale] = old;
+        }
         m.data[imageUploadLocale] = b64;
       }
     } else {
