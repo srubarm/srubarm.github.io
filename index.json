@@ -1,9 +1,0 @@
-[
-  {
-    "file": "test-zivocichove.json",
-    "title": {"en": "My Test", "cs": "Můj test"},
-    "description": {"en": "A sample test"},
-    "questions": 10,
-    "status": "published"
-  }
-]
