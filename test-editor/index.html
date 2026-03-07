@@ -906,13 +906,13 @@ function renderAnswerConfig(q) {
     opts.forEach(function(opt, i) {
       var isCorrect = false;
       if (type === 'single_choice') isCorrect = cfg.correct_answer === opt.id;
-      else isCorrect = (cfg.correct_answers || []).indexOf(opt.id) >= 0;
+      else isCorrect = (cfg.correct_answers || cfg.correct_answer || []).indexOf(opt.id) >= 0;
 
       html += '<div class="option-item' + (isCorrect ? ' correct' : '') + '" id="opt-item-' + i + '">';
       if (type === 'single_choice') {
-        html += '<input type="radio" name="correct-opt" value="' + escHtml(opt.id) + '"' + (isCorrect?' checked':'') + ' style="margin-top:4px">';
+        html += '<input type="radio" name="correct-opt" value="' + escHtml(opt.id) + '"' + (isCorrect?' checked':'') + ' onchange="updateCorrectHighlight()" style="margin-top:4px">';
       } else {
-        html += '<input type="checkbox" class="correct-multi-opt" value="' + escHtml(opt.id) + '"' + (isCorrect?' checked':'') + ' style="margin-top:4px">';
+        html += '<input type="checkbox" class="correct-multi-opt" value="' + escHtml(opt.id) + '"' + (isCorrect?' checked':'') + ' onchange="updateCorrectHighlight()" style="margin-top:4px">';
       }
       html += '<div class="option-content">';
       html += renderLocaleInputs('opt-text-' + i, opt.text, 'text');
@@ -1051,6 +1051,26 @@ function removeOption(i) {
   if (q.answer_config.options.length <= 2) { alert('Minimum 2 options required.'); return; }
   q.answer_config.options.splice(i, 1);
   document.getElementById('qe-answer-config').innerHTML = renderAnswerConfig(q);
+}
+
+function updateCorrectHighlight() {
+  var q = testData.questions[editingQuestionIndex];
+  if (!q) return;
+  var opts = (q.answer_config || {}).options || [];
+  opts.forEach(function(opt, i) {
+    var el = document.getElementById('opt-item-' + i);
+    if (!el) return;
+    var isCorrect = false;
+    if (q.answer_type === 'single_choice') {
+      var radio = document.querySelector('input[name="correct-opt"]:checked');
+      isCorrect = radio && radio.value === opt.id;
+    } else {
+      var cb = el.querySelector('.correct-multi-opt');
+      isCorrect = cb && cb.checked;
+    }
+    if (isCorrect) el.classList.add('correct');
+    else el.classList.remove('correct');
+  });
 }
 
 function collectQuestionBasics(q) {
@@ -1403,7 +1423,7 @@ function validateTest() {
     if (q.answer_type === 'single_choice' && !q.answer_config.correct_answer) {
       w.push('Q' + (i+1) + ': no correct answer selected.');
     }
-    if (q.answer_type === 'multi_choice' && !(q.answer_config.correct_answers||[]).length) {
+    if (q.answer_type === 'multi_choice' && !(q.answer_config.correct_answers||q.answer_config.correct_answer||[]).length) {
       w.push('Q' + (i+1) + ': no correct answers selected.');
     }
     // Check media refs
