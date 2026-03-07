@@ -1556,7 +1556,6 @@ function shuffle(arr) {
 function showTestScreen() {
   hideAll();
   document.getElementById('test-screen').style.display = 'block';
-  setBackArrow(confirmQuitTest);
 
   // Start timer if time limited
   if (testState.timerLimit) {
@@ -2435,7 +2434,6 @@ function showResults(results) {
   // Show screen
   hideAll();
   document.getElementById('results-screen').style.display = 'block';
-  setBackArrow(showMenu);
 
   var t = currentTest.test;
   var locale = getUILang();
