@@ -174,6 +174,25 @@ layout: null
     }
     .test-info h3 { margin: 0 0 8px; color: #055585; }
     .test-info p { margin: 4px 0; font-size: 0.95rem; color: #333; }
+    .test-list-title { font-size: 0.85rem; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .test-list-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-left: 4px solid #1F96D3;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .test-list-card:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+    .test-list-card:active { transform: scale(0.98); }
+    .test-list-card .tl-title { font-size: 1rem; font-weight: 600; color: #055585; margin: 0 0 4px; }
+    .test-list-card .tl-desc { font-size: 0.85rem; color: #555; margin: 0 0 6px; }
+    .test-list-card .tl-meta { font-size: 0.75rem; color: #999; }
+    .test-list-card .tl-meta span { margin-right: 10px; }
+    .test-list-card.tl-active { border-left-color: #2a9d2a; background: #f6fdf6; }
     .error-msg {
       background: #ffeaea;
       color: #c33;
@@ -466,20 +485,13 @@ layout: null
 
   <div class="menu-card" id="menu-user-area"></div>
 
-  <div class="menu-card">
-    <div class="mode-grid">
-      <button class="mode-card" onclick="loadTestFile()">
-        <span class="mode-icon">📄</span>
-        <span class="mode-label" id="menu-load-test">Load Test</span>
-      </button>
-      <button class="mode-card" onclick="showSettings()">
-        <span class="mode-icon">⚙️</span>
-        <span class="mode-label" id="menu-settings">Settings</span>
-      </button>
-    </div>
-  </div>
+  <div id="available-tests-area"></div>
 
   <div id="test-info-area"></div>
+
+  <div style="margin-top: 12px;">
+    <button class="btn-secondary" onclick="loadTestFile()" id="menu-load-test" style="font-size:0.9rem; padding:8px 18px;">Load from File</button>
+  </div>
 </div>
 
 <!-- USER MANAGEMENT SCREEN -->
@@ -669,6 +681,10 @@ var UI_STRINGS = {
     saveChanges: 'Save',
     enterName: 'Please enter a name.',
     userExists: 'A user with this name already exists.',
+    availableTests: 'Available Tests',
+    loadingTests: 'Loading tests...',
+    noTestsAvailable: 'No tests available.',
+    loadFromFile: 'Load from File',
     january: 'January', february: 'February', march: 'March', april: 'April',
     may: 'May', june: 'June', july: 'July', august: 'August',
     september: 'September', october: 'October', november: 'November', december: 'December'
@@ -749,6 +765,10 @@ var UI_STRINGS = {
     saveChanges: 'Uložit',
     enterName: 'Zadejte prosím jméno.',
     userExists: 'Uživatel s tímto jménem již existuje.',
+    availableTests: 'Dostupné testy',
+    loadingTests: 'Načítání testů...',
+    noTestsAvailable: 'Žádné testy nejsou k dispozici.',
+    loadFromFile: 'Načíst ze souboru',
     january: 'Leden', february: 'Únor', march: 'Březen', april: 'Duben',
     may: 'Květen', june: 'Červen', july: 'Červenec', august: 'Srpen',
     september: 'Září', october: 'Říjen', november: 'Listopad', december: 'Prosinec'
@@ -842,7 +862,7 @@ function updateUIStrings() {
   el = document.getElementById('nav-settings'); if (el) el.textContent = tr('settings');
 
   // Menu cards
-  el = document.getElementById('menu-load-test'); if (el) el.textContent = tr('loadTest');
+  el = document.getElementById('menu-load-test'); if (el) el.textContent = tr('loadFromFile');
   el = document.getElementById('menu-settings'); if (el) el.textContent = tr('settings');
 
   // Settings screen
@@ -911,6 +931,7 @@ function showMenu() {
   document.getElementById('menu').style.display = 'block';
   document.getElementById('bottom-nav').style.display = 'flex';
   renderMenuUserArea();
+  fetchAvailableTests();
   renderTestInfo();
   updateUIStrings();
 }
@@ -1342,6 +1363,74 @@ function renderTestInfo() {
   html += '<button onclick="showTestReady()" style="margin-top:10px; margin-left:0;">' + escHtml(tr('continueToTest')) + '</button>';
   html += '</div>';
   area.innerHTML = html;
+}
+
+// ── Available Tests ──────────────────────────────────────────────────────────
+var availableTests = []; // [{file, title, description, questions}]
+
+function fetchAvailableTests() {
+  var area = document.getElementById('available-tests-area');
+  area.innerHTML = '<div class="menu-card"><div style="color:#888; font-size:0.9rem;">' + escHtml(tr('loadingTests')) + '</div></div>';
+  fetch('tests/index.json').then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(list) {
+    availableTests = Array.isArray(list) ? list : [];
+    renderAvailableTests();
+  }).catch(function() {
+    availableTests = [];
+    renderAvailableTests();
+  });
+}
+
+function renderAvailableTests() {
+  var area = document.getElementById('available-tests-area');
+  var locale = getUILang();
+  if (!availableTests.length) {
+    area.innerHTML = '<div class="menu-card"><div style="color:#888; font-size:0.9rem;">' + escHtml(tr('noTestsAvailable')) + '</div></div>';
+    return;
+  }
+  var html = '<div class="menu-card" style="padding: 15px 16px;">';
+  html += '<div class="test-list-title">' + escHtml(tr('availableTests')) + '</div>';
+  availableTests.forEach(function(t, i) {
+    var title = t.title ? (typeof t.title === 'string' ? t.title : locStr(t.title, locale)) : t.file;
+    var desc = t.description ? (typeof t.description === 'string' ? t.description : locStr(t.description, locale)) : '';
+    var isActive = currentTest && currentTest._sourceFile === t.file;
+    html += '<div class="test-list-card' + (isActive ? ' tl-active' : '') + '" onclick="loadRemoteTest(' + i + ')">';
+    html += '<div class="tl-title">' + escHtml(title) + '</div>';
+    if (desc) html += '<div class="tl-desc">' + escHtml(desc) + '</div>';
+    var meta = '';
+    if (t.questions) meta += '<span>' + t.questions + ' ' + escHtml(tr(t.questions === 1 ? 'question' : 'questions')) + '</span>';
+    if (t.status) meta += '<span>' + escHtml(t.status) + '</span>';
+    if (meta) html += '<div class="tl-meta">' + meta + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  area.innerHTML = html;
+}
+
+function loadRemoteTest(index) {
+  var entry = availableTests[index];
+  if (!entry || !entry.file) return;
+  if (currentTest) {
+    if (!confirm(tr('loadDifferentTest'))) return;
+  }
+  fetch('tests/' + entry.file).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(data) {
+    var errors = validateTestDefinition(data);
+    if (errors.length > 0) {
+      showTestLoadError(errors);
+      return;
+    }
+    currentTest = data;
+    currentTest._sourceFile = entry.file;
+    renderAvailableTests();
+    showTestReady();
+  }).catch(function(err) {
+    showTestLoadError(['Failed to load test: ' + err.message]);
+  });
 }
 
 // ── Test Engine ──────────────────────────────────────────────────────────────
