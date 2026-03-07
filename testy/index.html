@@ -1747,21 +1747,23 @@ function renderMedia(m, locale) {
   var html = '<div class="question-media">';
   if (m.type === 'image') {
     var src = '';
-    if (m.url) {
-      src = locStr(m.url, locale);
-    } else if (m.data) {
+    if (m.data) {
       var b64 = locStr(m.data, locale);
-      src = 'data:' + (m.mime_type || 'image/png') + ';base64,' + b64;
+      if (b64) src = 'data:' + (m.mime_type || 'image/png') + ';base64,' + b64;
+    }
+    if (!src && m.url) {
+      src = locStr(m.url, locale);
     }
     var alt = m.alt_text ? escHtml(locStr(m.alt_text, locale)) : '';
     if (src) html += '<img src="' + escHtml(src) + '" alt="' + alt + '">';
   } else if (m.type === 'audio') {
     var audioSrc = '';
-    if (m.url) {
-      audioSrc = locStr(m.url, locale);
-    } else if (m.data) {
+    if (m.data) {
       var b64a = locStr(m.data, locale);
-      audioSrc = 'data:' + (m.mime_type || 'audio/mpeg') + ';base64,' + b64a;
+      if (b64a) audioSrc = 'data:' + (m.mime_type || 'audio/mpeg') + ';base64,' + b64a;
+    }
+    if (!audioSrc && m.url) {
+      audioSrc = locStr(m.url, locale);
     }
     if (audioSrc) html += '<audio controls src="' + escHtml(audioSrc) + '"></audio>';
   }
@@ -1807,8 +1809,8 @@ function renderSingleChoice(config, saved, idx, locale) {
       var m = testState.mediaMap[opt.media_ref];
       if (m.type === 'image') {
         var src = '';
-        if (m.url) src = locStr(m.url, locale);
-        else if (m.data) src = 'data:' + (m.mime_type || 'image/png') + ';base64,' + locStr(m.data, locale);
+        if (m.data) { var b64o = locStr(m.data, locale); if (b64o) src = 'data:' + (m.mime_type || 'image/png') + ';base64,' + b64o; }
+        if (!src && m.url) src = locStr(m.url, locale);
         if (src) html += '<div class="option-media"><img src="' + escHtml(src) + '" alt="' + escHtml(locStr(m.alt_text, locale) || '') + '"></div>';
       }
     }
