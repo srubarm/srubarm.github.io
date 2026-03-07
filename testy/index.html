@@ -307,6 +307,26 @@ layout: null
       max-width: 120px;
       border-radius: 6px;
     }
+    .option-item .option-checkbox {
+      width: 22px; height: 22px;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .option-item.selected .option-checkbox {
+      border-color: #1F96D3;
+      background: #1F96D3;
+    }
+    .option-item.selected .option-checkbox::after {
+      content: '\2713';
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
 
     /* Number input */
     .number-input {
@@ -1778,6 +1798,8 @@ function renderAnswerInput(q, idx, locale) {
 
   if (type === 'single_choice') {
     return renderSingleChoice(config, saved, idx, locale);
+  } else if (type === 'multi_choice') {
+    return renderMultiChoice(config, saved, idx, locale);
   } else if (type === 'number') {
     return renderNumberInput(saved, idx);
   } else if (type === 'free_text') {
@@ -1821,6 +1843,56 @@ function renderSingleChoice(config, saved, idx, locale) {
   // Single translate button for all options
   html += makeTranslateBtnOptions(options, locale);
   return html;
+}
+
+function renderMultiChoice(config, saved, idx, locale) {
+  var options = config.options || [];
+  if (config.shuffle_options) {
+    if (!testState.shuffledOptions) testState.shuffledOptions = {};
+    if (!testState.shuffledOptions[idx]) {
+      testState.shuffledOptions[idx] = shuffle(options);
+    }
+    options = testState.shuffledOptions[idx];
+  }
+  var selected = Array.isArray(saved) ? saved : [];
+
+  var html = '<ul class="option-list">';
+  options.forEach(function(opt) {
+    var sel = selected.indexOf(opt.id) >= 0 ? ' selected' : '';
+    html += '<li class="option-item' + sel + '" onclick="toggleMultiOption(' + idx + ',\'' + escHtml(opt.id) + '\')">';
+    html += '<span class="option-checkbox"></span>';
+    html += '<span>';
+    html += escHtml(locStr(opt.text, locale));
+    if (opt.media_ref && testState.mediaMap[opt.media_ref]) {
+      var m = testState.mediaMap[opt.media_ref];
+      if (m.type === 'image') {
+        var src = '';
+        if (m.data) { var b64o = locStr(m.data, locale); if (b64o) src = 'data:' + (m.mime_type || 'image/png') + ';base64,' + b64o; }
+        if (!src && m.url) src = locStr(m.url, locale);
+        if (src) html += '<div class="option-media"><img src="' + escHtml(src) + '" alt="' + escHtml(locStr(m.alt_text, locale) || '') + '"></div>';
+      }
+    }
+    html += '</span>';
+    html += '</li>';
+  });
+  html += '</ul>';
+  html += makeTranslateBtnOptions(options, locale);
+  return html;
+}
+
+function toggleMultiOption(idx, optId) {
+  var q = testState.questions[idx];
+  var current = testState.answers[idx];
+  if (!Array.isArray(current)) current = [];
+  var pos = current.indexOf(optId);
+  if (pos >= 0) {
+    current.splice(pos, 1);
+  } else {
+    current.push(optId);
+  }
+  trackEvent(q.id, 'answer_changed', { answer: current.slice() });
+  testState.answers[idx] = current.length > 0 ? current : null;
+  renderQuestion();
 }
 
 function selectOption(idx, optId) {
@@ -1963,6 +2035,27 @@ function gradeTest() {
         // Find correct answer text
         var correctOpt = (config.options || []).find(function(o) { return o.id === correct; });
         result.correctAnswer = correctOpt ? locStr(correctOpt.text, locale) : correct;
+      }
+    } else if (q.answer_type === 'multi_choice') {
+      var correctArr = config.correct_answers || config.correct_answer || [];
+      if (!Array.isArray(correctArr)) correctArr = [correctArr];
+      var userArr = Array.isArray(answer) ? answer : [];
+      var correctSet = {};
+      correctArr.forEach(function(id) { correctSet[id] = true; });
+      var userSet = {};
+      userArr.forEach(function(id) { userSet[id] = true; });
+      var allMatch = correctArr.length === userArr.length &&
+        correctArr.every(function(id) { return userSet[id]; });
+      if (allMatch) {
+        result.status = 'correct';
+        result.score = 1;
+      } else {
+        result.status = 'incorrect';
+        result.score = 0;
+        result.correctAnswer = correctArr.map(function(id) {
+          var o = (config.options || []).find(function(x) { return x.id === id; });
+          return o ? locStr(o.text, locale) : id;
+        }).join(', ');
       }
     } else if (q.answer_type === 'number') {
       var tolerance = config.numeric_tolerance || 0;
@@ -2398,6 +2491,13 @@ function formatAnswer(answer, question, locale) {
     var config = question.answer_config || {};
     var opt = (config.options || []).find(function(o) { return o.id === answer; });
     return opt ? locStr(opt.text, locale) : String(answer);
+  }
+  if (question.answer_type === 'multi_choice' && Array.isArray(answer)) {
+    var config2 = question.answer_config || {};
+    return answer.map(function(id) {
+      var opt = (config2.options || []).find(function(o) { return o.id === id; });
+      return opt ? locStr(opt.text, locale) : id;
+    }).join(', ');
   }
   return String(answer);
 }
