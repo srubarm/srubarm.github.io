@@ -2365,6 +2365,19 @@ function buildTestAttemptJSON(gradedResults) {
   return attempt;
 }
 
+function downloadJSON(obj, filename) {
+  var json = JSON.stringify(obj, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function downloadAttemptData() {
   if (!lastAttemptJSON) return;
   var json = JSON.stringify(lastAttemptJSON, null, 2);
@@ -2563,6 +2576,20 @@ function showResults(results) {
   });
   document.getElementById('results-detail').innerHTML = detailHtml;
 
+  // Reset download buttons to use live data
+  var btnAttempt = document.getElementById('btn-download-attempt');
+  var btnEval = document.getElementById('btn-download-evaluation');
+  btnAttempt.style.display = '';
+  btnAttempt.onclick = downloadAttemptData;
+  btnEval.style.display = '';
+  btnEval.onclick = downloadEvaluationData;
+
+  // Reset back button
+  var btnBack = document.getElementById('btn-back-to-menu');
+  btnBack.textContent = tr('backToMenu');
+  btnBack.onclick = showMenu;
+
+  viewingHistoryIndex = -1;
   testState = null;
 }
 
@@ -2595,6 +2622,28 @@ function saveTestResult(pct, results) {
   var t = currentTest.test;
   var locale = getUILang();
 
+  // Build display-friendly details with resolved answer text
+  var savedDetails = results.map(function(r, i) {
+    var detail = {
+      questionText: r.questionText,
+      status: r.status,
+      score: r.score,
+      weight: r.weight,
+      answer: r.answer,
+      correctAnswer: r.correctAnswer || null,
+      feedback: r.feedback || null,
+      explanation: r.explanation || null,
+      aiScore: r.aiScore || null
+    };
+    // Resolve answer display text while testState is still available
+    if (testState && testState.questions && testState.questions[i]) {
+      detail.answerDisplay = formatAnswer(r.answer, testState.questions[i], locale);
+    } else {
+      detail.answerDisplay = r.answer != null ? String(r.answer) : null;
+    }
+    return detail;
+  });
+
   data.testResults.push({
     testId: t.id,
     testTitle: locStr(t.title, locale),
@@ -2603,7 +2652,9 @@ function saveTestResult(pct, results) {
     totalQuestions: results.length,
     correct: results.filter(function(r) { return r.status === 'correct'; }).length,
     date: new Date().toISOString(),
-    details: results
+    details: savedDetails,
+    attemptData: lastAttemptJSON || null,
+    evaluationData: lastEvaluationJSON || null
   });
 
   saveAppData(data);
@@ -2653,27 +2704,30 @@ function renderHistory() {
   container.innerHTML = html;
 }
 
+var viewingHistoryIndex = -1;
+
 function showHistoryDetail(index) {
   var allResults = getTestResults();
   var r = allResults[index];
   if (!r || !r.details) return;
+  viewingHistoryIndex = index;
 
   hideAll();
   document.getElementById('results-screen').style.display = 'block';
   setBackArrow(showHistory);
 
-  document.getElementById('results-title').textContent = r.testTitle + ' — Results';
+  document.getElementById('results-title').textContent = r.testTitle + ' — ' + tr('results');
 
   var pct = r.score;
   var scoreClass = pct >= 80 ? 'good' : (pct >= 50 ? 'ok' : 'poor');
 
   var scoreHtml = '<div class="score-circle ' + scoreClass + '">' +
     '<span class="score-pct">' + pct + '%</span>' +
-    '<span class="score-label">Score</span>' +
+    '<span class="score-label">' + tr('score') + '</span>' +
     '</div>';
   scoreHtml += '<div class="result-summary">' +
     escHtml(r.user) + ' &middot; ' + new Date(r.date).toLocaleDateString() + '<br>' +
-    r.correct + '/' + r.totalQuestions + ' correct</div>';
+    r.correct + '/' + r.totalQuestions + ' ' + tr('correct') + '</div>';
   document.getElementById('score-area').innerHTML = scoreHtml;
 
   var detailHtml = '';
@@ -2681,24 +2735,46 @@ function showHistoryDetail(index) {
     detailHtml += '<div class="result-item ' + d.status + '">';
     detailHtml += '<div class="result-q-text">' + (i + 1) + '. ' + escHtml(d.questionText) + '</div>';
     if (d.status === 'skipped') {
-      detailHtml += '<div class="result-answer" style="color:#999;">Skipped</div>';
+      detailHtml += '<div class="result-answer" style="color:#999;">' + tr('skipped') + '</div>';
     } else {
-      detailHtml += '<div class="result-answer">Answer: <b>' + escHtml(String(d.answer)) + '</b>';
+      var display = d.answerDisplay || (d.answer != null ? String(d.answer) : '—');
+      detailHtml += '<div class="result-answer">' + tr('yourAnswer') + ': <b>' + escHtml(display) + '</b>';
       if (d.aiScore) detailHtml += ' (AI: ' + d.aiScore + ')';
       detailHtml += '</div>';
     }
-    if (d.correctAnswer) {
-      detailHtml += '<div class="result-answer" style="color:#2a9d3a;">Correct: <b>' + escHtml(d.correctAnswer) + '</b></div>';
+    if (d.status === 'incorrect' && d.correctAnswer) {
+      detailHtml += '<div class="result-answer" style="color:#2a9d3a;">' + tr('correctAnswer') + ': <b>' + escHtml(d.correctAnswer) + '</b></div>';
     }
     if (d.feedback) {
       detailHtml += '<div class="result-feedback">' + escHtml(d.feedback) + '</div>';
     }
     if (d.explanation) {
-      detailHtml += '<div class="result-feedback"><b>Explanation:</b> ' + escHtml(d.explanation) + '</div>';
+      detailHtml += '<div class="result-feedback"><b>' + tr('explanation') + '</b> ' + escHtml(d.explanation) + '</div>';
     }
     detailHtml += '</div>';
   });
   document.getElementById('results-detail').innerHTML = detailHtml;
+
+  // Show/hide download buttons based on stored data
+  var btnAttempt = document.getElementById('btn-download-attempt');
+  var btnEval = document.getElementById('btn-download-evaluation');
+  if (r.attemptData) {
+    btnAttempt.style.display = '';
+    btnAttempt.onclick = function() { downloadJSON(r.attemptData, 'test-attempt_' + r.user + '_' + r.date.slice(0,10) + '.json'); };
+  } else {
+    btnAttempt.style.display = 'none';
+  }
+  if (r.evaluationData) {
+    btnEval.style.display = '';
+    btnEval.onclick = function() { downloadJSON(r.evaluationData, 'test-evaluation_' + r.user + '_' + r.date.slice(0,10) + '.json'); };
+  } else {
+    btnEval.style.display = 'none';
+  }
+
+  // Replace "Back to Menu" with "Back to History"
+  var btnBack = document.getElementById('btn-back-to-menu');
+  btnBack.textContent = tr('backToMenu');
+  btnBack.onclick = showHistory;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
