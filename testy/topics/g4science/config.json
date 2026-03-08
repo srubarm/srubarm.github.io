@@ -11,7 +11,9 @@
         "cs": "Zvířata, rostliny a sluneční soustava pro žáky 4. třídy."
       },
       "questions": 7,
+      "maxWeightedScore": 11,
       "difficulty": "easy",
+      "minScore": 0,
       "visible": true,
       "runnable": true
     }
