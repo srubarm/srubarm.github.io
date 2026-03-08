@@ -563,7 +563,7 @@ layout: null
       border-radius: 10px;
       background: #fafafa;
       text-align: left;
-      cursor: pointer;
+      gap: 8px;
     }
     .history-item:hover { background: #f0f8ff; }
     .history-score { font-size: 1.3rem; font-weight: 700; }
@@ -571,6 +571,16 @@ layout: null
     .history-score.ok { color: #e8a020; }
     .history-score.poor { color: #e55; }
     .history-meta { font-size: 0.8rem; color: #888; }
+    .history-delete-btn {
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 0 0 0 8px;
+      line-height: 1;
+    }
+    .history-delete-btn:hover { color: #e55; }
   </style>
 </head>
 <body>
@@ -3379,15 +3389,27 @@ function renderHistory() {
   results.forEach(function(r, i) {
     var scoreClass = r.score >= 80 ? 'good' : (r.score >= 50 ? 'ok' : 'poor');
     var dateStr = new Date(r.date).toLocaleDateString();
-    html += '<div class="history-item" onclick="showHistoryDetail(' + allResults.indexOf(r) + ')">';
-    html += '<div><b>' + escHtml(r.testTitle) + '</b><br>' +
+    var idx = allResults.indexOf(r);
+    html += '<div class="history-item">';
+    html += '<div style="flex:1; cursor:pointer;" onclick="showHistoryDetail(' + idx + ')"><b>' + escHtml(r.testTitle) + '</b><br>' +
       '<span class="history-meta">' + escHtml(r.user) + ' &middot; ' + dateStr + ' &middot; ' +
       r.correct + '/' + r.totalQuestions + '</span></div>';
     html += '<span class="history-score ' + scoreClass + '">' + r.score + '%</span>';
+    html += '<button class="history-delete-btn" onclick="event.stopPropagation(); deleteTestResult(' + idx + ')">&times;</button>';
     html += '</div>';
   });
 
   container.innerHTML = html;
+}
+
+function deleteTestResult(index) {
+  var data = getAppData();
+  if (!data.testResults || index < 0 || index >= data.testResults.length) return;
+  var r = data.testResults[index];
+  if (!confirm(tr('removeUserConfirm') + ':\n' + (r.testTitle || '') + ' (' + new Date(r.date).toLocaleDateString() + ')')) return;
+  data.testResults.splice(index, 1);
+  saveAppData(data);
+  renderHistory();
 }
 
 var viewingHistoryIndex = -1;
