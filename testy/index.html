@@ -688,6 +688,8 @@ var UI_STRINGS = {
     apiKeyNote: 'Note: The API key is stored locally in your browser and is not encrypted.',
     questions: 'questions',
     question: 'question',
+    tests: 'tests',
+    test: 'test',
     sections: 'sections',
     section: 'section',
     timeLimit: 'Time limit',
@@ -773,6 +775,8 @@ var UI_STRINGS = {
     apiKeyNote: 'Poznámka: API klíč je uložen lokálně v prohlížeči a není šifrován.',
     questions: 'otázek',
     question: 'otázka',
+    tests: 'testů',
+    test: 'test',
     sections: 'sekcí',
     section: 'sekce',
     timeLimit: 'Časový limit',
@@ -1152,10 +1156,13 @@ function renderUserList() {
       if (u.birthMonth && u.birthYear) {
         birthStr = tr(MONTH_KEYS[parseInt(u.birthMonth) - 1]) + ' ' + u.birthYear;
       }
+      var userResults = (getAppData().testResults || []).filter(function(r) { return r.user === u.name; });
+      var historyLabel = userResults.length + ' ' + tr(userResults.length === 1 ? 'test' : 'tests');
       html += '<div class="user-card">' +
         '<div class="user-info"><span class="user-name">' + escHtml(u.name) + '</span><br>' +
         '<span class="user-detail">' + escHtml(langLabel) + (birthStr ? ' &middot; ' + escHtml(birthStr) : '') + '</span></div>' +
         '<div class="user-actions">' +
+        '<button class="edit-btn" onclick="showUserHistory(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">' + escHtml(historyLabel) + '</button>' +
         '<button class="edit-btn" onclick="startEditUser(' + i + ')">' + escHtml(tr('edit')) + '</button>' +
         '<button class="remove-btn" onclick="removeUser(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">' + escHtml(tr('remove')) + '</button>' +
         '</div></div>';
@@ -2661,6 +2668,7 @@ function saveTestResult(pct, results) {
 }
 
 function showHistory() {
+  historyFilterUser = null;
   hideAll();
   document.getElementById('history-screen').style.display = 'block';
   setBackArrow(showMenu);
@@ -2668,10 +2676,21 @@ function showHistory() {
   renderHistory();
 }
 
+var historyFilterUser = null;
+
+function showUserHistory(userName) {
+  historyFilterUser = userName;
+  hideAll();
+  document.getElementById('history-screen').style.display = 'block';
+  setBackArrow(showUserManagement);
+  document.getElementById('history-title').textContent = tr('testHistory') + ' — ' + userName;
+  renderHistory();
+}
+
 function renderHistory() {
   var container = document.getElementById('history-list');
   var allResults = getTestResults();
-  var user = getSelectedUser();
+  var user = historyFilterUser || getSelectedUser();
 
   // Filter by selected user if one is selected
   var results = user ? allResults.filter(function(r) { return r.user === user; }) : allResults;
