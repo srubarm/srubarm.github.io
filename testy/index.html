@@ -483,6 +483,32 @@ layout: null
       font-size: 0.95rem;
       color: #555;
     }
+    .ai-evaluation {
+      background: #f8f5ff;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin: 0 0 20px 0;
+      text-align: left;
+    }
+    .ai-eval-overall {
+      font-size: 0.95rem;
+      color: #333;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .ai-eval-section { margin-bottom: 8px; }
+    .ai-eval-heading {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #4c1d95;
+      margin-bottom: 4px;
+    }
+    .ai-eval-strengths ul { list-style: none; padding: 0; margin: 0; }
+    .ai-eval-strengths li::before { content: '\2713 '; color: #2a9d3a; font-weight: 700; }
+    .ai-eval-strengths li { font-size: 0.9rem; color: #333; margin: 3px 0; }
+    .ai-eval-improvements ul { list-style: none; padding: 0; margin: 0; }
+    .ai-eval-improvements li::before { content: '\25B6 '; color: #e8a020; font-size: 0.7rem; }
+    .ai-eval-improvements li { font-size: 0.9rem; color: #333; margin: 3px 0; }
     .result-item {
       border: 1px solid #e5e5e5;
       border-radius: 12px;
@@ -685,6 +711,7 @@ layout: null
 <div id="results-screen" style="display:none">
   <div class="app-title" id="results-title">Results</div>
   <div id="score-area"></div>
+  <div id="ai-eval-area"></div>
   <div id="results-detail"></div>
   <div style="margin-top:15px;">
     <button id="btn-download-attempt" onclick="downloadAttemptData()" class="btn-secondary" style="margin-left:0;">Download Attempt Data</button>
@@ -812,6 +839,8 @@ var UI_STRINGS = {
     generatingTest: 'Generating practice test...',
     aiPracticeError: 'Could not generate practice test.',
     aiNoApiKey: 'Please configure an API key in Settings to use AI practice.',
+    strengths: 'What you did well',
+    improvements: 'Areas to work on',
     january: 'January', february: 'February', march: 'March', april: 'April',
     may: 'May', june: 'June', july: 'July', august: 'August',
     september: 'September', october: 'October', november: 'November', december: 'December'
@@ -909,6 +938,8 @@ var UI_STRINGS = {
     generatingTest: 'Generování cvičného testu...',
     aiPracticeError: 'Nepodařilo se vygenerovat cvičný test.',
     aiNoApiKey: 'Pro použití AI procvičování prosím nastav API klíč v Nastavení.',
+    strengths: 'Co ti šlo dobře',
+    improvements: 'Na čem zapracovat',
     january: 'Leden', february: 'Únor', march: 'Březen', april: 'Duben',
     may: 'Květen', june: 'Červen', july: 'Červenec', august: 'Srpen',
     september: 'Září', october: 'Říjen', november: 'Listopad', december: 'Prosinec'
@@ -1812,9 +1843,20 @@ function startAIPractice(topicId) {
     var userObj = users.find(function(u) { return u.name === userName; });
     var testLocale = (userObj && userObj.testLang) ? userObj.testLang : locale;
 
+    // Calculate student age if birth data available
+    var studentAge = null;
+    if (userObj && userObj.birthYear) {
+      var now = new Date();
+      var birthYear = parseInt(userObj.birthYear);
+      var birthMonth = userObj.birthMonth ? parseInt(userObj.birthMonth) - 1 : 0;
+      var age = now.getFullYear() - birthYear;
+      if (now.getMonth() < birthMonth) age--;
+      if (age > 0 && age < 100) studentAge = age;
+    }
+
     // Build prompts
     var systemPrompt = buildAISystemPrompt();
-    var userPrompt = buildAIUserPrompt(bankYaml, history, purpose, testLocale, locale, sessionCount + 1);
+    var userPrompt = buildAIUserPrompt(bankYaml, history, purpose, testLocale, locale, sessionCount + 1, studentAge);
 
     // Call Gemini API
     return callGeminiForTestGeneration(systemPrompt, userPrompt).then(function(aiResponse) {
@@ -1827,6 +1869,7 @@ function startAIPractice(topicId) {
       currentTest._aiGenerated = true;
       currentTest._aiAnalysis = aiResponse.analysis || '';
       currentTest._aiStudentFeedback = aiResponse.student_feedback || null;
+      currentTest._aiEvaluation = aiResponse.evaluation || null;
       showTestReady();
     });
   }).catch(function(err) {
@@ -1867,11 +1910,12 @@ function buildAISystemPrompt() {
     'Respond with a single JSON object and nothing else — no preamble, no markdown backticks, no explanation outside the JSON.';
 }
 
-function buildAIUserPrompt(bankYaml, history, purpose, testLocale, uiLang, sessionNumber) {
+function buildAIUserPrompt(bankYaml, history, purpose, testLocale, uiLang, sessionNumber, studentAge) {
   var prompt = '### Session Context\n';
   prompt += 'Purpose: ' + purpose + '\n';
   prompt += 'Locale: ' + testLocale + '\n';
   prompt += 'Student primary language: ' + uiLang + '\n';
+  if (studentAge) prompt += 'Student age: ' + studentAge + ' years old\n';
   prompt += 'Session number: ' + sessionNumber + '\n';
   prompt += 'Focus on areas where the student is weakest. Include some review of strong areas to maintain confidence. Introduce new topics if the student has not been tested on all tag areas.\n\n';
   prompt += '---\n\n### Question Bank\n';
@@ -1913,12 +1957,20 @@ function buildAIUserPrompt(bankYaml, history, purpose, testLocale, uiLang, sessi
   prompt += '    ],\n';
   prompt += '    "question_reasons": {"qb_XXX": "reason..."}\n';
   prompt += '  },\n';
-  prompt += '  "student_feedback": {"en": "Encouraging message...", "' + testLocale + '": "..."}\n';
+  prompt += '  "student_feedback": {"en": "Encouraging message...", "' + testLocale + '": "..."},\n';
+  prompt += '  "evaluation": {\n';
+  prompt += '    "overall": {"en": "Overall assessment of student progress and current level...", "' + testLocale + '": "..."},\n';
+  prompt += '    "strengths": [{"en": "Something the student does well or has improved on...", "' + testLocale + '": "..."}, ...],\n';
+  prompt += '    "improvements": [{"en": "An area where the student needs more practice...", "' + testLocale + '": "..."}, ...]\n';
+  prompt += '  }\n';
   prompt += '}\n\n';
   prompt += 'Important:\n';
   prompt += '- Only use question IDs that exist in the provided question bank.\n';
   prompt += '- Every question ID used in sections must have an entry in question_reasons.\n';
-  prompt += '- Section titles, descriptions, instructions, and student_feedback must be in both the test locale and English.\n';
+  prompt += '- Section titles, descriptions, instructions, student_feedback, and evaluation fields must be in both the test locale and English.\n';
+  prompt += '- The evaluation.overall should be 2-3 sentences summarizing the student\'s current state.\n';
+  prompt += '- List 1-3 specific strengths and 1-3 specific areas for improvement.\n';
+  prompt += '- For a first session (no history), base the evaluation on the diagnostic purpose and general encouragement.\n';
   prompt += '- Respond with the JSON object only.\n';
   return prompt;
 }
@@ -2036,6 +2088,21 @@ function buildStudentHistoryPrompt(topicId, userName, questionMap) {
         });
       }
     }
+
+    // Include prior AI evaluation if available
+    if (r.aiEvaluation) {
+      historyText += '  AI evaluation:\n';
+      if (r.aiEvaluation.overall && r.aiEvaluation.overall.en) {
+        historyText += '    Overall: ' + r.aiEvaluation.overall.en + '\n';
+      }
+      if (r.aiEvaluation.strengths) {
+        historyText += '    Strengths: ' + r.aiEvaluation.strengths.map(function(s) { return s.en || ''; }).filter(Boolean).join('; ') + '\n';
+      }
+      if (r.aiEvaluation.improvements) {
+        historyText += '    Improvements needed: ' + r.aiEvaluation.improvements.map(function(s) { return s.en || ''; }).filter(Boolean).join('; ') + '\n';
+      }
+    }
+
     historyText += '\n';
   });
 
@@ -3223,6 +3290,48 @@ function showResults(results) {
   scoreHtml += '</div>';
   document.getElementById('score-area').innerHTML = scoreHtml;
 
+  // AI Evaluation section (if available)
+  var evalArea = '';
+  if (currentTest._aiEvaluation) {
+    var aiEval = currentTest._aiEvaluation;
+    evalArea += '<div class="ai-evaluation">';
+
+    // Overall assessment
+    if (aiEval.overall) {
+      var overallText = locStr(aiEval.overall, locale);
+      if (overallText) {
+        evalArea += '<div class="ai-eval-overall">' + escHtml(overallText) + '</div>';
+      }
+    }
+
+    // Strengths
+    if (aiEval.strengths && aiEval.strengths.length) {
+      evalArea += '<div class="ai-eval-section ai-eval-strengths">';
+      evalArea += '<div class="ai-eval-heading">' + escHtml(tr('strengths')) + '</div>';
+      evalArea += '<ul>';
+      aiEval.strengths.forEach(function(s) {
+        var txt = locStr(s, locale);
+        if (txt) evalArea += '<li>' + escHtml(txt) + '</li>';
+      });
+      evalArea += '</ul></div>';
+    }
+
+    // Areas for improvement
+    if (aiEval.improvements && aiEval.improvements.length) {
+      evalArea += '<div class="ai-eval-section ai-eval-improvements">';
+      evalArea += '<div class="ai-eval-heading">' + escHtml(tr('improvements')) + '</div>';
+      evalArea += '<ul>';
+      aiEval.improvements.forEach(function(s) {
+        var txt = locStr(s, locale);
+        if (txt) evalArea += '<li>' + escHtml(txt) + '</li>';
+      });
+      evalArea += '</ul></div>';
+    }
+
+    evalArea += '</div>';
+  }
+  document.getElementById('ai-eval-area').innerHTML = evalArea;
+
   // Detail
   var showCorrectAnswer = testState.settings.show_correct_answer_comment !== false;
   var detailHtml = '';
@@ -3357,7 +3466,8 @@ function saveTestResult(pct, results) {
     topicId: topicId,
     testFile: testFile,
     earnedWeight: earnedWeight,
-    totalWeight: totalWeight
+    totalWeight: totalWeight,
+    aiEvaluation: currentTest._aiEvaluation || null
   });
 
   saveAppData(data);
@@ -3461,6 +3571,35 @@ function showHistoryDetail(index) {
     escHtml(r.user) + ' &middot; ' + new Date(r.date).toLocaleDateString() + '<br>' +
     r.correct + '/' + r.totalQuestions + ' ' + tr('correct') + '</div>';
   document.getElementById('score-area').innerHTML = scoreHtml;
+
+  // Show AI evaluation if stored
+  var evalHtml = '';
+  if (r.aiEvaluation) {
+    var locale = getUILang();
+    evalHtml += '<div class="ai-evaluation">';
+    if (r.aiEvaluation.overall) {
+      var overallText = locStr(r.aiEvaluation.overall, locale);
+      if (overallText) evalHtml += '<div class="ai-eval-overall">' + escHtml(overallText) + '</div>';
+    }
+    if (r.aiEvaluation.strengths && r.aiEvaluation.strengths.length) {
+      evalHtml += '<div class="ai-eval-section ai-eval-strengths"><div class="ai-eval-heading">' + escHtml(tr('strengths')) + '</div><ul>';
+      r.aiEvaluation.strengths.forEach(function(s) {
+        var txt = locStr(s, locale);
+        if (txt) evalHtml += '<li>' + escHtml(txt) + '</li>';
+      });
+      evalHtml += '</ul></div>';
+    }
+    if (r.aiEvaluation.improvements && r.aiEvaluation.improvements.length) {
+      evalHtml += '<div class="ai-eval-section ai-eval-improvements"><div class="ai-eval-heading">' + escHtml(tr('improvements')) + '</div><ul>';
+      r.aiEvaluation.improvements.forEach(function(s) {
+        var txt = locStr(s, locale);
+        if (txt) evalHtml += '<li>' + escHtml(txt) + '</li>';
+      });
+      evalHtml += '</ul></div>';
+    }
+    evalHtml += '</div>';
+  }
+  document.getElementById('ai-eval-area').innerHTML = evalHtml;
 
   var detailHtml = '';
   r.details.forEach(function(d, i) {
