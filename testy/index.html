@@ -103,6 +103,15 @@ layout: null
     .user-card .user-info { flex: 1; }
     .user-card .user-name { font-weight: bold; font-size: 1.05rem; }
     .user-card .user-detail { font-size: 0.8rem; color: #888; }
+    .user-topic-scores { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .topic-score-badge {
+      font-size: 0.75rem;
+      background: #e8f4fb;
+      color: #055585;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
     .user-card .user-actions { display: flex; flex-direction: column; gap: 4px; margin-left: 10px; }
     .remove-btn {
       font-size: 0.8rem;
@@ -215,6 +224,28 @@ layout: null
     .test-list-card .tl-meta { font-size: 0.75rem; color: #999; }
     .test-list-card .tl-meta span { margin-right: 10px; }
     .test-list-card.tl-active { border-left-color: #2a9d2a; background: #f6fdf6; }
+    .topic-score-bar {
+      background: #e8f4fb;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #055585;
+    }
+    .score-progress {
+      height: 6px;
+      background: #cce4f0;
+      border-radius: 3px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .score-progress-fill {
+      height: 100%;
+      background: #1F96D3;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
     .error-msg {
       background: #ffeaea;
       color: #c33;
@@ -736,6 +767,11 @@ var UI_STRINGS = {
     noTopicsAvailable: 'No topics available.',
     loadFromFile: 'Load from File',
     testsInTopic: 'Tests',
+    topicScores: 'Topic Scores',
+    topicScore: 'Topic Score',
+    scoreRequired: 'Required score: {0}%',
+    locked: 'Locked',
+    noScoreYet: 'No score yet',
     january: 'January', february: 'February', march: 'March', april: 'April',
     may: 'May', june: 'June', july: 'July', august: 'August',
     september: 'September', october: 'October', november: 'November', december: 'December'
@@ -823,6 +859,11 @@ var UI_STRINGS = {
     noTopicsAvailable: 'Žádná témata nejsou k dispozici.',
     loadFromFile: 'Načíst ze souboru',
     testsInTopic: 'Testy',
+    topicScores: 'Skóre témat',
+    topicScore: 'Skóre tématu',
+    scoreRequired: 'Požadované skóre: {0} %',
+    locked: 'Zamčeno',
+    noScoreYet: 'Zatím žádné skóre',
     january: 'Leden', february: 'Únor', march: 'Březen', april: 'Duben',
     may: 'Květen', june: 'Červen', july: 'Červenec', august: 'Srpen',
     september: 'Září', october: 'Říjen', november: 'Listopad', december: 'Prosinec'
@@ -1158,9 +1199,23 @@ function renderUserList() {
       }
       var userResults = (getAppData().testResults || []).filter(function(r) { return r.user === u.name; });
       var historyLabel = userResults.length + ' ' + tr(userResults.length === 1 ? 'test' : 'tests');
+      // Topic scores row
+      var topicScoresHtml = '';
+      if (u.topicScores && Object.keys(u.topicScores).length > 0) {
+        var scoreItems = [];
+        Object.keys(u.topicScores).forEach(function(tid) {
+          var topicLabel = tid;
+          var topicObj = topics.find(function(t) { return t.id === tid; });
+          if (topicObj) topicLabel = (topicObj.icon || '') + ' ' + locStr(topicObj.title, getUILang());
+          scoreItems.push('<span class="topic-score-badge">' + escHtml(topicLabel) + ': <b>' + u.topicScores[tid] + '%</b></span>');
+        });
+        topicScoresHtml = '<div class="user-topic-scores">' + scoreItems.join(' ') + '</div>';
+      }
+
       html += '<div class="user-card">' +
         '<div class="user-info"><span class="user-name">' + escHtml(u.name) + '</span><br>' +
-        '<span class="user-detail">' + escHtml(langLabel) + (birthStr ? ' &middot; ' + escHtml(birthStr) : '') + '</span></div>' +
+        '<span class="user-detail">' + escHtml(langLabel) + (birthStr ? ' &middot; ' + escHtml(birthStr) : '') + '</span>' +
+        topicScoresHtml + '</div>' +
         '<div class="user-actions">' +
         '<button class="edit-btn" onclick="showUserHistory(\'' + escHtml(u.name.replace(/'/g, "\\'")) + '\')">' + escHtml(historyLabel) + '</button>' +
         '<button class="edit-btn" onclick="startEditUser(' + i + ')">' + escHtml(tr('edit')) + '</button>' +
@@ -1194,6 +1249,20 @@ function renderUserEditForm(u, index) {
     html += '<option value="' + y + '"' + sel + '>' + y + '</option>';
   }
   html += '</select><br>';
+  // Topic scores editing
+  if (topics.length > 0) {
+    html += '<label style="margin-top:8px; display:inline-block;">' + escHtml(tr('topicScores')) + '</label><br>';
+    var ts = u.topicScores || {};
+    topics.forEach(function(topic) {
+      var topicLabel = (topic.icon || '') + ' ' + locStr(topic.title, getUILang());
+      var val = ts[topic.id] || 0;
+      html += '<div style="display:flex; align-items:center; gap:6px; margin:4px 0;">';
+      html += '<span style="font-size:0.85rem; min-width:120px; text-align:left;">' + escHtml(topicLabel) + '</span>';
+      html += '<input type="number" min="0" max="100" value="' + val + '" class="edit-topic-score" data-topic="' + escHtml(topic.id) + '" style="width:60px; font-size:0.9rem; padding:4px; text-align:center;">';
+      html += '<span style="font-size:0.85rem; color:#888;">%</span>';
+      html += '</div>';
+    });
+  }
   html += '<div style="margin-top:8px;">';
   html += '<button class="edit-btn" onclick="saveEditUser(' + index + ')">' + escHtml(tr('saveChanges')) + '</button> ';
   html += '<button class="remove-btn" style="background:#888;" onclick="cancelEditUser()">' + escHtml(tr('cancel')) + '</button>';
@@ -1218,6 +1287,16 @@ function saveEditUser(index) {
   u.testLang = document.getElementById('edit-user-lang').value || 'en';
   u.birthMonth = document.getElementById('edit-user-month').value;
   u.birthYear = document.getElementById('edit-user-year').value;
+  // Save topic scores from edit inputs
+  var scoreInputs = document.querySelectorAll('.edit-topic-score');
+  if (scoreInputs.length > 0) {
+    if (!u.topicScores) u.topicScores = {};
+    scoreInputs.forEach(function(inp) {
+      var tid = inp.getAttribute('data-topic');
+      var val = parseInt(inp.value) || 0;
+      u.topicScores[tid] = Math.max(0, Math.min(100, val));
+    });
+  }
   saveUsers(users);
   editingUserIndex = -1;
   renderUserList();
@@ -1500,11 +1579,27 @@ function renderTopicTestList(topicId, config, locale) {
     area.innerHTML = '<div style="color:#888; font-size:0.9rem; margin:20px 0;">' + escHtml(tr('noTopicsAvailable')) + '</div>';
     return;
   }
+
+  // Get current user's topic score
+  var userName = getSelectedUser();
+  var userScore = userName ? getUserTopicScore(userName, topicId) : 0;
+
+  // Show user's topic score at top
   var html = '';
+  if (userName) {
+    html += '<div class="topic-score-bar">';
+    html += '<span>' + escHtml(tr('topicScore')) + ': <b>' + userScore + '%</b></span>';
+    html += '<div class="score-progress"><div class="score-progress-fill" style="width:' + userScore + '%"></div></div>';
+    html += '</div>';
+  }
+
   tests.forEach(function(t, i) {
     var title = locStr(t.title, locale) || t.file;
     var desc = t.description ? locStr(t.description, locale) : '';
-    var runnable = t.runnable !== false;
+    var configRunnable = t.runnable !== false;
+    var minScore = t.minScore || 0;
+    var locked = configRunnable && minScore > 0 && userScore < minScore;
+    var runnable = configRunnable && !locked;
     var cls = 'test-list-card' + (runnable ? '' : ' tl-disabled');
     html += '<div class="' + cls + '"' + (runnable ? ' onclick="loadTopicTest(\'' + escHtml(topicId) + '\',' + i + ')"' : '') + '>';
     html += '<div class="tl-title">' + escHtml(title) + '</div>';
@@ -1512,7 +1607,11 @@ function renderTopicTestList(topicId, config, locale) {
     var meta = '';
     if (t.questions) meta += '<span>' + t.questions + ' ' + escHtml(tr(t.questions === 1 ? 'question' : 'questions')) + '</span>';
     if (t.difficulty) meta += '<span>' + escHtml(t.difficulty) + '</span>';
-    if (!runnable) meta += '<span>🔒</span>';
+    if (locked) {
+      meta += '<span>🔒 ' + escHtml(tr('scoreRequired').replace('{0}', minScore)) + '</span>';
+    } else if (!configRunnable) {
+      meta += '<span>🔒</span>';
+    }
     if (meta) html += '<div class="tl-meta">' + meta + '</div>';
     html += '</div>';
   });
@@ -1523,6 +1622,13 @@ function loadTopicTest(topicId, testIndex) {
   if (!currentTopicConfig) return;
   var entry = currentTopicConfig.tests[testIndex];
   if (!entry || !entry.file) return;
+  // Check minScore gate
+  var minScore = entry.minScore || 0;
+  if (minScore > 0) {
+    var userName = getSelectedUser();
+    var userScore = userName ? getUserTopicScore(userName, topicId) : 0;
+    if (userScore < minScore) return;
+  }
   if (currentTest) {
     if (!confirm(tr('loadDifferentTest'))) return;
   }
@@ -2509,6 +2615,58 @@ function downloadEvaluationData() {
   URL.revokeObjectURL(url);
 }
 
+// ── Topic Scores ─────────────────────────────────────────────────────────────
+function getUserTopicScore(userName, topicId) {
+  var users = getUsers();
+  var user = users.find(function(u) { return u.name === userName; });
+  if (!user || !user.topicScores) return 0;
+  return user.topicScores[topicId] || 0;
+}
+
+function setUserTopicScore(userName, topicId, score) {
+  var users = getUsers();
+  var user = users.find(function(u) { return u.name === userName; });
+  if (!user) return;
+  if (!user.topicScores) user.topicScores = {};
+  user.topicScores[topicId] = Math.max(0, Math.min(100, Math.round(score)));
+  saveUsers(users);
+}
+
+function recalculateTopicScore(topicId, userName, topicConfig) {
+  if (!topicConfig || !topicConfig.tests) return;
+  var visibleTests = topicConfig.tests.filter(function(t) { return t.visible !== false; });
+  if (!visibleTests.length) return;
+
+  // Total achievable weighted score across all visible tests
+  var totalMaxWeighted = 0;
+  visibleTests.forEach(function(t) {
+    totalMaxWeighted += (t.maxWeightedScore || 0);
+  });
+  if (totalMaxWeighted === 0) return;
+
+  // Find best earnedWeight per test file from history
+  var allResults = getTestResults();
+  var userResults = allResults.filter(function(r) { return r.user === userName && r.topicId === topicId; });
+
+  var bestByFile = {};
+  userResults.forEach(function(r) {
+    if (!r.testFile) return;
+    var prev = bestByFile[r.testFile] || 0;
+    var earned = r.earnedWeight || 0;
+    if (earned > prev) bestByFile[r.testFile] = earned;
+  });
+
+  var totalEarned = 0;
+  Object.keys(bestByFile).forEach(function(f) { totalEarned += bestByFile[f]; });
+
+  var newScore = Math.round(totalEarned / totalMaxWeighted * 100);
+  var oldScore = getUserTopicScore(userName, topicId);
+  // Score only increases
+  if (newScore > oldScore) {
+    setUserTopicScore(userName, topicId, newScore);
+  }
+}
+
 // ── Results Screen ───────────────────────────────────────────────────────────
 function showResults(results) {
   // Calculate score
@@ -2651,20 +2809,50 @@ function saveTestResult(pct, results) {
     return detail;
   });
 
+  // Calculate weighted scores for topic scoring
+  var totalWeight = 0;
+  var earnedWeight = 0;
+  results.forEach(function(r) {
+    totalWeight += r.weight;
+    earnedWeight += r.score * r.weight;
+  });
+
+  // Extract topicId and testFile from _sourceFile (e.g. "animals/test-zivocichove.json")
+  var topicId = null;
+  var testFile = null;
+  if (currentTest._sourceFile) {
+    var parts = currentTest._sourceFile.split('/');
+    if (parts.length >= 2) {
+      topicId = parts[0];
+      testFile = parts.slice(1).join('/');
+    }
+  }
+
+  var userName = getSelectedUser() || 'Anonymous';
+
   data.testResults.push({
     testId: t.id,
     testTitle: locStr(t.title, locale),
-    user: getSelectedUser() || 'Anonymous',
+    user: userName,
     score: pct,
     totalQuestions: results.length,
     correct: results.filter(function(r) { return r.status === 'correct'; }).length,
     date: new Date().toISOString(),
     details: savedDetails,
     attemptData: lastAttemptJSON || null,
-    evaluationData: lastEvaluationJSON || null
+    evaluationData: lastEvaluationJSON || null,
+    topicId: topicId,
+    testFile: testFile,
+    earnedWeight: earnedWeight,
+    totalWeight: totalWeight
   });
 
   saveAppData(data);
+
+  // Recalculate topic score if this test belongs to a topic
+  if (topicId && currentTopicConfig) {
+    recalculateTopicScore(topicId, userName, currentTopicConfig);
+  }
 }
 
 function showHistory() {

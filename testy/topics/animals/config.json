@@ -11,7 +11,9 @@
         "en": "Short diagnostic test to assess basic knowledge of animals."
       },
       "questions": 10,
+      "maxWeightedScore": 14,
       "difficulty": "easy",
+      "minScore": 0,
       "visible": true,
       "runnable": true
     },
@@ -26,7 +28,9 @@
         "en": "Shorter test: animal classification, vertebrates, invertebrates and image ID."
       },
       "questions": 20,
+      "maxWeightedScore": 31,
       "difficulty": "easy",
+      "minScore": 20,
       "visible": true,
       "runnable": true
     },
@@ -41,7 +45,9 @@
         "en": "Complete test covering animal classification, vertebrates, invertebrates and image identification."
       },
       "questions": 62,
+      "maxWeightedScore": 107,
       "difficulty": "medium",
+      "minScore": 40,
       "visible": true,
       "runnable": true
     }
