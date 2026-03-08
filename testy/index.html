@@ -176,6 +176,25 @@ layout: null
     .test-info h3 { margin: 0 0 8px; color: #055585; }
     .test-info p { margin: 4px 0; font-size: 0.95rem; color: #333; }
     .test-list-title { font-size: 0.85rem; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .topic-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 10px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .topic-card:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+    .topic-card:active { transform: scale(0.98); }
+    .topic-card .topic-icon { font-size: 2rem; flex-shrink: 0; }
+    .topic-card .topic-info { flex: 1; }
+    .topic-card .topic-title { font-size: 1.05rem; font-weight: 600; color: #055585; margin: 0 0 3px; }
+    .topic-card .topic-desc { font-size: 0.82rem; color: #666; margin: 0; }
     .test-list-card {
       background: #fff;
       border: 1px solid #e5e5e5;
@@ -189,6 +208,8 @@ layout: null
     }
     .test-list-card:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
     .test-list-card:active { transform: scale(0.98); }
+    .test-list-card.tl-disabled { cursor: default; opacity: 0.5; }
+    .test-list-card.tl-disabled:hover { transform: none; box-shadow: none; }
     .test-list-card .tl-title { font-size: 1rem; font-weight: 600; color: #055585; margin: 0 0 4px; }
     .test-list-card .tl-desc { font-size: 0.85rem; color: #555; margin: 0 0 6px; }
     .test-list-card .tl-meta { font-size: 0.75rem; color: #999; }
@@ -506,13 +527,19 @@ layout: null
 
   <div class="menu-card" id="menu-user-area"></div>
 
-  <div id="available-tests-area"></div>
+  <div id="topics-area"></div>
 
   <div id="test-info-area"></div>
 
   <div style="margin-top: 12px;">
     <button class="btn-secondary" onclick="loadTestFile()" id="menu-load-test" style="font-size:0.9rem; padding:8px 18px;">Load from File</button>
   </div>
+</div>
+
+<!-- TOPIC TESTS SCREEN -->
+<div id="topic-tests" style="display:none">
+  <div class="app-title" id="topic-tests-title"></div>
+  <div id="topic-tests-area"></div>
 </div>
 
 <!-- USER MANAGEMENT SCREEN -->
@@ -702,10 +729,11 @@ var UI_STRINGS = {
     saveChanges: 'Save',
     enterName: 'Please enter a name.',
     userExists: 'A user with this name already exists.',
-    availableTests: 'Available Tests',
-    loadingTests: 'Loading tests...',
-    noTestsAvailable: 'No tests available.',
+    topics: 'Topics',
+    loadingTopics: 'Loading topics...',
+    noTopicsAvailable: 'No topics available.',
     loadFromFile: 'Load from File',
+    testsInTopic: 'Tests',
     january: 'January', february: 'February', march: 'March', april: 'April',
     may: 'May', june: 'June', july: 'July', august: 'August',
     september: 'September', october: 'October', november: 'November', december: 'December'
@@ -786,10 +814,11 @@ var UI_STRINGS = {
     saveChanges: 'Uložit',
     enterName: 'Zadejte prosím jméno.',
     userExists: 'Uživatel s tímto jménem již existuje.',
-    availableTests: 'Dostupné testy',
-    loadingTests: 'Načítání testů...',
-    noTestsAvailable: 'Žádné testy nejsou k dispozici.',
+    topics: 'Témata',
+    loadingTopics: 'Načítání témat...',
+    noTopicsAvailable: 'Žádná témata nejsou k dispozici.',
     loadFromFile: 'Načíst ze souboru',
+    testsInTopic: 'Testy',
     january: 'Leden', february: 'Únor', march: 'Březen', april: 'Duben',
     may: 'Květen', june: 'Červen', july: 'Červenec', august: 'Srpen',
     september: 'Září', october: 'Říjen', november: 'Listopad', december: 'Prosinec'
@@ -921,7 +950,7 @@ function updateUIStrings() {
 var backTarget = null;
 var currentTest = null;
 
-var ALL_SCREENS = ['menu', 'user-management', 'settings', 'test-ready', 'test-screen', 'results-screen', 'history-screen'];
+var ALL_SCREENS = ['menu', 'topic-tests', 'user-management', 'settings', 'test-ready', 'test-screen', 'results-screen', 'history-screen'];
 
 function hideAll() {
   ALL_SCREENS.forEach(function(id) {
@@ -952,7 +981,7 @@ function showMenu() {
   document.getElementById('menu').style.display = 'block';
   document.getElementById('bottom-nav').style.display = 'flex';
   renderMenuUserArea();
-  fetchAvailableTests();
+  fetchTopics();
   renderTestInfo();
   updateUIStrings();
 }
@@ -1386,57 +1415,111 @@ function renderTestInfo() {
   area.innerHTML = html;
 }
 
-// ── Available Tests ──────────────────────────────────────────────────────────
-var availableTests = []; // [{file, title, description, questions}]
+// ── Topics & Tests ──────────────────────────────────────────────────────────
+var topics = []; // [{id, title, description, icon}]
+var currentTopicId = null;
+var currentTopicConfig = null; // {tests: [...]}
 
-function fetchAvailableTests() {
-  var area = document.getElementById('available-tests-area');
-  area.innerHTML = '<div class="menu-card"><div style="color:#888; font-size:0.9rem;">' + escHtml(tr('loadingTests')) + '</div></div>';
-  fetch('tests/index.json').then(function(r) {
+function fetchTopics() {
+  var area = document.getElementById('topics-area');
+  area.innerHTML = '<div class="menu-card"><div style="color:#888; font-size:0.9rem;">' + escHtml(tr('loadingTopics')) + '</div></div>';
+  fetch('topics/index.json').then(function(r) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }).then(function(list) {
-    availableTests = Array.isArray(list) ? list : [];
-    renderAvailableTests();
+    topics = Array.isArray(list) ? list : [];
+    renderTopics();
   }).catch(function() {
-    availableTests = [];
-    renderAvailableTests();
+    topics = [];
+    renderTopics();
   });
 }
 
-function renderAvailableTests() {
-  var area = document.getElementById('available-tests-area');
+function renderTopics() {
+  var area = document.getElementById('topics-area');
   var locale = getUILang();
-  if (!availableTests.length) {
-    area.innerHTML = '<div class="menu-card"><div style="color:#888; font-size:0.9rem;">' + escHtml(tr('noTestsAvailable')) + '</div></div>';
+  if (!topics.length) {
+    area.innerHTML = '<div class="menu-card"><div style="color:#888; font-size:0.9rem;">' + escHtml(tr('noTopicsAvailable')) + '</div></div>';
     return;
   }
-  var html = '<div class="menu-card" style="padding: 15px 16px;">';
-  html += '<div class="test-list-title">' + escHtml(tr('availableTests')) + '</div>';
-  availableTests.forEach(function(t, i) {
-    var title = t.title ? (typeof t.title === 'string' ? t.title : locStr(t.title, locale)) : t.file;
-    var desc = t.description ? (typeof t.description === 'string' ? t.description : locStr(t.description, locale)) : '';
-    var isActive = currentTest && currentTest._sourceFile === t.file;
-    html += '<div class="test-list-card' + (isActive ? ' tl-active' : '') + '" onclick="loadRemoteTest(' + i + ')">';
+  var html = '<div class="test-list-title">' + escHtml(tr('topics')) + '</div>';
+  topics.forEach(function(t, i) {
+    var title = locStr(t.title, locale) || t.id;
+    var desc = t.description ? locStr(t.description, locale) : '';
+    html += '<div class="topic-card" onclick="openTopic(' + i + ')">';
+    if (t.icon) html += '<div class="topic-icon">' + t.icon + '</div>';
+    html += '<div class="topic-info">';
+    html += '<div class="topic-title">' + escHtml(title) + '</div>';
+    if (desc) html += '<div class="topic-desc">' + escHtml(desc) + '</div>';
+    html += '</div>';
+    html += '</div>';
+  });
+  area.innerHTML = html;
+}
+
+function openTopic(index) {
+  var topic = topics[index];
+  if (!topic) return;
+  currentTopicId = topic.id;
+  showTopicTests(topic);
+}
+
+function showTopicTests(topic) {
+  hideAll();
+  document.getElementById('topic-tests').style.display = 'block';
+  document.getElementById('bottom-nav').style.display = 'flex';
+  setBackArrow(showMenu);
+  var locale = getUILang();
+  document.getElementById('topic-tests-title').textContent = locStr(topic.title, locale) || topic.id;
+
+  var area = document.getElementById('topic-tests-area');
+  area.innerHTML = '<div style="color:#888; font-size:0.9rem; margin:20px 0;">' + escHtml(tr('loadingTopics')) + '</div>';
+
+  fetch('topics/' + topic.id + '/config.json').then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(config) {
+    currentTopicConfig = config;
+    renderTopicTestList(topic.id, config, locale);
+  }).catch(function(err) {
+    area.innerHTML = '<div class="error-msg">' + escHtml(err.message) + '</div>';
+  });
+}
+
+function renderTopicTestList(topicId, config, locale) {
+  var area = document.getElementById('topic-tests-area');
+  var tests = (config.tests || []).filter(function(t) { return t.visible !== false; });
+  if (!tests.length) {
+    area.innerHTML = '<div style="color:#888; font-size:0.9rem; margin:20px 0;">' + escHtml(tr('noTopicsAvailable')) + '</div>';
+    return;
+  }
+  var html = '';
+  tests.forEach(function(t, i) {
+    var title = locStr(t.title, locale) || t.file;
+    var desc = t.description ? locStr(t.description, locale) : '';
+    var runnable = t.runnable !== false;
+    var cls = 'test-list-card' + (runnable ? '' : ' tl-disabled');
+    html += '<div class="' + cls + '"' + (runnable ? ' onclick="loadTopicTest(\'' + escHtml(topicId) + '\',' + i + ')"' : '') + '>';
     html += '<div class="tl-title">' + escHtml(title) + '</div>';
     if (desc) html += '<div class="tl-desc">' + escHtml(desc) + '</div>';
     var meta = '';
     if (t.questions) meta += '<span>' + t.questions + ' ' + escHtml(tr(t.questions === 1 ? 'question' : 'questions')) + '</span>';
-    if (t.status) meta += '<span>' + escHtml(t.status) + '</span>';
+    if (t.difficulty) meta += '<span>' + escHtml(t.difficulty) + '</span>';
+    if (!runnable) meta += '<span>🔒</span>';
     if (meta) html += '<div class="tl-meta">' + meta + '</div>';
     html += '</div>';
   });
-  html += '</div>';
   area.innerHTML = html;
 }
 
-function loadRemoteTest(index) {
-  var entry = availableTests[index];
+function loadTopicTest(topicId, testIndex) {
+  if (!currentTopicConfig) return;
+  var entry = currentTopicConfig.tests[testIndex];
   if (!entry || !entry.file) return;
   if (currentTest) {
     if (!confirm(tr('loadDifferentTest'))) return;
   }
-  fetch('tests/' + entry.file).then(function(r) {
+  fetch('topics/' + topicId + '/' + entry.file).then(function(r) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }).then(function(data) {
@@ -1446,8 +1529,7 @@ function loadRemoteTest(index) {
       return;
     }
     currentTest = data;
-    currentTest._sourceFile = entry.file;
-    renderAvailableTests();
+    currentTest._sourceFile = topicId + '/' + entry.file;
     showTestReady();
   }).catch(function(err) {
     showTestLoadError(['Failed to load test: ' + err.message]);

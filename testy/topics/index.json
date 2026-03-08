@@ -1,0 +1,26 @@
+[
+  {
+    "id": "animals",
+    "title": {
+      "cs": "Živočichové",
+      "en": "Animals"
+    },
+    "description": {
+      "cs": "Třídění živočichů, obratlovci, bezobratlí a jejich charakteristiky.",
+      "en": "Animal classification, vertebrates, invertebrates and their characteristics."
+    },
+    "icon": "🐾"
+  },
+  {
+    "id": "g4science",
+    "title": {
+      "en": "Grade 4 Science",
+      "cs": "Přírodověda pro 4. ročník"
+    },
+    "description": {
+      "en": "Animals, plants, and the solar system for 4th graders.",
+      "cs": "Zvířata, rostliny a sluneční soustava pro žáky 4. třídy."
+    },
+    "icon": "🔬"
+  }
+]
