@@ -1649,13 +1649,27 @@ function renderTopicTestList(topicId, config, locale) {
   }
 
   // Find the highest test index the user has completed (for AI practice card placement)
+  // Also backfill topicId/testFile on legacy results that lack them
   var highestCompleted = -1;
   if (userName) {
-    var allResults = getTestResults().filter(function(r) { return r.user === userName && r.topicId === topicId; });
+    var data = getAppData();
+    var userResults = (data.testResults || []).filter(function(r) { return r.user === userName; });
+    var needsSave = false;
     tests.forEach(function(t, i) {
-      var hasResult = allResults.some(function(r) { return r.testFile === t.file; });
+      var hasResult = userResults.some(function(r) {
+        if (r.topicId === topicId && r.testFile === t.file) return true;
+        // Legacy results: match by testId when topicId is missing
+        if (!r.topicId && r.testId === t.id) {
+          r.topicId = topicId;
+          r.testFile = t.file;
+          needsSave = true;
+          return true;
+        }
+        return false;
+      });
       if (hasResult) highestCompleted = i;
     });
+    if (needsSave) saveAppData(data);
   }
 
   tests.forEach(function(t, i) {

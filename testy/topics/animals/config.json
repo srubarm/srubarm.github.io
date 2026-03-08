@@ -2,6 +2,7 @@
   "tests": [
     {
       "file": "test-zivocichove-diag.json",
+      "id": "test_zivocichove_diag",
       "title": {
         "cs": "Živočichové – Vstupní test",
         "en": "Animals – Diagnostic Test"
@@ -19,6 +20,7 @@
     },
     {
       "file": "test-zivocichove-mini.json",
+      "id": "test_zivocichove_mini",
       "title": {
         "cs": "Živočichové – Výběr 20 otázek",
         "en": "Animals – 20 Selected Questions"
@@ -36,6 +38,7 @@
     },
     {
       "file": "test-zivocichove.json",
+      "id": "test_zivocichove_001",
       "title": {
         "cs": "Živočichové – Kompletní test",
         "en": "Animals – Full Test"

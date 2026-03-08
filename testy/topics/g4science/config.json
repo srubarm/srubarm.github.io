@@ -2,6 +2,7 @@
   "tests": [
     {
       "file": "Grade_4_Science_Quiz_v3.json",
+      "id": "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
       "title": {
         "en": "Grade 4 Science Quiz",
         "cs": "Vědomostní kvíz z přírodovědy pro 4. ročník"
