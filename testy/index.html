@@ -246,6 +246,31 @@ layout: null
       border-radius: 3px;
       transition: width 0.3s;
     }
+    .test-list-card.tl-ai {
+      background: linear-gradient(135deg, #f0e6ff 0%, #e6f0ff 100%);
+      border-left: 4px solid #8b5cf6;
+      cursor: pointer;
+    }
+    .test-list-card.tl-ai:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(139,92,246,0.15); }
+    .test-list-card.tl-ai .tl-title { color: #6d28d9; }
+    .test-list-card.tl-ai .tl-meta { color: #7c3aed; }
+    .ai-generating {
+      text-align: center;
+      padding: 30px 20px;
+      color: #6d28d9;
+      font-size: 0.95rem;
+    }
+    .ai-generating .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #e0d4f5;
+      border-top-color: #8b5cf6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .error-msg {
       background: #ffeaea;
       color: #c33;
@@ -772,6 +797,11 @@ var UI_STRINGS = {
     scoreRequired: 'Required score: {0}%',
     locked: 'Locked',
     noScoreYet: 'No score yet',
+    aiPractice: 'Practice with AI teacher',
+    aiPracticeDesc: 'Personalised practice based on your progress',
+    generatingTest: 'Generating practice test...',
+    aiPracticeError: 'Could not generate practice test.',
+    aiNoApiKey: 'Please configure an API key in Settings to use AI practice.',
     january: 'January', february: 'February', march: 'March', april: 'April',
     may: 'May', june: 'June', july: 'July', august: 'August',
     september: 'September', october: 'October', november: 'November', december: 'December'
@@ -864,6 +894,11 @@ var UI_STRINGS = {
     scoreRequired: 'Požadované skóre: {0} %',
     locked: 'Zamčeno',
     noScoreYet: 'Zatím žádné skóre',
+    aiPractice: 'Procvičování s AI učitelem',
+    aiPracticeDesc: 'Personalizované procvičování na základě tvého pokroku',
+    generatingTest: 'Generování cvičného testu...',
+    aiPracticeError: 'Nepodařilo se vygenerovat cvičný test.',
+    aiNoApiKey: 'Pro použití AI procvičování prosím nastav API klíč v Nastavení.',
     january: 'Leden', february: 'Únor', march: 'Březen', april: 'Duben',
     may: 'Květen', june: 'Červen', july: 'Červenec', august: 'Srpen',
     september: 'Září', october: 'Říjen', november: 'Listopad', december: 'Prosinec'
@@ -1086,6 +1121,16 @@ function showTestReady() {
   var needsAI = t.questions.some(function(q) { return q.evaluation && q.evaluation.method === 'ai'; });
   if (needsAI && !isAIEnabled()) {
     info += '<p style="color:#e8a020;"><b>' + escHtml(tr('note')) + '</b> ' + escHtml(tr('aiNoteNoKey')) + '</p>';
+  }
+
+  // Show AI student feedback if this is an AI-generated practice test
+  if (currentTest._aiStudentFeedback) {
+    var fbText = locStr(currentTest._aiStudentFeedback, locale);
+    if (fbText) {
+      info += '<div style="background:#f0e6ff; border-radius:10px; padding:12px 14px; margin-top:12px; text-align:left; font-size:0.9rem; color:#4c1d95;">';
+      info += '🤖 ' + escHtml(fbText);
+      info += '</div>';
+    }
   }
 
   document.getElementById('test-ready-info').innerHTML = info;
@@ -1593,6 +1638,16 @@ function renderTopicTestList(topicId, config, locale) {
     html += '</div>';
   }
 
+  // Find the highest test index the user has completed (for AI practice card placement)
+  var highestCompleted = -1;
+  if (userName) {
+    var allResults = getTestResults().filter(function(r) { return r.user === userName && r.topicId === topicId; });
+    tests.forEach(function(t, i) {
+      var hasResult = allResults.some(function(r) { return r.testFile === t.file; });
+      if (hasResult) highestCompleted = i;
+    });
+  }
+
   tests.forEach(function(t, i) {
     var title = locStr(t.title, locale) || t.file;
     var desc = t.description ? locStr(t.description, locale) : '';
@@ -1614,6 +1669,15 @@ function renderTopicTestList(topicId, config, locale) {
     }
     if (meta) html += '<div class="tl-meta">' + meta + '</div>';
     html += '</div>';
+
+    // Insert AI practice card right after the highest completed test
+    if (i === highestCompleted) {
+      html += '<div class="test-list-card tl-ai" onclick="startAIPractice(\'' + escHtml(topicId) + '\')">';
+      html += '<div class="tl-title">🤖 ' + escHtml(tr('aiPractice')) + '</div>';
+      html += '<div class="tl-desc">' + escHtml(tr('aiPracticeDesc')) + '</div>';
+      html += '<div class="tl-meta"><span>AI</span></div>';
+      html += '</div>';
+    }
   });
   area.innerHTML = html;
 }
@@ -1647,6 +1711,421 @@ function loadTopicTest(topicId, testIndex) {
   }).catch(function(err) {
     showTestLoadError(['Failed to load test: ' + err.message]);
   });
+}
+
+// ── AI Practice ─────────────────────────────────────────────────────────────
+
+function startAIPractice(topicId) {
+  if (!isAIEnabled()) {
+    alert(tr('aiNoApiKey'));
+    return;
+  }
+  if (currentTest) {
+    if (!confirm(tr('loadDifferentTest'))) return;
+  }
+
+  var area = document.getElementById('topic-tests-area');
+  area.innerHTML = '<div class="ai-generating"><div class="spinner"></div><br>' + escHtml(tr('generatingTest')) + '</div>';
+
+  var userName = getSelectedUser() || 'Anonymous';
+  var locale = getUILang();
+  var config = currentTopicConfig;
+
+  // Fetch question bank YAML and all test files in parallel
+  var bankPromise = fetch('topics/' + topicId + '/questionBank.yaml').then(function(r) {
+    if (!r.ok) throw new Error('Could not load question bank');
+    return r.text();
+  });
+
+  // Fetch all test JSON files to build question + media maps
+  var testFiles = (config.tests || []).map(function(t) { return t.file; });
+  var testPromises = testFiles.map(function(file) {
+    return fetch('topics/' + topicId + '/' + file).then(function(r) {
+      return r.ok ? r.json() : null;
+    }).catch(function() { return null; });
+  });
+
+  Promise.all([bankPromise, Promise.all(testPromises)]).then(function(results) {
+    var bankYaml = results[0];
+    var testDataList = results[1];
+
+    // Build master question map (q_id -> question object) and media map
+    var questionMap = {};
+    var mediaMap = {};
+    testDataList.forEach(function(data) {
+      if (!data) return;
+      var test = data.test || data;
+      if (test.media) {
+        test.media.forEach(function(m) { mediaMap[m.id] = m; });
+      }
+      if (test.questions) {
+        test.questions.forEach(function(q) { questionMap[q.id] = q; });
+      }
+    });
+
+    // Build student history
+    var history = buildStudentHistoryPrompt(topicId, userName, questionMap);
+
+    // Count sessions for this topic
+    var topicResults = getTestResults().filter(function(r) { return r.user === userName && r.topicId === topicId; });
+    var sessionCount = topicResults.length;
+
+    // Determine purpose
+    var purpose = sessionCount === 0 ? 'diagnostic' : 'practice';
+
+    // Get user's test language
+    var users = getUsers();
+    var userObj = users.find(function(u) { return u.name === userName; });
+    var testLocale = (userObj && userObj.testLang) ? userObj.testLang : locale;
+
+    // Build prompts
+    var systemPrompt = buildAISystemPrompt();
+    var userPrompt = buildAIUserPrompt(bankYaml, history, purpose, testLocale, locale, sessionCount + 1);
+
+    // Call Gemini API
+    return callGeminiForTestGeneration(systemPrompt, userPrompt).then(function(aiResponse) {
+      // Process AI response into test definition
+      var testDef = processAITestResponse(aiResponse, questionMap, mediaMap, topicId, testLocale, locale);
+      if (!testDef) throw new Error('Invalid AI response');
+
+      currentTest = testDef;
+      currentTest._sourceFile = topicId + '/ai-practice';
+      currentTest._aiGenerated = true;
+      currentTest._aiAnalysis = aiResponse.analysis || '';
+      currentTest._aiStudentFeedback = aiResponse.student_feedback || null;
+      showTestReady();
+    });
+  }).catch(function(err) {
+    console.error('AI Practice error:', err);
+    area.innerHTML = '<div class="error-msg">' + escHtml(tr('aiPracticeError')) + '<br><small>' + escHtml(err.message) + '</small></div>';
+    // Re-render test list after a delay so user can try again
+    setTimeout(function() {
+      if (currentTopicConfig) {
+        var topic = topics.find(function(t) { return t.id === topicId; });
+        if (topic) renderTopicTestList(topicId, currentTopicConfig, getUILang());
+      }
+    }, 5000);
+  });
+}
+
+function buildAISystemPrompt() {
+  return 'You are a learning pedagogue for children aged 5-13 who are learning in their second language. Your task is to build a personalised test from a question bank based on the student\'s learning history.\n' +
+    'Your goals:\n' +
+    '- Identify what the student knows well, what they\'re struggling with, and what they haven\'t been exposed to yet.\n' +
+    '- Build a test that reinforces weak areas, introduces new material gradually, and confirms mastery of strong areas.\n' +
+    '- Create a positive learning experience — the test should feel achievable but challenging, not overwhelming.\n' +
+    '- Sequence questions thoughtfully: start with something the student is likely to get right (builds confidence), work through focus areas, and end with something that stretches them.\n' +
+    'Rules you must follow:\n' +
+    '- Only select questions that exist in the provided question bank. Never invent question IDs.\n' +
+    '- Never include two questions from the same exclusion list in the same test.\n' +
+    '- Select only one question per variant group. Use the difficulty and answer type to choose the most appropriate variant for this student\'s current level.\n' +
+    '- Respect the question bank\'s "related" relationships as a hint for thematic grouping, but they are not constraints.\n' +
+    '- Keep the test between 8 and 15 questions unless instructed otherwise.\n' +
+    '- Aim for a test duration of 10-20 minutes based on the estimated times.\n' +
+    'When choosing variant difficulty and answer type:\n' +
+    '- If the student has consistently answered a concept correctly as single/multi choice, consider moving to free text for that concept.\n' +
+    '- If the student has struggled with a concept, stay at or reduce difficulty and use single/multi choice to build confidence.\n' +
+    '- If a concept is new to the student, start with the easiest variant available.\n' +
+    'Consider the student\'s translation usage:\n' +
+    '- If the student frequently requests translations on a particular topic, they may be struggling with language rather than content.\n' +
+    '- High translation usage combined with correct answers suggests language difficulty, not content difficulty.\n' +
+    '- Low translation usage combined with incorrect answers suggests content difficulty.\n' +
+    'Respond with a single JSON object and nothing else — no preamble, no markdown backticks, no explanation outside the JSON.';
+}
+
+function buildAIUserPrompt(bankYaml, history, purpose, testLocale, uiLang, sessionNumber) {
+  var prompt = '### Session Context\n';
+  prompt += 'Purpose: ' + purpose + '\n';
+  prompt += 'Locale: ' + testLocale + '\n';
+  prompt += 'Student primary language: ' + uiLang + '\n';
+  prompt += 'Session number: ' + sessionNumber + '\n';
+  prompt += 'Focus on areas where the student is weakest. Include some review of strong areas to maintain confidence. Introduce new topics if the student has not been tested on all tag areas.\n\n';
+  prompt += '---\n\n### Question Bank\n';
+  prompt += bankYaml + '\n\n';
+  prompt += '---\n\n### Student History\n';
+  if (history) {
+    prompt += 'Below are the student\'s recent test attempts and evaluations, most recent first.\n\n';
+    prompt += history + '\n';
+  } else {
+    prompt += 'No previous test history available. This is the student\'s first session.\n\n';
+  }
+  prompt += '---\n\n### Your Task\n';
+  prompt += 'Build the next test for this student. Respond with a single JSON object and nothing else. The JSON must follow this structure exactly:\n';
+  prompt += '{\n';
+  prompt += '  "analysis": "Brief assessment of the student\'s current state...",\n';
+  prompt += '  "test_plan": {\n';
+  prompt += '    "title": {"en": "...", "' + testLocale + '": "..."},\n';
+  prompt += '    "description": {"en": "...", "' + testLocale + '": "..."},\n';
+  prompt += '    "instructions": {"en": "...", "' + testLocale + '": "..."},\n';
+  prompt += '    "purpose": "' + purpose + '",\n';
+  prompt += '    "locale": "' + testLocale + '",\n';
+  prompt += '    "tags": ["tag1", "tag2"],\n';
+  prompt += '    "settings": {\n';
+  prompt += '      "default_time_limit_seconds": null,\n';
+  prompt += '      "shuffle_questions": false,\n';
+  prompt += '      "allow_skip": true,\n';
+  prompt += '      "show_hints": true,\n';
+  prompt += '      "show_correct_answer_comment": true\n';
+  prompt += '    },\n';
+  prompt += '    "sections": [\n';
+  prompt += '      {\n';
+  prompt += '        "title": {"en": "Section title", "' + testLocale + '": "..."},\n';
+  prompt += '        "description": null,\n';
+  prompt += '        "instructions": {"en": "...", "' + testLocale + '": "..."},\n';
+  prompt += '        "question_ids": ["qb_XXX", "qb_XXX"],\n';
+  prompt += '        "shuffle_questions": false,\n';
+  prompt += '        "time_limit_seconds": null\n';
+  prompt += '      }\n';
+  prompt += '    ],\n';
+  prompt += '    "question_reasons": {"qb_XXX": "reason..."}\n';
+  prompt += '  },\n';
+  prompt += '  "student_feedback": {"en": "Encouraging message...", "' + testLocale + '": "..."}\n';
+  prompt += '}\n\n';
+  prompt += 'Important:\n';
+  prompt += '- Only use question IDs that exist in the provided question bank.\n';
+  prompt += '- Every question ID used in sections must have an entry in question_reasons.\n';
+  prompt += '- Section titles, descriptions, instructions, and student_feedback must be in both the test locale and English.\n';
+  prompt += '- Respond with the JSON object only.\n';
+  return prompt;
+}
+
+function buildStudentHistoryPrompt(topicId, userName, questionMap) {
+  var allResults = getTestResults().filter(function(r) { return r.user === userName && r.topicId === topicId; });
+  if (!allResults.length) return '';
+
+  // Sort by date descending, take last 5
+  allResults.sort(function(a, b) { return b.date.localeCompare(a.date); });
+  var recent = allResults.slice(0, 5);
+
+  var historyText = '';
+  recent.forEach(function(r, idx) {
+    var daysAgo = Math.round((Date.now() - new Date(r.date).getTime()) / 86400000);
+    var daysLabel = daysAgo === 0 ? 'today' : (daysAgo === 1 ? 'yesterday' : daysAgo + ' days ago');
+    var purpose = r.testFile && r.testFile.indexOf('diag') >= 0 ? 'Diagnostic' : (r.testFile && r.testFile.indexOf('ai-practice') >= 0 ? 'Practice (AI)' : 'Practice');
+
+    historyText += '#### Session ' + (recent.length - idx) + ' — ' + purpose + ' (' + daysLabel + ')\n';
+    historyText += 'Test: ' + (r.testTitle || r.testId || 'Unknown') + '\n';
+
+    // Try to get duration from attemptData
+    var duration = '';
+    if (r.attemptData && r.attemptData.test_attempt && r.attemptData.test_attempt.timing) {
+      var secs = r.attemptData.test_attempt.timing.duration_seconds;
+      if (secs) duration = Math.round(secs / 60) + ' minutes';
+    }
+    if (duration) historyText += 'Duration: ' + duration + '\n';
+    historyText += 'Status: completed\n';
+    historyText += 'Questions answered:\n';
+
+    // Format each question from details + attemptData
+    var responses = {};
+    if (r.attemptData && r.attemptData.test_attempt && r.attemptData.test_attempt.question_responses) {
+      r.attemptData.test_attempt.question_responses.forEach(function(qr) {
+        responses[qr.question_id] = qr;
+      });
+    }
+
+    var evalResults = {};
+    if (r.evaluationData && r.evaluationData.test_evaluation && r.evaluationData.test_evaluation.question_results) {
+      r.evaluationData.test_evaluation.question_results.forEach(function(qr) {
+        evalResults[qr.question_id] = qr;
+      });
+    }
+
+    if (r.details && r.details.length) {
+      r.details.forEach(function(d, qi) {
+        // Try to find question ID from evaluation data
+        var qId = null;
+        var responseKeys = Object.keys(responses);
+        if (responseKeys[qi]) qId = responseKeys[qi];
+        if (!qId) {
+          var evalKeys = Object.keys(evalResults);
+          if (evalKeys[qi]) qId = evalKeys[qi];
+        }
+
+        // Map q_XXX -> qb_XXX for the prompt
+        var bankId = qId ? qId.replace(/^q_/, 'qb_') : 'unknown';
+
+        // Get tags from questionMap
+        var tags = [];
+        if (qId && questionMap[qId] && questionMap[qId].tags) tags = questionMap[qId].tags;
+
+        var answerType = '';
+        if (qId && questionMap[qId]) answerType = questionMap[qId].answer_type || '';
+
+        var difficulty = '';
+        if (qId && questionMap[qId]) difficulty = questionMap[qId].difficulty || '';
+
+        var timeSpent = '';
+        if (qId && responses[qId] && responses[qId].time_spent_seconds) {
+          timeSpent = responses[qId].time_spent_seconds + 's';
+        }
+
+        var isCorrect = d.status === 'correct';
+        var scoreVal = d.score;
+
+        historyText += '  - ' + bankId;
+        if (tags.length) historyText += ' | ' + tags.join(', ');
+        if (difficulty) historyText += ' | difficulty ' + difficulty;
+        if (answerType) historyText += ' | ' + answerType;
+        historyText += '\n';
+
+        var answerDisplay = d.answerDisplay || d.answer || '—';
+        if (typeof answerDisplay === 'object') answerDisplay = JSON.stringify(answerDisplay);
+        historyText += '    Answer: ' + answerDisplay + ' | Correct: ' + (scoreVal >= 1 ? 'true' : (scoreVal > 0 ? 'partial (score: ' + scoreVal + ')' : 'false')) + '\n';
+        if (timeSpent) historyText += '    Time: ' + timeSpent + '\n';
+      });
+    }
+
+    historyText += 'Evaluation summary:\n';
+    historyText += '  Score: ' + r.score + '% (weighted)\n';
+
+    // Tag-based summary
+    if (r.details && r.details.length) {
+      var tagStats = {};
+      r.details.forEach(function(d, qi) {
+        var qId = null;
+        var responseKeys = Object.keys(responses);
+        if (responseKeys[qi]) qId = responseKeys[qi];
+        var tags = (qId && questionMap[qId] && questionMap[qId].tags) ? questionMap[qId].tags : [];
+        tags.forEach(function(tag) {
+          if (!tagStats[tag]) tagStats[tag] = { correct: 0, total: 0 };
+          tagStats[tag].total++;
+          if (d.status === 'correct') tagStats[tag].correct++;
+        });
+      });
+      if (Object.keys(tagStats).length) {
+        historyText += '  By tag:\n';
+        Object.keys(tagStats).forEach(function(tag) {
+          var s = tagStats[tag];
+          var pct = Math.round(s.correct / s.total * 100);
+          historyText += '    ' + tag + ': ' + s.correct + '/' + s.total + ' correct (' + pct + '%)\n';
+        });
+      }
+    }
+    historyText += '\n';
+  });
+
+  return historyText;
+}
+
+function callGeminiForTestGeneration(systemPrompt, userPrompt) {
+  var apiKey = getSetting('ApiKey');
+  var aiModel = getAiModel();
+
+  return fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(aiModel) + ':generateContent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ parts: [{ text: userPrompt }] }],
+      generationConfig: {
+        temperature: 0.7,
+        responseMimeType: 'application/json'
+      }
+    })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (!data.candidates || !data.candidates[0]) {
+      throw new Error('No response from AI: ' + JSON.stringify(data.error || data));
+    }
+    var text = data.candidates[0].content.parts[0].text;
+    // Parse JSON from response
+    try {
+      return JSON.parse(text);
+    } catch(e) {
+      // Try to extract JSON from markdown code blocks
+      var match = text.match(/\{[\s\S]*\}/);
+      if (match) return JSON.parse(match[0]);
+      throw new Error('Could not parse AI response as JSON');
+    }
+  });
+}
+
+function processAITestResponse(aiResponse, questionMap, mediaMap, topicId, testLocale, uiLang) {
+  var plan = aiResponse.test_plan;
+  if (!plan || !plan.sections) return null;
+
+  // Collect all question IDs from sections
+  var allQIds = [];
+  plan.sections.forEach(function(s) {
+    (s.question_ids || []).forEach(function(id) {
+      if (allQIds.indexOf(id) === -1) allQIds.push(id);
+    });
+  });
+
+  if (!allQIds.length) return null;
+
+  // Map qb_XXX -> q_XXX and build question array
+  var questions = [];
+  var usedMedia = {};
+  allQIds.forEach(function(bankId) {
+    var qId = bankId.replace(/^qb_/, 'q_');
+    var src = questionMap[qId];
+    if (!src) return; // Skip unknown question IDs
+
+    // Deep copy the question
+    var q = JSON.parse(JSON.stringify(src));
+    questions.push(q);
+
+    // Track media
+    if (q.media_refs) {
+      q.media_refs.forEach(function(mId) {
+        if (mediaMap[mId]) usedMedia[mId] = mediaMap[mId];
+      });
+    }
+  });
+
+  if (!questions.length) return null;
+
+  // Build sections with correct q_XXX IDs
+  var sections = plan.sections.map(function(s, i) {
+    return {
+      id: 'section_' + String(i + 1).padStart(3, '0'),
+      title: s.title || null,
+      description: s.description || null,
+      instructions: s.instructions || null,
+      question_ids: (s.question_ids || []).map(function(bankId) { return bankId.replace(/^qb_/, 'q_'); }),
+      shuffle_questions: s.shuffle_questions || false,
+      time_limit_seconds: s.time_limit_seconds || null
+    };
+  });
+
+  // Build media array
+  var media = [];
+  Object.keys(usedMedia).forEach(function(mId) {
+    media.push(usedMedia[mId]);
+  });
+
+  // Build settings
+  var settings = plan.settings || {};
+
+  // Build the test definition
+  var testDef = {
+    test: {
+      id: 'ai_practice_' + topicId + '_' + Date.now(),
+      default_locale: testLocale,
+      supported_locales: testLocale === 'en' ? ['en'] : [testLocale, 'en'],
+      title: plan.title || { en: 'AI Practice' },
+      description: plan.description || null,
+      instructions: plan.instructions || null,
+      version: 1,
+      status: 'generated',
+      tags: plan.tags || ['ai-practice'],
+      created_by: 'ai',
+      created_at: new Date().toISOString(),
+      media: media,
+      sections: sections,
+      questions: questions,
+      settings: {
+        default_time_limit_seconds: settings.default_time_limit_seconds || null,
+        shuffle_questions: settings.shuffle_questions || false,
+        allow_skip: settings.allow_skip !== false,
+        show_hints: settings.show_hints !== false,
+        show_correct_answer_comment: settings.show_correct_answer_comment !== false
+      }
+    }
+  };
+
+  return testDef;
 }
 
 // ── Test Engine ──────────────────────────────────────────────────────────────
