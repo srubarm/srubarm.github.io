@@ -1681,7 +1681,7 @@ function renderTopicTestList(topicId, config, locale) {
     html += '</div>';
 
     // Insert AI practice card right after the highest completed test
-    if (i === highestCompleted) {
+    if (i === highestCompleted && isAIEnabled()) {
       html += '<div class="test-list-card tl-ai" onclick="startAIPractice(\'' + escHtml(topicId) + '\')">';
       html += '<div class="tl-title">🤖 ' + escHtml(tr('aiPractice')) + '</div>';
       html += '<div class="tl-desc">' + escHtml(tr('aiPracticeDesc')) + '</div>';
@@ -1689,6 +1689,16 @@ function renderTopicTestList(topicId, config, locale) {
       html += '</div>';
     }
   });
+
+  // If no tests completed yet but AI is enabled, show AI practice card at the end
+  if (highestCompleted === -1 && isAIEnabled()) {
+    html += '<div class="test-list-card tl-ai" onclick="startAIPractice(\'' + escHtml(topicId) + '\')">';
+    html += '<div class="tl-title">🤖 ' + escHtml(tr('aiPractice')) + '</div>';
+    html += '<div class="tl-desc">' + escHtml(tr('aiPracticeDesc')) + '</div>';
+    html += '<div class="tl-meta"><span>AI</span></div>';
+    html += '</div>';
+  }
+
   area.innerHTML = html;
 }
 
