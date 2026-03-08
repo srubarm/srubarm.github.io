@@ -1,6 +1,21 @@
 {
   "tests": [
     {
+      "file": "test-zivocichove-diag.json",
+      "title": {
+        "cs": "Živočichové – Vstupní test",
+        "en": "Animals – Diagnostic Test"
+      },
+      "description": {
+        "cs": "Krátký vstupní test pro ověření základních znalostí o živočiších.",
+        "en": "Short diagnostic test to assess basic knowledge of animals."
+      },
+      "questions": 10,
+      "difficulty": "easy",
+      "visible": true,
+      "runnable": true
+    },
+    {
       "file": "test-zivocichove-mini.json",
       "title": {
         "cs": "Živočichové – Výběr 20 otázek",
