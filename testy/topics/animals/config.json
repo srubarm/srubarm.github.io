@@ -1,0 +1,34 @@
+{
+  "tests": [
+    {
+      "file": "test-zivocichove-mini.json",
+      "title": {
+        "cs": "Živočichové – Výběr 20 otázek",
+        "en": "Animals – 20 Selected Questions"
+      },
+      "description": {
+        "cs": "Zkrácený test: třídění živočichů, obratlovci, bezobratlí a poznávačka.",
+        "en": "Shorter test: animal classification, vertebrates, invertebrates and image ID."
+      },
+      "questions": 20,
+      "difficulty": "easy",
+      "visible": true,
+      "runnable": true
+    },
+    {
+      "file": "test-zivocichove.json",
+      "title": {
+        "cs": "Živočichové – Kompletní test",
+        "en": "Animals – Full Test"
+      },
+      "description": {
+        "cs": "Kompletní test pokrývající třídění živočichů, obratlovce, bezobratlé a poznávačku z obrázků.",
+        "en": "Complete test covering animal classification, vertebrates, invertebrates and image identification."
+      },
+      "questions": 62,
+      "difficulty": "medium",
+      "visible": true,
+      "runnable": true
+    }
+  ]
+}
