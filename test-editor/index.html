@@ -379,7 +379,7 @@ layout: null
       </button>
     </div>
     <div style="margin-top:10px">
-      <button class="btn-small btn-secondary" onclick="startImportFromTest()" style="width:100%">Import Questions from Test JSON</button>
+      <button class="btn-small btn-secondary" onclick="startImportFromTest()" style="width:100%">Create Bank from Test JSON</button>
     </div>
   </div>
 </div>
@@ -396,6 +396,7 @@ layout: null
   <div class="app-title">Questions</div>
   <div id="question-list-area"></div>
   <button class="btn-block" onclick="addQuestion()">+ Add Question</button>
+  <button id="import-from-test-btn" class="btn-block btn-secondary" onclick="startImportIntoBank()" style="display:none">Import Questions from Test JSON</button>
 </div>
 
 <!-- QUESTION EDITOR -->
@@ -568,6 +569,7 @@ function showMetadata() {
 function showQuestionList() {
   hideAll();
   document.getElementById('question-list').style.display = 'block';
+  document.getElementById('import-from-test-btn').style.display = editorMode === 'bank' ? 'block' : 'none';
   if (editorMode === 'bank') {
     setBackArrow(showBankMetadata);
     showBottomNav('bnav-questions');
@@ -756,8 +758,18 @@ function handleLoadBankFile(event) {
 
 // ==================== IMPORT FROM TEST JSON ====================
 function startImportFromTest() {
+  // From home screen: creates a new bank from test JSON
+  importIntoExisting = false;
   document.getElementById('import-test-file-input').click();
 }
+
+function startImportIntoBank() {
+  // From question list: imports into existing bank
+  importIntoExisting = true;
+  document.getElementById('import-test-file-input').click();
+}
+
+var importIntoExisting = false;
 
 function handleImportFromTestFile(event) {
   var file = event.target.files[0];
@@ -772,8 +784,8 @@ function handleImportFromTestFile(event) {
         return;
       }
 
-      // If no bank exists yet, create one
-      if (!bankData) {
+      // If creating new bank or no bank exists yet, create one
+      if (!importIntoExisting || !bankData) {
         initNewBank();
         // Copy locale settings from test
         if (data.default_locale) bankData.default_locale = data.default_locale;
@@ -803,6 +815,7 @@ function handleImportFromTestFile(event) {
 
       // Import questions, converting q_ -> qb_ prefix
       var imported = 0;
+      var skipped = 0;
       data.questions.forEach(function(tq) {
         var q = JSON.parse(JSON.stringify(tq));
         // Convert ID
@@ -814,6 +827,7 @@ function handleImportFromTestFile(event) {
 
         // Check for duplicate IDs
         if (bankData.questions.find(function(bq) { return bq.id === q.id; })) {
+          skipped++;
           return; // Skip duplicates
         }
 
@@ -851,8 +865,15 @@ function handleImportFromTestFile(event) {
       bankData.question_count = bankData.questions.length;
       bankData.updated_at = nowISO();
 
-      alert('Imported ' + imported + ' question(s) and ' + Object.keys(mediaIdMap).length + ' media item(s).');
-      showBankMetadata();
+      var msg = 'Imported ' + imported + ' question(s) and ' + Object.keys(mediaIdMap).length + ' media item(s).';
+      if (skipped) msg += ' Skipped ' + skipped + ' duplicate(s).';
+      alert(msg);
+
+      if (importIntoExisting) {
+        showQuestionList();
+      } else {
+        showBankMetadata();
+      }
     } catch(err) {
       alert('Error importing: ' + err.message);
     }
