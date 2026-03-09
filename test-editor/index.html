@@ -306,6 +306,60 @@ layout: null
       white-space: pre-wrap;
       word-break: break-all;
     }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      text-align: left;
+    }
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #055585;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      justify-content: center;
+    }
+    .pick-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+    .pick-card:hover { background: #f8f8f8; }
+    .pick-card.selected { border-color: #1F96D3; background: #e8f4fb; }
+    .pick-card input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: #1F96D3;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .pick-card-body { flex: 1; }
+    .pick-card-text { font-size: 0.9rem; font-weight: 600; }
+    .pick-card-meta { font-size: 0.75rem; color: #888; margin-top: 2px; }
     .empty-state {
       color: #888;
       font-size: 0.95rem;
@@ -349,6 +403,8 @@ layout: null
 <input type="file" id="bank-file-input" accept=".json" style="display:none" onchange="handleLoadBankFile(event)">
 <input type="file" id="import-test-file-input" accept=".json" style="display:none" onchange="handleImportFromTestFile(event)">
 <input type="file" id="image-file-input" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+<input type="file" id="bank-import-file-input" accept=".json" style="display:none" onchange="handleBankImportFile(event)">
+<div id="bank-pick-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeBankPickModal()"></div>
 
 <!-- EDITOR HOME -->
 <div id="editor-home">
@@ -396,6 +452,8 @@ layout: null
   <div class="app-title">Questions</div>
   <div id="question-list-area"></div>
   <button class="btn-block" onclick="addQuestion()">+ Add Question</button>
+  <button id="import-from-bank-btn" class="btn-block btn-secondary" onclick="startImportFromBank()" style="display:none">Import from Question Bank</button>
+  <button id="refresh-from-bank-btn" class="btn-block btn-secondary" onclick="startRefreshFromBank()" style="display:none">Refresh Questions from Bank</button>
   <button id="import-from-test-btn" class="btn-block btn-secondary" onclick="startImportIntoBank()" style="display:none">Import Questions from Test JSON</button>
   <button id="replace-from-bank-btn" class="btn-block btn-secondary" onclick="startReplaceFromBank()" style="display:none">Replace Questions from Bank JSON</button>
   <input type="file" id="replace-bank-file-input" accept=".json" style="display:none" onchange="handleReplaceFromBankFile(event)">
@@ -571,6 +629,8 @@ function showMetadata() {
 function showQuestionList() {
   hideAll();
   document.getElementById('question-list').style.display = 'block';
+  document.getElementById('import-from-bank-btn').style.display = editorMode === 'test' ? 'block' : 'none';
+  document.getElementById('refresh-from-bank-btn').style.display = editorMode === 'test' ? 'block' : 'none';
   document.getElementById('import-from-test-btn').style.display = editorMode === 'bank' ? 'block' : 'none';
   document.getElementById('replace-from-bank-btn').style.display = editorMode === 'bank' ? 'block' : 'none';
   if (editorMode === 'bank') {
@@ -821,23 +881,25 @@ function handleImportFromTestFile(event) {
         });
       }
 
-      // Import questions, converting q_ -> qb_ prefix
+      // Import questions
       var imported = 0;
       var skipped = 0;
       data.questions.forEach(function(tq) {
         var q = JSON.parse(JSON.stringify(tq));
-        // Convert ID
-        if (q.id && q.id.indexOf('q_') === 0) {
-          q.id = 'qb_' + q.id.substring(2);
-        } else {
-          q.id = genId('qb');
+
+        // Check for duplicate: same question text + same answer type
+        var qText = locStr(q.text, bankData.default_locale) || '';
+        var isDupe = bankData.questions.find(function(bq) {
+          return bq.answer_type === q.answer_type &&
+            locStr(bq.text, bankData.default_locale) === qText;
+        });
+        if (isDupe) {
+          skipped++;
+          return;
         }
 
-        // Check for duplicate IDs
-        if (bankData.questions.find(function(bq) { return bq.id === q.id; })) {
-          skipped++;
-          return; // Skip duplicates
-        }
+        // Always generate a new bank ID
+        q.id = genId('qb');
 
         // Remap media refs
         if (q.media_refs) {
@@ -888,6 +950,235 @@ function handleImportFromTestFile(event) {
   };
   reader.readAsText(file);
   event.target.value = '';
+}
+
+// ==================== IMPORT QUESTIONS FROM BANK (TEST MODE) ====================
+var pendingBankData = null;
+var bankImportMode = 'pick'; // 'pick' or 'refresh'
+
+function startImportFromBank() {
+  bankImportMode = 'pick';
+  document.getElementById('bank-import-file-input').click();
+}
+
+function startRefreshFromBank() {
+  bankImportMode = 'refresh';
+  document.getElementById('bank-import-file-input').click();
+}
+
+function handleBankImportFile(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var parsed = JSON.parse(e.target.result);
+      var bank = parsed.question_bank;
+      if (!bank || !bank.questions || !bank.questions.length) {
+        alert('Invalid question bank JSON or no questions found.');
+        return;
+      }
+      pendingBankData = bank;
+      if (bankImportMode === 'refresh') {
+        doRefreshFromBank();
+      } else {
+        showBankPickModal();
+      }
+    } catch (err) {
+      alert('Error parsing JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function showBankPickModal() {
+  var bank = pendingBankData;
+  var locale = bank.default_locale || 'en';
+  var html = '<div class="modal-content">';
+  html += '<div class="modal-title">Select Questions to Import</div>';
+
+  // Select all / none controls
+  html += '<div style="margin-bottom:8px;display:flex;gap:8px;justify-content:center">';
+  html += '<button class="btn-small btn-secondary" onclick="bankPickToggleAll(true)">Select All</button>';
+  html += '<button class="btn-small btn-secondary" onclick="bankPickToggleAll(false)">Select None</button>';
+  html += '</div>';
+
+  // Show which questions already exist in test
+  var existingIds = {};
+  testData.questions.forEach(function(q) { existingIds[q.id] = true; });
+
+  bank.questions.forEach(function(q, i) {
+    var text = locStr(q.text, locale) || '(no text)';
+    if (text.length > 80) text = text.substring(0, 80) + '...';
+    var alreadyIn = existingIds[q.id];
+    var diffLabel = '';
+    if (typeof q.difficulty === 'number') {
+      diffLabel = q.difficulty <= 2 ? 'easy' : q.difficulty >= 4 ? 'hard' : 'medium';
+    }
+    html += '<div class="pick-card' + (alreadyIn ? ' selected' : '') + '" onclick="bankPickToggle(' + i + ')">';
+    html += '<input type="checkbox" id="bpick-' + i + '"' + (alreadyIn ? ' checked disabled' : '') + ' onclick="event.stopPropagation()">';
+    html += '<div class="pick-card-body">';
+    html += '<div class="pick-card-text">' + escHtml(text) + '</div>';
+    html += '<div class="pick-card-meta">';
+    html += '<span class="badge badge-type">' + escHtml(q.answer_type) + '</span> ';
+    if (diffLabel) html += '<span class="badge badge-diff-' + diffLabel + '">' + escHtml(diffLabel) + '</span> ';
+    if (alreadyIn) html += '<span class="badge" style="background:#fff8e0;color:#996600">already in test</span>';
+    html += '</div></div></div>';
+  });
+
+  html += '<div class="modal-actions">';
+  html += '<button onclick="doBankPickImport()">Import Selected</button>';
+  html += '<button class="btn-secondary" onclick="closeBankPickModal()">Cancel</button>';
+  html += '</div></div>';
+
+  var modal = document.getElementById('bank-pick-modal');
+  modal.innerHTML = html;
+  modal.style.display = 'flex';
+}
+
+function closeBankPickModal() {
+  document.getElementById('bank-pick-modal').style.display = 'none';
+  pendingBankData = null;
+}
+
+function bankPickToggle(i) {
+  var cb = document.getElementById('bpick-' + i);
+  if (cb.disabled) return;
+  cb.checked = !cb.checked;
+  cb.closest('.pick-card').classList.toggle('selected', cb.checked);
+}
+
+function bankPickToggleAll(state) {
+  var bank = pendingBankData;
+  if (!bank) return;
+  bank.questions.forEach(function(q, i) {
+    var cb = document.getElementById('bpick-' + i);
+    if (cb.disabled) return; // skip already-in-test
+    cb.checked = state;
+    cb.closest('.pick-card').classList.toggle('selected', state);
+  });
+}
+
+function convertBankQuestionToTest(bq) {
+  var q = JSON.parse(JSON.stringify(bq));
+  // Keep the bank ID as-is so refresh can match later
+  // Convert bank-specific fields to test fields
+  if (typeof q.difficulty === 'number') {
+    q.difficulty = q.difficulty <= 2 ? 'easy' : q.difficulty >= 4 ? 'hard' : 'medium';
+  } else if (!q.difficulty) {
+    q.difficulty = 'medium';
+  }
+  if (q.estimated_time_seconds != null) {
+    q.time_limit_seconds = q.estimated_time_seconds;
+    delete q.estimated_time_seconds;
+  } else {
+    q.time_limit_seconds = null;
+  }
+  q.required = true;
+  q.weight = 1;
+  delete q.variant_group;
+  delete q.relationships;
+  return q;
+}
+
+function importBankMedia(bank) {
+  // Import media from bank into test, preserving IDs where possible
+  var mediaIdMap = {};
+  if (bank.media && bank.media.length) {
+    bank.media.forEach(function(m) {
+      // Already exists by ID?
+      var byId = testData.media.find(function(tm) { return tm.id === m.id; });
+      if (byId) return; // already imported
+      // Exists by filename?
+      var byName = testData.media.find(function(tm) { return tm.filename === m.filename; });
+      if (byName) {
+        if (m.id !== byName.id) mediaIdMap[m.id] = byName.id;
+        return;
+      }
+      // New media — add with original ID
+      testData.media.push(JSON.parse(JSON.stringify(m)));
+    });
+  }
+  return mediaIdMap;
+}
+
+function remapMediaRefs(q, mediaIdMap) {
+  if (!Object.keys(mediaIdMap).length) return;
+  if (q.media_refs) {
+    q.media_refs = q.media_refs.map(function(ref) { return mediaIdMap[ref] || ref; });
+  }
+  if (q.answer_config && q.answer_config.options) {
+    q.answer_config.options.forEach(function(opt) {
+      if (opt.media_ref && mediaIdMap[opt.media_ref]) {
+        opt.media_ref = mediaIdMap[opt.media_ref];
+      }
+    });
+  }
+}
+
+function doBankPickImport() {
+  var bank = pendingBankData;
+  if (!bank) return;
+
+  var mediaIdMap = importBankMedia(bank);
+
+  var imported = 0;
+  bank.questions.forEach(function(bq, i) {
+    var cb = document.getElementById('bpick-' + i);
+    if (!cb.checked || cb.disabled) return;
+
+    var q = convertBankQuestionToTest(bq);
+    remapMediaRefs(q, mediaIdMap);
+    testData.questions.push(q);
+    imported++;
+  });
+
+  testData.updated_at = nowISO();
+  closeBankPickModal();
+  renderQuestionList();
+  alert('Imported ' + imported + ' question(s) from bank.');
+}
+
+function doRefreshFromBank() {
+  var bank = pendingBankData;
+  if (!bank) return;
+
+  var mediaIdMap = importBankMedia(bank);
+
+  // Build lookup of bank questions by ID
+  var bankMap = {};
+  bank.questions.forEach(function(bq) { bankMap[bq.id] = bq; });
+
+  var updated = 0;
+  var notFound = 0;
+  testData.questions.forEach(function(tq, i) {
+    var bq = bankMap[tq.id];
+    if (!bq) {
+      notFound++;
+      return;
+    }
+    // Replace question content from bank, but preserve test-specific fields
+    var oldRequired = tq.required;
+    var oldWeight = tq.weight;
+    var oldTimeLimit = tq.time_limit_seconds;
+    var refreshed = convertBankQuestionToTest(bq);
+    remapMediaRefs(refreshed, mediaIdMap);
+    // Restore test-specific overrides
+    refreshed.required = oldRequired;
+    refreshed.weight = oldWeight;
+    refreshed.time_limit_seconds = oldTimeLimit;
+    testData.questions[i] = refreshed;
+    updated++;
+  });
+
+  testData.updated_at = nowISO();
+  pendingBankData = null;
+  renderQuestionList();
+
+  var msg = 'Refreshed ' + updated + ' question(s) from bank.';
+  if (notFound) msg += '\n' + notFound + ' question(s) not found in bank (unchanged).';
+  alert(msg);
 }
 
 // ==================== BANK METADATA SCREEN ====================
