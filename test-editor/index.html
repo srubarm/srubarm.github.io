@@ -943,11 +943,21 @@ function handleImportFromTestFile(event) {
       data.questions.forEach(function(tq) {
         var q = JSON.parse(JSON.stringify(tq));
 
-        // Check for duplicate: same question text + same answer type
+        // Check for duplicate: same question text + same answer type + same media
         var qText = locStr(q.text, bankData.default_locale) || '';
+        var qMediaKey = (q.media_refs || []).map(function(ref) {
+          var remapped = mediaIdMap[ref] || ref;
+          var m = (data.media || []).concat(bankData.media).find(function(mm) { return mm.id === remapped || mm.id === ref; });
+          return m ? m.filename : remapped;
+        }).sort().join('|');
         var isDupe = bankData.questions.find(function(bq) {
+          var bqMediaKey = (bq.media_refs || []).map(function(ref) {
+            var m = bankData.media.find(function(mm) { return mm.id === ref; });
+            return m ? m.filename : ref;
+          }).sort().join('|');
           return bq.answer_type === q.answer_type &&
-            locStr(bq.text, bankData.default_locale) === qText;
+            locStr(bq.text, bankData.default_locale) === qText &&
+            bqMediaKey === qMediaKey;
         });
         if (isDupe) {
           skipped++;
