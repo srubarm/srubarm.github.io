@@ -423,6 +423,11 @@ layout: null
     </div>
   </div>
   <div class="menu-card">
+    <div style="margin-top:4px">
+      <button class="btn-small" onclick="startAIGenerate()" style="width:100%;background:#2a9d3a">Generate Test with AI</button>
+    </div>
+  </div>
+  <div class="menu-card">
     <div class="section-heading" style="text-align:center">Question Bank</div>
     <div class="mode-grid">
       <button class="mode-card" onclick="newBank()">
@@ -499,6 +504,57 @@ layout: null
   <div id="bank-export-area"></div>
 </div>
 
+<!-- AI GENERATE: SETUP -->
+<div id="ai-gen-setup" style="display:none">
+  <div class="app-title">Generate Test with AI</div>
+  <div class="menu-card" style="text-align:left">
+    <div class="section-heading">1. Load Question Bank</div>
+    <p style="font-size:0.85rem;color:#666;margin:6px 0">Select a question bank JSON file. The AI will choose questions from this bank to build a test.</p>
+    <div id="ai-bank-status" style="margin:8px 0"></div>
+    <button class="btn-block btn-secondary" onclick="document.getElementById('ai-bank-file-input').click()">Select Bank JSON</button>
+    <input type="file" id="ai-bank-file-input" accept=".json" style="display:none" onchange="handleAIBankLoad(event)">
+  </div>
+  <div class="menu-card" style="text-align:left">
+    <div class="section-heading">2. AI Settings</div>
+    <div class="form-group">
+      <label>Gemini API Key</label>
+      <input type="password" id="ai-api-key" style="width:100%" placeholder="AIza...">
+    </div>
+    <div class="form-group">
+      <label>Model</label>
+      <input type="text" id="ai-model" style="width:100%" placeholder="gemini-2.0-flash">
+    </div>
+    <div id="ai-key-status" style="font-size:0.8rem;margin-top:4px"></div>
+  </div>
+  <button id="ai-continue-btn" class="btn-block" onclick="showAIPromptScreen()" disabled>Continue to Prompt</button>
+</div>
+
+<!-- AI GENERATE: PROMPT EDITING -->
+<div id="ai-gen-prompt" style="display:none">
+  <div class="app-title">Edit Prompt</div>
+  <div class="menu-card" style="text-align:left">
+    <p style="font-size:0.85rem;color:#666;margin:0 0 8px">Edit the prompt below to describe the test you want. The question bank and response format will be attached automatically.</p>
+    <div class="form-group">
+      <label>Test Locale</label>
+      <select id="ai-test-locale" style="width:100%"></select>
+    </div>
+    <div class="form-group">
+      <label>Prompt</label>
+      <textarea id="ai-prompt-text" style="width:100%;min-height:300px;font-size:0.85rem"></textarea>
+    </div>
+  </div>
+  <button class="btn-block btn-success" onclick="executeAIGeneration()">Generate Test</button>
+</div>
+
+<!-- AI GENERATE: LOADING -->
+<div id="ai-gen-loading" style="display:none">
+  <div class="app-title">Generating Test...</div>
+  <div id="ai-loading-area" style="padding:40px 20px;text-align:center">
+    <div style="font-size:2rem;margin-bottom:12px">&#9881;</div>
+    <p style="color:#666">Sending prompt to AI and waiting for response...</p>
+  </div>
+</div>
+
 <!-- GLOBAL BOTTOM NAV (test mode) -->
 <div id="bottom-nav" class="bottom-bar" style="display:none">
   <button id="nav-info" onclick="showMetadata()">Info</button>
@@ -526,7 +582,7 @@ var backTarget = null;
 var imageUploadLocale = null;
 var editingMediaId = null;
 
-var ALL_SCREENS = ['editor-home','test-metadata','question-list','question-editor','media-manager','section-manager','export-screen','bank-metadata','bank-export-screen'];
+var ALL_SCREENS = ['editor-home','test-metadata','question-list','question-editor','media-manager','section-manager','export-screen','bank-metadata','bank-export-screen','ai-gen-setup','ai-gen-prompt','ai-gen-loading'];
 
 // Returns the active data object (testData or bankData) based on mode
 function getActiveData() {
@@ -2549,6 +2605,408 @@ function downloadJson() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+// ==================== AI TEST GENERATION ====================
+var aiBankData = null; // loaded bank for AI generation
+var AI_STORAGE_KEY = 'testEditorAISettings';
+
+function getAISetting(key) {
+  try {
+    var s = JSON.parse(localStorage.getItem(AI_STORAGE_KEY) || '{}');
+    return s[key] || '';
+  } catch(e) { return ''; }
+}
+
+function setAISetting(key, value) {
+  try {
+    var s = JSON.parse(localStorage.getItem(AI_STORAGE_KEY) || '{}');
+    s[key] = value;
+    localStorage.setItem(AI_STORAGE_KEY, JSON.stringify(s));
+  } catch(e) {}
+}
+
+function startAIGenerate() {
+  hideAll();
+  aiBankData = null;
+  document.getElementById('ai-gen-setup').style.display = 'block';
+  setBackArrow(showEditorHome);
+  // Restore saved settings
+  document.getElementById('ai-api-key').value = getAISetting('apiKey') || '';
+  document.getElementById('ai-model').value = getAISetting('model') || 'gemini-2.0-flash';
+  document.getElementById('ai-bank-status').innerHTML = '';
+  document.getElementById('ai-key-status').innerHTML = '';
+  document.getElementById('ai-continue-btn').disabled = true;
+}
+
+function handleAIBankLoad(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var parsed = JSON.parse(e.target.result);
+      var bank = parsed.question_bank;
+      if (!bank || !bank.questions || !bank.questions.length) {
+        document.getElementById('ai-bank-status').innerHTML = '<div class="alert-error">Invalid bank JSON or no questions found.</div>';
+        return;
+      }
+      aiBankData = bank;
+      var title = locStr(bank.title, bank.default_locale) || 'Untitled';
+      document.getElementById('ai-bank-status').innerHTML = '<div class="alert-success">Loaded: <strong>' + escHtml(title) + '</strong> (' + bank.questions.length + ' questions)</div>';
+      updateAIContinueBtn();
+    } catch(err) {
+      document.getElementById('ai-bank-status').innerHTML = '<div class="alert-error">Error: ' + escHtml(err.message) + '</div>';
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function updateAIContinueBtn() {
+  var hasBank = !!aiBankData;
+  var hasKey = !!document.getElementById('ai-api-key').value.trim();
+  document.getElementById('ai-continue-btn').disabled = !(hasBank && hasKey);
+}
+
+// Listen for key input changes
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'ai-api-key' || e.target.id === 'ai-model') {
+    updateAIContinueBtn();
+  }
+});
+
+function buildDefaultAIPrompt(bank) {
+  var locale = bank.default_locale || 'en';
+  var title = locStr(bank.title, locale) || 'the provided question bank';
+  var topic = bank.topic || '';
+  var desc = locStr(bank.description, locale) || '';
+
+  var prompt = '';
+  prompt += '### Test Intent\n';
+  prompt += 'Create a test from the question bank "' + title + '"';
+  if (topic) prompt += ' (topic: ' + topic + ')';
+  prompt += '.\n\n';
+  if (desc) prompt += 'Bank description: ' + desc + '\n\n';
+  prompt += '### Instructions for the AI\n';
+  prompt += '- Select 8-15 questions that cover the key topics in the bank.\n';
+  prompt += '- Include a mix of difficulty levels — start with easier questions and build toward harder ones.\n';
+  prompt += '- Use a variety of answer types (single choice, multi choice, free text, number) where available.\n';
+  prompt += '- Organize questions into 2-4 logical sections with descriptive titles.\n';
+  prompt += '- Respect variant groups: pick only one question per variant group.\n';
+  prompt += '- Respect exclusion lists: never include two questions that exclude each other.\n';
+  prompt += '- Aim for a test duration of 10-20 minutes based on estimated times.\n';
+  prompt += '- Sequence questions thoughtfully within each section.\n';
+  return prompt;
+}
+
+function showAIPromptScreen() {
+  // Save API settings
+  var apiKey = document.getElementById('ai-api-key').value.trim();
+  var model = document.getElementById('ai-model').value.trim() || 'gemini-2.0-flash';
+  setAISetting('apiKey', apiKey);
+  setAISetting('model', model);
+
+  hideAll();
+  document.getElementById('ai-gen-prompt').style.display = 'block';
+  setBackArrow(startAIGenerate);
+
+  // Populate locale selector
+  var bank = aiBankData;
+  var locales = bank.supported_locales && bank.supported_locales.length ? bank.supported_locales : [bank.default_locale || 'en'];
+  var sel = document.getElementById('ai-test-locale');
+  sel.innerHTML = '';
+  locales.forEach(function(loc) {
+    var opt = document.createElement('option');
+    opt.value = loc;
+    opt.textContent = loc;
+    if (loc === bank.default_locale) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  // Build default prompt
+  document.getElementById('ai-prompt-text').value = buildDefaultAIPrompt(bank);
+}
+
+function buildAISystemPrompt() {
+  return 'You are an expert educator and test designer. Your task is to select questions from a question bank and organize them into a well-structured test.\n\n' +
+    'Rules you must follow:\n' +
+    '- Only select questions that exist in the provided question bank. Never invent question IDs.\n' +
+    '- Never include two questions from the same exclusion list in the same test.\n' +
+    '- Select only one question per variant group.\n' +
+    '- Respect the question bank\'s "related" relationships as a hint for thematic grouping.\n' +
+    '- Organize questions into logical sections.\n' +
+    '- Sequence questions thoughtfully within each section.\n' +
+    'Respond with a single JSON object and nothing else — no preamble, no markdown backticks, no explanation outside the JSON.';
+}
+
+function buildAIResponseFormat(testLocale) {
+  var prompt = '\n\n---\n\n### Required Response Format\n';
+  prompt += 'Respond with a single JSON object following this structure exactly:\n';
+  prompt += '{\n';
+  prompt += '  "analysis": "Brief description of the test you built and why you chose these questions...",\n';
+  prompt += '  "test_plan": {\n';
+  prompt += '    "title": {"en": "...", "' + testLocale + '": "..."},\n';
+  prompt += '    "description": {"en": "...", "' + testLocale + '": "..."},\n';
+  prompt += '    "instructions": {"en": "...", "' + testLocale + '": "..."},\n';
+  prompt += '    "locale": "' + testLocale + '",\n';
+  prompt += '    "tags": ["tag1", "tag2"],\n';
+  prompt += '    "settings": {\n';
+  prompt += '      "default_time_limit_seconds": null,\n';
+  prompt += '      "shuffle_questions": false,\n';
+  prompt += '      "allow_skip": true,\n';
+  prompt += '      "show_hints": true,\n';
+  prompt += '      "show_correct_answer_comment": true\n';
+  prompt += '    },\n';
+  prompt += '    "sections": [\n';
+  prompt += '      {\n';
+  prompt += '        "title": {"en": "Section title", "' + testLocale + '": "..."},\n';
+  prompt += '        "description": {"en": "Optional section description", "' + testLocale + '": "..."},\n';
+  prompt += '        "instructions": {"en": "Optional instructions for this section", "' + testLocale + '": "..."},\n';
+  prompt += '        "question_ids": ["qb_XXX", "qb_XXX"],\n';
+  prompt += '        "shuffle_questions": false,\n';
+  prompt += '        "time_limit_seconds": null\n';
+  prompt += '      }\n';
+  prompt += '    ],\n';
+  prompt += '    "question_config": {\n';
+  prompt += '      "qb_XXX": {"required": true, "weight": 1, "difficulty": "easy|medium|hard", "time_limit_seconds": null}\n';
+  prompt += '    }\n';
+  prompt += '  }\n';
+  prompt += '}\n\n';
+  prompt += 'Important:\n';
+  prompt += '- Only use question IDs that exist in the provided question bank.\n';
+  prompt += '- Every question ID in sections must have an entry in question_config.\n';
+  prompt += '- Section titles, descriptions, and instructions must include both the test locale and English.\n';
+  prompt += '- Set difficulty as a string: "easy", "medium", or "hard".\n';
+  prompt += '- Set required to true/false and weight as a number (default 1).\n';
+  prompt += '- Respond with the JSON object only.\n';
+  return prompt;
+}
+
+function generateBankYamlForAI(bank, locale) {
+  // Reuse the YAML generation but with the loaded bank (not bankData)
+  var savedBankData = bankData;
+  bankData = bank;
+  var yaml = generateBankYaml(locale);
+  bankData = savedBankData;
+  return yaml;
+}
+
+function executeAIGeneration() {
+  var bank = aiBankData;
+  if (!bank) { alert('No question bank loaded.'); return; }
+
+  var apiKey = getAISetting('apiKey');
+  var model = getAISetting('model') || 'gemini-2.0-flash';
+  if (!apiKey) { alert('No API key configured.'); return; }
+
+  var testLocale = document.getElementById('ai-test-locale').value;
+  var userPromptEditable = document.getElementById('ai-prompt-text').value;
+
+  // Build YAML for the bank
+  var bankYaml = generateBankYamlForAI(bank, testLocale);
+
+  // Assemble full user prompt: editable part + bank + response format
+  var fullPrompt = userPromptEditable;
+  fullPrompt += '\n\n---\n\n### Question Bank\n';
+  fullPrompt += bankYaml;
+  fullPrompt += buildAIResponseFormat(testLocale);
+
+  var systemPrompt = buildAISystemPrompt();
+
+  // Show loading screen
+  hideAll();
+  document.getElementById('ai-gen-loading').style.display = 'block';
+  setBackArrow(null); // No going back during generation
+  document.getElementById('ai-loading-area').innerHTML =
+    '<div style="font-size:2rem;margin-bottom:12px">&#9881;</div>' +
+    '<p style="color:#666">Sending prompt to AI and waiting for response...</p>';
+
+  // Call Gemini API
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ parts: [{ text: fullPrompt }] }],
+      generationConfig: {
+        temperature: 0.7,
+        responseMimeType: 'application/json'
+      }
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (!data.candidates || !data.candidates[0]) {
+      throw new Error('No response from AI: ' + JSON.stringify(data.error || data));
+    }
+    var text = data.candidates[0].content.parts[0].text;
+    var aiResponse;
+    try {
+      aiResponse = JSON.parse(text);
+    } catch(e) {
+      var match = text.match(/\{[\s\S]*\}/);
+      if (match) aiResponse = JSON.parse(match[0]);
+      else throw new Error('Could not parse AI response as JSON');
+    }
+    processAIGeneratedTest(aiResponse, bank);
+  })
+  .catch(function(err) {
+    console.error('AI generation error:', err);
+    document.getElementById('ai-loading-area').innerHTML =
+      '<div class="alert-error"><strong>Error:</strong> ' + escHtml(err.message) + '</div>' +
+      '<button class="btn-block btn-secondary" onclick="showAIPromptScreen()">Back to Prompt</button>';
+    setBackArrow(showAIPromptScreen);
+  });
+}
+
+function processAIGeneratedTest(aiResponse, bank) {
+  var plan = aiResponse.test_plan;
+  if (!plan || !plan.sections) {
+    document.getElementById('ai-loading-area').innerHTML =
+      '<div class="alert-error">Invalid AI response: missing test_plan or sections.</div>' +
+      '<div class="json-preview">' + escHtml(JSON.stringify(aiResponse, null, 2)) + '</div>' +
+      '<button class="btn-block btn-secondary" onclick="showAIPromptScreen()">Back to Prompt</button>';
+    setBackArrow(showAIPromptScreen);
+    return;
+  }
+
+  var testLocale = plan.locale || bank.default_locale || 'en';
+
+  // Build question lookup from bank
+  var bankQuestionMap = {};
+  bank.questions.forEach(function(q) { bankQuestionMap[q.id] = q; });
+
+  // Build media lookup from bank
+  var bankMediaMap = {};
+  bank.media.forEach(function(m) { bankMediaMap[m.id] = m; });
+
+  // Collect all question IDs from sections
+  var allQIds = [];
+  plan.sections.forEach(function(s) {
+    (s.question_ids || []).forEach(function(id) {
+      if (allQIds.indexOf(id) === -1) allQIds.push(id);
+    });
+  });
+
+  if (!allQIds.length) {
+    document.getElementById('ai-loading-area').innerHTML =
+      '<div class="alert-error">AI response contains no question IDs in sections.</div>' +
+      '<button class="btn-block btn-secondary" onclick="showAIPromptScreen()">Back to Prompt</button>';
+    setBackArrow(showAIPromptScreen);
+    return;
+  }
+
+  // Build questions and track media
+  var questions = [];
+  var usedMedia = {};
+  var warnings = [];
+  var qConfig = plan.question_config || {};
+
+  allQIds.forEach(function(bankId) {
+    var src = bankQuestionMap[bankId];
+    if (!src) {
+      warnings.push('Question "' + bankId + '" not found in bank — skipped.');
+      return;
+    }
+
+    var q = JSON.parse(JSON.stringify(src));
+    // Keep the bank question ID for refresh capability
+    // Convert bank fields to test fields
+    var cfg = qConfig[bankId] || {};
+    if (cfg.difficulty) {
+      q.difficulty = cfg.difficulty;
+    } else if (typeof q.difficulty === 'number') {
+      q.difficulty = q.difficulty <= 2 ? 'easy' : q.difficulty >= 4 ? 'hard' : 'medium';
+    } else {
+      q.difficulty = q.difficulty || 'medium';
+    }
+    q.required = cfg.required !== false;
+    q.weight = cfg.weight || 1;
+    q.time_limit_seconds = cfg.time_limit_seconds || null;
+    if (q.estimated_time_seconds != null) {
+      if (!q.time_limit_seconds) q.time_limit_seconds = q.estimated_time_seconds;
+      delete q.estimated_time_seconds;
+    }
+    delete q.variant_group;
+    delete q.relationships;
+
+    questions.push(q);
+
+    // Track media
+    (q.media_refs || []).forEach(function(mId) {
+      if (bankMediaMap[mId]) usedMedia[mId] = bankMediaMap[mId];
+    });
+    if (q.answer_config && q.answer_config.options) {
+      q.answer_config.options.forEach(function(opt) {
+        if (opt.media_ref && bankMediaMap[opt.media_ref]) usedMedia[opt.media_ref] = bankMediaMap[opt.media_ref];
+      });
+    }
+  });
+
+  if (!questions.length) {
+    document.getElementById('ai-loading-area').innerHTML =
+      '<div class="alert-error">None of the AI-selected question IDs were found in the bank.</div>' +
+      '<button class="btn-block btn-secondary" onclick="showAIPromptScreen()">Back to Prompt</button>';
+    setBackArrow(showAIPromptScreen);
+    return;
+  }
+
+  // Build sections
+  var sections = plan.sections.map(function(s, i) {
+    return {
+      id: 'section_' + String(i + 1).padStart(3, '0'),
+      title: s.title || null,
+      description: s.description || null,
+      instructions: s.instructions || null,
+      question_ids: (s.question_ids || []).filter(function(id) { return bankQuestionMap[id]; }),
+      shuffle_questions: s.shuffle_questions || false,
+      time_limit_seconds: s.time_limit_seconds || null
+    };
+  });
+
+  // Build media array
+  var media = [];
+  Object.keys(usedMedia).forEach(function(mId) {
+    media.push(JSON.parse(JSON.stringify(usedMedia[mId])));
+  });
+
+  // Build settings
+  var settings = plan.settings || {};
+
+  // Initialize testData
+  initNewTest();
+  testData.default_locale = testLocale;
+  testData.supported_locales = testLocale === 'en' ? ['en'] : [testLocale, 'en'];
+  testData.title = plan.title || { en: 'AI Generated Test' };
+  testData.description = plan.description || null;
+  testData.instructions = plan.instructions || null;
+  testData.tags = plan.tags || ['ai-generated'];
+  testData.created_by = 'ai';
+  testData.settings = {
+    default_time_limit_seconds: settings.default_time_limit_seconds || null,
+    shuffle_questions: settings.shuffle_questions || false,
+    allow_skip: settings.allow_skip !== false,
+    show_hints: settings.show_hints !== false,
+    show_correct_answer_comment: settings.show_correct_answer_comment !== false
+  };
+  testData.media = media;
+  testData.questions = questions;
+  testData.sections = sections;
+
+  editorMode = 'test';
+
+  // Show success and let user review
+  var msg = 'Test generated: ' + questions.length + ' questions in ' + sections.length + ' sections.';
+  if (warnings.length) msg += '\n\nWarnings:\n' + warnings.join('\n');
+  alert(msg);
+
+  if (aiResponse.analysis) {
+    console.log('AI Analysis:', aiResponse.analysis);
+  }
+
+  // Go to metadata screen for review
+  showMetadata();
 }
 
 // ==================== INIT ====================
