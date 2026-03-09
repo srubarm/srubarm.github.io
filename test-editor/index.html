@@ -964,6 +964,9 @@ function showBankExport() {
   renderBankExport();
 }
 
+var bankExportFormat = 'json';
+var bankExportLocale = null;
+
 function renderBankExport() {
   var area = document.getElementById('bank-export-area');
   var warnings = validateBank();
@@ -978,12 +981,146 @@ function renderBankExport() {
   }
 
   bankData.question_count = bankData.questions.length;
-  var output = { question_bank: bankData };
-  var jsonStr = JSON.stringify(output, null, 2);
 
-  html += '<button class="btn-block btn-success" onclick="downloadBankJson()">Download JSON</button>';
-  html += '<div class="json-preview">' + escHtml(jsonStr) + '</div>';
+  // Format toggle
+  html += '<div class="form-group" style="text-align:left;margin-bottom:10px">';
+  html += '<label style="font-weight:600;display:block;margin-bottom:4px">Export Format</label>';
+  html += '<div style="display:flex;gap:8px">';
+  html += '<button class="' + (bankExportFormat === 'json' ? '' : 'btn-secondary') + '" onclick="bankExportFormat=\'json\';renderBankExport()">JSON</button>';
+  html += '<button class="' + (bankExportFormat === 'yaml' ? '' : 'btn-secondary') + '" onclick="bankExportFormat=\'yaml\';renderBankExport()">YAML (AI Prompt)</button>';
+  html += '</div></div>';
+
+  if (bankExportFormat === 'json') {
+    var output = { question_bank: bankData };
+    var jsonStr = JSON.stringify(output, null, 2);
+    html += '<button class="btn-block btn-success" onclick="downloadBankJson()">Download JSON</button>';
+    html += '<div class="json-preview">' + escHtml(jsonStr) + '</div>';
+  } else {
+    // Locale selector for YAML
+    if (!bankExportLocale) bankExportLocale = bankData.default_locale;
+    var locales = bankData.supported_locales && bankData.supported_locales.length ? bankData.supported_locales : [bankData.default_locale];
+    html += '<div class="form-group" style="text-align:left;margin-bottom:10px">';
+    html += '<label style="font-weight:600;display:block;margin-bottom:4px">Export Locale</label>';
+    html += '<select onchange="bankExportLocale=this.value;renderBankExport()" style="width:100%">';
+    locales.forEach(function(loc) {
+      html += '<option value="' + escHtml(loc) + '"' + (loc === bankExportLocale ? ' selected' : '') + '>' + escHtml(loc) + '</option>';
+    });
+    html += '</select></div>';
+
+    var yamlStr = generateBankYaml(bankExportLocale);
+    html += '<button class="btn-block btn-success" onclick="downloadBankYaml()">Download YAML</button>';
+    html += '<div class="json-preview">' + escHtml(yamlStr) + '</div>';
+  }
+
   area.innerHTML = html;
+}
+
+function generateBankYaml(locale) {
+  var lines = [];
+  var bankId = locStr(bankData.title, locale) || bankData.id;
+  // Use topic + version as bank identifier, similar to existing YAML
+  var bankLabel = (bankData.topic || 'bank') + '_v' + (bankData.version || 1);
+  lines.push('bank: ' + bankLabel);
+  lines.push('locale: ' + locale);
+  lines.push('question_count: ' + bankData.questions.length);
+  lines.push('questions:');
+
+  bankData.questions.forEach(function(q) {
+    var qText = locStr(q.text, locale) || locStr(q.text, bankData.default_locale) || '';
+    lines.push('  - id: ' + q.id);
+    lines.push('    question: ' + yamlQuote(qText));
+    lines.push('    type: ' + q.answer_type);
+
+    // Options for choice types
+    if ((q.answer_type === 'single_choice' || q.answer_type === 'multi_choice') && q.answer_config && q.answer_config.options) {
+      var correctSet = {};
+      if (q.answer_type === 'single_choice' && q.answer_config.correct_answer) {
+        correctSet[q.answer_config.correct_answer] = true;
+      } else if (q.answer_type === 'multi_choice' && q.answer_config.correct_answers) {
+        q.answer_config.correct_answers.forEach(function(ca) { correctSet[ca] = true; });
+      }
+      lines.push('    options:');
+      q.answer_config.options.forEach(function(opt) {
+        var optText = locStr(opt.text, locale) || locStr(opt.text, bankData.default_locale) || '';
+        var marker = correctSet[opt.id] ? ' (correct)' : '';
+        lines.push('      - ' + opt.id + ': ' + yamlQuote(optText) + marker);
+      });
+    }
+
+    // Correct answer
+    if (q.answer_type === 'single_choice' || q.answer_type === 'multi_choice') {
+      // Already shown via (correct) markers, skip
+    } else if (q.answer_type === 'number' && q.answer_config) {
+      lines.push('    correct_answer: ' + (q.answer_config.correct_answer != null ? q.answer_config.correct_answer : ''));
+      if (q.answer_config.numeric_tolerance != null) {
+        lines.push('    tolerance: ' + q.answer_config.numeric_tolerance);
+      }
+    } else if (q.answer_type === 'free_text' && q.answer_config) {
+      var ca = q.answer_config.correct_answer;
+      var caText = ca ? (locStr(ca, locale) || locStr(ca, bankData.default_locale) || (typeof ca === 'string' ? ca : '')) : '';
+      if (caText) {
+        lines.push('    correct_answer: ' + yamlQuote(caText));
+      }
+    }
+
+    lines.push('    difficulty: ' + (q.difficulty || 1));
+    lines.push('    eval: ' + (q.evaluation && q.evaluation.method ? q.evaluation.method : 'deterministic'));
+
+    // AI prompt
+    if (q.evaluation && q.evaluation.method === 'ai' && q.evaluation.ai_prompt_context) {
+      var aiText = locStr(q.evaluation.ai_prompt_context, locale) || locStr(q.evaluation.ai_prompt_context, bankData.default_locale) || '';
+      if (aiText) {
+        lines.push('    ai_prompt: ' + yamlQuote(aiText));
+      }
+    }
+
+    lines.push('    tags: [' + (q.tags || []).join(', ') + ']');
+    lines.push('    time_est: ' + (q.estimated_time_seconds ? q.estimated_time_seconds + 's' : '30s'));
+
+    // Variant group
+    if (q.variant_group) {
+      lines.push('    variant_group: ' + q.variant_group);
+    }
+
+    // Relationships
+    var excludes = (q.relationships && q.relationships.excludes) || [];
+    var related = (q.relationships && q.relationships.related) || [];
+    lines.push('    excludes: [' + excludes.join(', ') + ']');
+    lines.push('    related: [' + related.join(', ') + ']');
+
+    // Media ref (first one if any)
+    if (q.media_refs && q.media_refs.length) {
+      lines.push('    media_ref: ' + q.media_refs[0]);
+    }
+
+    lines.push('');
+  });
+
+  return lines.join('\n');
+}
+
+function yamlQuote(str) {
+  if (!str) return '""';
+  // Quote if it contains special chars or starts with special YAML chars
+  if (/[:\#\[\]\{\}\n\r"'|>&*!%@`]/.test(str) || /^\s/.test(str) || /\s$/.test(str)) {
+    return '"' + str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
+  }
+  return '"' + str + '"';
+}
+
+function downloadBankYaml() {
+  var locale = bankExportLocale || bankData.default_locale;
+  var yamlStr = generateBankYaml(locale);
+  var blob = new Blob([yamlStr], { type: 'text/yaml' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var title = (bankData.topic || 'bank').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 40);
+  a.href = url;
+  a.download = title + '_questionBank.yaml';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function validateBank() {
