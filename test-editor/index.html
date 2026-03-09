@@ -821,23 +821,25 @@ function handleImportFromTestFile(event) {
         });
       }
 
-      // Import questions, converting q_ -> qb_ prefix
+      // Import questions
       var imported = 0;
       var skipped = 0;
       data.questions.forEach(function(tq) {
         var q = JSON.parse(JSON.stringify(tq));
-        // Convert ID
-        if (q.id && q.id.indexOf('q_') === 0) {
-          q.id = 'qb_' + q.id.substring(2);
-        } else {
-          q.id = genId('qb');
+
+        // Check for duplicate: same question text + same answer type
+        var qText = locStr(q.question_text, bankData.default_locale) || '';
+        var isDupe = bankData.questions.find(function(bq) {
+          return bq.answer_type === q.answer_type &&
+            locStr(bq.question_text, bankData.default_locale) === qText;
+        });
+        if (isDupe) {
+          skipped++;
+          return;
         }
 
-        // Check for duplicate IDs
-        if (bankData.questions.find(function(bq) { return bq.id === q.id; })) {
-          skipped++;
-          return; // Skip duplicates
-        }
+        // Always generate a new bank ID
+        q.id = genId('qb');
 
         // Remap media refs
         if (q.media_refs) {
