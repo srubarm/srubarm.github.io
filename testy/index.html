@@ -3271,8 +3271,19 @@ function recalculateTopicScore(topicId, userName, topicConfig) {
   var bestByQuestion = {};
   userResults.forEach(function(r) {
     if (!r.details) return;
-    r.details.forEach(function(d) {
-      var qId = d.questionId;
+
+    // Build a question_id lookup from evaluationData for backward compatibility
+    // (older results may not have questionId in details)
+    var evalQIds = {};
+    if (r.evaluationData && r.evaluationData.test_evaluation && r.evaluationData.test_evaluation.question_results) {
+      r.evaluationData.test_evaluation.question_results.forEach(function(qr, idx) {
+        if (qr.question_id) evalQIds[idx] = qr.question_id;
+      });
+    }
+
+    r.details.forEach(function(d, idx) {
+      // Use questionId from details, fall back to evaluationData
+      var qId = d.questionId || evalQIds[idx] || null;
       if (!qId) return;
       var score = d.score || 0;
       var weight = d.weight || 1;
@@ -3302,9 +3313,17 @@ function recalculateTopicScore(topicId, userName, topicConfig) {
     var testQuestionIds = {};
     testResults.forEach(function(r) {
       if (!r.details) return;
-      r.details.forEach(function(d) {
-        if (d.questionId && !testQuestionIds[d.questionId]) {
-          testQuestionIds[d.questionId] = d.weight || 1;
+      // Build eval lookup for backward compat
+      var evalQIds = {};
+      if (r.evaluationData && r.evaluationData.test_evaluation && r.evaluationData.test_evaluation.question_results) {
+        r.evaluationData.test_evaluation.question_results.forEach(function(qr, idx) {
+          if (qr.question_id) evalQIds[idx] = qr.question_id;
+        });
+      }
+      r.details.forEach(function(d, idx) {
+        var qId = d.questionId || evalQIds[idx] || null;
+        if (qId && !testQuestionIds[qId]) {
+          testQuestionIds[qId] = d.weight || 1;
         }
       });
     });
