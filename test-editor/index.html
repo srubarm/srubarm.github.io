@@ -6,7 +6,7 @@ layout: null
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Editor</title>
+  <title>Test & Bank Editor</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -346,21 +346,40 @@ layout: null
 <div class="back-arrow" id="back-arrow" onclick="goBack()">&lsaquo;</div>
 
 <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="handleLoadFile(event)">
+<input type="file" id="bank-file-input" accept=".json" style="display:none" onchange="handleLoadBankFile(event)">
+<input type="file" id="import-test-file-input" accept=".json" style="display:none" onchange="handleImportFromTestFile(event)">
 <input type="file" id="image-file-input" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
 
 <!-- EDITOR HOME -->
 <div id="editor-home">
-  <div class="app-title">Test Editor</div>
+  <div class="app-title">Editor</div>
   <div class="menu-card">
+    <div class="section-heading" style="text-align:center">Test Definition</div>
     <div class="mode-grid">
       <button class="mode-card" onclick="newTest()">
         <span class="mode-icon">+</span>
         <span class="mode-label">New Test</span>
       </button>
-      <button class="mode-card" onclick="document.getElementById('json-file-input').click()">
+      <button class="mode-card" onclick="startLoadTest()">
         <span class="mode-icon">&#128194;</span>
         <span class="mode-label">Load Test</span>
       </button>
+    </div>
+  </div>
+  <div class="menu-card">
+    <div class="section-heading" style="text-align:center">Question Bank</div>
+    <div class="mode-grid">
+      <button class="mode-card" onclick="newBank()">
+        <span class="mode-icon">+</span>
+        <span class="mode-label">New Bank</span>
+      </button>
+      <button class="mode-card" onclick="startLoadBank()">
+        <span class="mode-icon">&#128194;</span>
+        <span class="mode-label">Load Bank</span>
+      </button>
+    </div>
+    <div style="margin-top:10px">
+      <button class="btn-small btn-secondary" onclick="startImportFromTest()" style="width:100%">Import Questions from Test JSON</button>
     </div>
   </div>
 </div>
@@ -406,7 +425,20 @@ layout: null
   <div id="export-area"></div>
 </div>
 
-<!-- GLOBAL BOTTOM NAV -->
+<!-- BANK METADATA -->
+<div id="bank-metadata" style="display:none">
+  <div class="app-title">Bank Info</div>
+  <div id="bank-metadata-form"></div>
+  <button class="btn-block" onclick="saveBankMetadata()">Save & Continue</button>
+</div>
+
+<!-- BANK EXPORT SCREEN -->
+<div id="bank-export-screen" style="display:none">
+  <div class="app-title">Export Bank</div>
+  <div id="bank-export-area"></div>
+</div>
+
+<!-- GLOBAL BOTTOM NAV (test mode) -->
 <div id="bottom-nav" class="bottom-bar" style="display:none">
   <button id="nav-info" onclick="showMetadata()">Info</button>
   <button id="nav-questions" onclick="showQuestionList()">Questions</button>
@@ -415,15 +447,30 @@ layout: null
   <button id="nav-export" onclick="showExport()">Export</button>
 </div>
 
+<!-- GLOBAL BOTTOM NAV (bank mode) -->
+<div id="bank-bottom-nav" class="bottom-bar" style="display:none">
+  <button id="bnav-info" onclick="showBankMetadata()">Info</button>
+  <button id="bnav-questions" onclick="showQuestionList()">Questions</button>
+  <button id="bnav-media" onclick="showMediaManager()">Media</button>
+  <button id="bnav-export" onclick="showBankExport()">Export</button>
+</div>
+
 <script>
 // ==================== STATE ====================
 var testData = null;
+var bankData = null;
+var editorMode = null; // 'test' or 'bank'
 var editingQuestionIndex = -1;
 var backTarget = null;
 var imageUploadLocale = null;
 var editingMediaId = null;
 
-var ALL_SCREENS = ['editor-home','test-metadata','question-list','question-editor','media-manager','section-manager','export-screen'];
+var ALL_SCREENS = ['editor-home','test-metadata','question-list','question-editor','media-manager','section-manager','export-screen','bank-metadata','bank-export-screen'];
+
+// Returns the active data object (testData or bankData) based on mode
+function getActiveData() {
+  return editorMode === 'bank' ? bankData : testData;
+}
 
 // ==================== UTILITIES ====================
 function genId(prefix) {
@@ -444,8 +491,9 @@ function escHtml(s) {
 }
 
 function locObj(text) {
+  var d = getActiveData();
   var o = {};
-  if (testData) o[testData.default_locale] = text || '';
+  if (d) o[d.default_locale] = text || '';
   return o;
 }
 
@@ -453,13 +501,15 @@ function locStr(obj, locale) {
   if (!obj) return '';
   if (typeof obj === 'string') return obj;
   if (obj[locale]) return obj[locale];
-  if (testData && obj[testData.default_locale]) return obj[testData.default_locale];
+  var d = getActiveData();
+  if (d && obj[d.default_locale]) return obj[d.default_locale];
   var keys = Object.keys(obj);
   return keys.length ? obj[keys[0]] : '';
 }
 
 function getLocales() {
-  return testData ? (testData.supported_locales || [testData.default_locale]) : ['en'];
+  var d = getActiveData();
+  return d ? (d.supported_locales || [d.default_locale]) : ['en'];
 }
 
 // ==================== NAVIGATION ====================
@@ -469,15 +519,27 @@ function hideAll() {
   });
   setBackArrow(null);
   document.getElementById('bottom-nav').style.display = 'none';
+  document.getElementById('bank-bottom-nav').style.display = 'none';
 }
 
 function showBottomNav(activeId) {
-  var nav = document.getElementById('bottom-nav');
-  nav.style.display = 'flex';
-  ['nav-info','nav-questions','nav-media','nav-sections','nav-export'].forEach(function(id) {
-    document.getElementById(id).classList.remove('active');
-  });
-  if (activeId) document.getElementById(activeId).classList.add('active');
+  if (editorMode === 'bank') {
+    var bnav = document.getElementById('bank-bottom-nav');
+    bnav.style.display = 'flex';
+    document.getElementById('bottom-nav').style.display = 'none';
+    ['bnav-info','bnav-questions','bnav-media','bnav-export'].forEach(function(id) {
+      document.getElementById(id).classList.remove('active');
+    });
+    if (activeId) document.getElementById(activeId).classList.add('active');
+  } else {
+    var nav = document.getElementById('bottom-nav');
+    nav.style.display = 'flex';
+    document.getElementById('bank-bottom-nav').style.display = 'none';
+    ['nav-info','nav-questions','nav-media','nav-sections','nav-export'].forEach(function(id) {
+      document.getElementById(id).classList.remove('active');
+    });
+    if (activeId) document.getElementById(activeId).classList.add('active');
+  }
 }
 
 function setBackArrow(fn) {
@@ -490,6 +552,7 @@ function goBack() { if (backTarget) backTarget(); }
 
 function showEditorHome() {
   hideAll();
+  editorMode = null;
   document.getElementById('editor-home').style.display = 'block';
   setBackArrow(function() { window.location.href = '../testy/'; });
 }
@@ -505,8 +568,13 @@ function showMetadata() {
 function showQuestionList() {
   hideAll();
   document.getElementById('question-list').style.display = 'block';
-  setBackArrow(showMetadata);
-  showBottomNav('nav-questions');
+  if (editorMode === 'bank') {
+    setBackArrow(showBankMetadata);
+    showBottomNav('bnav-questions');
+  } else {
+    setBackArrow(showMetadata);
+    showBottomNav('nav-questions');
+  }
   renderQuestionList();
 }
 
@@ -515,8 +583,14 @@ function showQuestionEditor(index) {
   hideAll();
   document.getElementById('question-editor').style.display = 'block';
   setBackArrow(showQuestionList);
-  showBottomNav('nav-questions');
-  document.getElementById('qe-title').textContent = index < testData.questions.length ? 'Edit Question' : 'New Question';
+  var d = getActiveData();
+  if (editorMode === 'bank') {
+    showBottomNav('bnav-questions');
+    document.getElementById('qe-title').textContent = index < d.questions.length ? 'Edit Question' : 'New Question';
+  } else {
+    showBottomNav('nav-questions');
+    document.getElementById('qe-title').textContent = index < d.questions.length ? 'Edit Question' : 'New Question';
+  }
   renderQuestionEditorForm();
 }
 
@@ -524,7 +598,11 @@ function showMediaManager() {
   hideAll();
   document.getElementById('media-manager').style.display = 'block';
   setBackArrow(showQuestionList);
-  showBottomNav('nav-media');
+  if (editorMode === 'bank') {
+    showBottomNav('bnav-media');
+  } else {
+    showBottomNav('nav-media');
+  }
   renderMediaList();
 }
 
@@ -573,8 +651,14 @@ function initNewTest() {
 }
 
 function newTest() {
+  editorMode = 'test';
   initNewTest();
   showMetadata();
+}
+
+function startLoadTest() {
+  editorMode = 'test';
+  document.getElementById('json-file-input').click();
 }
 
 function handleLoadFile(event) {
@@ -598,6 +682,7 @@ function handleLoadFile(event) {
       if (!data.media) data.media = [];
       if (!data.sections) data.sections = [];
       if (!data.tags) data.tags = [];
+      editorMode = 'test';
       testData = data;
       showMetadata();
     } catch(err) {
@@ -606,6 +691,351 @@ function handleLoadFile(event) {
   };
   reader.readAsText(file);
   event.target.value = '';
+}
+
+// ==================== BANK INIT / LOAD ====================
+function initNewBank() {
+  bankData = {
+    id: genId('bank'),
+    topic: '',
+    default_locale: 'en',
+    supported_locales: ['en'],
+    title: { en: '' },
+    description: { en: '' },
+    subject: '',
+    level: '',
+    version: 1,
+    status: 'draft',
+    created_at: nowISO(),
+    updated_at: nowISO(),
+    question_count: 0,
+    media: [],
+    questions: []
+  };
+}
+
+function newBank() {
+  editorMode = 'bank';
+  initNewBank();
+  showBankMetadata();
+}
+
+function startLoadBank() {
+  editorMode = 'bank';
+  document.getElementById('bank-file-input').click();
+}
+
+function handleLoadBankFile(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (data.question_bank) data = data.question_bank;
+      if (!data.id || !data.questions) {
+        alert('Invalid bank file: missing id or questions.');
+        return;
+      }
+      if (!data.title) data.title = {};
+      if (!data.default_locale) data.default_locale = 'en';
+      if (!data.supported_locales) data.supported_locales = [data.default_locale];
+      if (!data.description) data.description = {};
+      if (!data.media) data.media = [];
+      if (data.question_count == null) data.question_count = data.questions.length;
+      editorMode = 'bank';
+      bankData = data;
+      showBankMetadata();
+    } catch(err) {
+      alert('Error parsing file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ==================== IMPORT FROM TEST JSON ====================
+function startImportFromTest() {
+  document.getElementById('import-test-file-input').click();
+}
+
+function handleImportFromTestFile(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (data.test) data = data.test;
+      if (!data.questions || !data.questions.length) {
+        alert('No questions found in the test file.');
+        return;
+      }
+
+      // If no bank exists yet, create one
+      if (!bankData) {
+        initNewBank();
+        // Copy locale settings from test
+        if (data.default_locale) bankData.default_locale = data.default_locale;
+        if (data.supported_locales) bankData.supported_locales = data.supported_locales;
+        if (data.title) bankData.title = JSON.parse(JSON.stringify(data.title));
+      }
+
+      editorMode = 'bank';
+
+      // Import media first
+      var mediaIdMap = {}; // old id -> new id
+      if (data.media && data.media.length) {
+        data.media.forEach(function(m) {
+          // Check if media with same filename already exists
+          var existing = bankData.media.find(function(bm) { return bm.filename === m.filename; });
+          if (existing) {
+            mediaIdMap[m.id] = existing.id;
+          } else {
+            var newId = genId('media');
+            mediaIdMap[m.id] = newId;
+            var newMedia = JSON.parse(JSON.stringify(m));
+            newMedia.id = newId;
+            bankData.media.push(newMedia);
+          }
+        });
+      }
+
+      // Import questions, converting q_ -> qb_ prefix
+      var imported = 0;
+      data.questions.forEach(function(tq) {
+        var q = JSON.parse(JSON.stringify(tq));
+        // Convert ID
+        if (q.id && q.id.indexOf('q_') === 0) {
+          q.id = 'qb_' + q.id.substring(2);
+        } else {
+          q.id = genId('qb');
+        }
+
+        // Check for duplicate IDs
+        if (bankData.questions.find(function(bq) { return bq.id === q.id; })) {
+          return; // Skip duplicates
+        }
+
+        // Remap media refs
+        if (q.media_refs) {
+          q.media_refs = q.media_refs.map(function(ref) { return mediaIdMap[ref] || ref; });
+        }
+        if (q.answer_config && q.answer_config.options) {
+          q.answer_config.options.forEach(function(opt) {
+            if (opt.media_ref && mediaIdMap[opt.media_ref]) {
+              opt.media_ref = mediaIdMap[opt.media_ref];
+            }
+          });
+        }
+
+        // Convert test-specific fields to bank fields
+        if (typeof q.difficulty === 'string') {
+          var diffMap = { easy: 2, medium: 3, hard: 4 };
+          q.difficulty = diffMap[q.difficulty] || 3;
+        }
+        if (q.time_limit_seconds != null) {
+          q.estimated_time_seconds = q.time_limit_seconds;
+          delete q.time_limit_seconds;
+        }
+        if (!q.estimated_time_seconds) q.estimated_time_seconds = 30;
+        delete q.required;
+        delete q.weight;
+        if (!q.variant_group) q.variant_group = null;
+        if (!q.relationships) q.relationships = { excludes: [], related: [] };
+
+        bankData.questions.push(q);
+        imported++;
+      });
+
+      bankData.question_count = bankData.questions.length;
+      bankData.updated_at = nowISO();
+
+      alert('Imported ' + imported + ' question(s) and ' + Object.keys(mediaIdMap).length + ' media item(s).');
+      showBankMetadata();
+    } catch(err) {
+      alert('Error importing: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ==================== BANK METADATA SCREEN ====================
+function showBankMetadata() {
+  hideAll();
+  document.getElementById('bank-metadata').style.display = 'block';
+  setBackArrow(showEditorHome);
+  showBottomNav('bnav-info');
+  renderBankMetadataForm();
+}
+
+function renderBankMetadataForm() {
+  var html = '';
+
+  // Locales
+  html += '<div class="card">';
+  html += '<div class="section-heading">Locales</div>';
+  html += '<div class="form-group"><label>Default Locale</label>';
+  html += '<input type="text" id="bmeta-default-locale" value="' + escHtml(bankData.default_locale) + '" style="width:80px">';
+  html += '</div>';
+  html += '<div class="form-group"><label>Supported Locales (comma-separated)</label>';
+  html += '<input type="text" id="bmeta-locales" value="' + escHtml(bankData.supported_locales.join(', ')) + '">';
+  html += '</div>';
+  html += '<button class="btn-small btn-secondary" onclick="updateBankLocales()">Update Locales</button>';
+  html += '</div>';
+
+  // Title, Description
+  html += '<div class="card">';
+  html += '<div class="section-heading">Title</div>';
+  html += renderLocaleInputs('bmeta-title', bankData.title, 'text');
+  html += '<div class="section-heading">Description</div>';
+  html += renderLocaleInputs('bmeta-desc', bankData.description, 'textarea');
+  html += '</div>';
+
+  // Topic, Subject, Level
+  html += '<div class="card">';
+  html += '<div class="section-heading">Classification</div>';
+  html += '<div class="form-group"><label>Topic ID (e.g., "animals")</label>';
+  html += '<input type="text" id="bmeta-topic" value="' + escHtml(bankData.topic || '') + '"></div>';
+  html += '<div class="inline-row">';
+  html += '<div class="form-group"><label>Subject</label>';
+  html += '<input type="text" id="bmeta-subject" value="' + escHtml(bankData.subject || '') + '"></div>';
+  html += '<div class="form-group"><label>Level</label>';
+  html += '<input type="text" id="bmeta-level" value="' + escHtml(bankData.level || '') + '"></div>';
+  html += '</div>';
+  html += '<div class="form-group"><label>Status</label><select id="bmeta-status">';
+  ['draft','published','archived'].forEach(function(st) {
+    html += '<option value="' + st + '"' + (bankData.status===st?' selected':'') + '>' + st + '</option>';
+  });
+  html += '</select></div>';
+  html += '</div>';
+
+  document.getElementById('bank-metadata-form').innerHTML = html;
+}
+
+function updateBankLocales() {
+  var dl = document.getElementById('bmeta-default-locale').value.trim() || 'en';
+  var locs = document.getElementById('bmeta-locales').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  if (locs.indexOf(dl) < 0) locs.unshift(dl);
+  bankData.default_locale = dl;
+  bankData.supported_locales = locs;
+  renderBankMetadataForm();
+}
+
+function saveBankMetadata() {
+  bankData.title = collectLocaleInputs('bmeta-title');
+  bankData.description = collectLocaleInputs('bmeta-desc');
+  bankData.topic = document.getElementById('bmeta-topic').value.trim();
+  bankData.subject = document.getElementById('bmeta-subject').value.trim();
+  bankData.level = document.getElementById('bmeta-level').value.trim();
+  bankData.status = document.getElementById('bmeta-status').value;
+  bankData.updated_at = nowISO();
+  showQuestionList();
+}
+
+// ==================== BANK EXPORT ====================
+function showBankExport() {
+  hideAll();
+  document.getElementById('bank-export-screen').style.display = 'block';
+  setBackArrow(showQuestionList);
+  showBottomNav('bnav-export');
+  renderBankExport();
+}
+
+function renderBankExport() {
+  var area = document.getElementById('bank-export-area');
+  var warnings = validateBank();
+  var html = '';
+
+  if (warnings.length) {
+    html += '<div class="alert-warn"><strong>Warnings:</strong><ul style="margin:4px 0;padding-left:18px">';
+    warnings.forEach(function(w) { html += '<li>' + escHtml(w) + '</li>'; });
+    html += '</ul></div>';
+  } else {
+    html += '<div class="alert-success">Question bank looks good!</div>';
+  }
+
+  bankData.question_count = bankData.questions.length;
+  var output = { question_bank: bankData };
+  var jsonStr = JSON.stringify(output, null, 2);
+
+  html += '<button class="btn-block btn-success" onclick="downloadBankJson()">Download JSON</button>';
+  html += '<div class="json-preview">' + escHtml(jsonStr) + '</div>';
+  area.innerHTML = html;
+}
+
+function validateBank() {
+  var w = [];
+  if (!bankData.id) w.push('Bank has no ID.');
+  var title = locStr(bankData.title, bankData.default_locale);
+  if (!title) w.push('Title is empty for default locale.');
+  if (!bankData.topic) w.push('Topic ID is empty.');
+  if (!bankData.questions.length) w.push('No questions added.');
+
+  bankData.questions.forEach(function(q, i) {
+    var qt = locStr(q.text, bankData.default_locale);
+    if (!qt) w.push('Q' + (i+1) + ' (' + q.id + '): question text is empty.');
+    if (q.answer_type === 'single_choice' && !q.answer_config.correct_answer) {
+      w.push('Q' + (i+1) + ' (' + q.id + '): no correct answer selected.');
+    }
+    if (q.answer_type === 'multi_choice' && !(q.answer_config.correct_answers||q.answer_config.correct_answer||[]).length) {
+      w.push('Q' + (i+1) + ' (' + q.id + '): no correct answers selected.');
+    }
+    // Check media refs
+    (q.media_refs||[]).forEach(function(ref) {
+      if (!bankData.media.find(function(m){return m.id===ref;})) {
+        w.push('Q' + (i+1) + ' (' + q.id + '): media ref "' + ref + '" not found.');
+      }
+    });
+    if (q.answer_config && q.answer_config.options) {
+      q.answer_config.options.forEach(function(opt) {
+        if (opt.media_ref && !bankData.media.find(function(m){return m.id===opt.media_ref;})) {
+          w.push('Q' + (i+1) + ' (' + q.id + '): option media ref "' + opt.media_ref + '" not found.');
+        }
+      });
+    }
+    // Check relationships reference existing questions
+    if (q.relationships) {
+      (q.relationships.excludes || []).forEach(function(refId) {
+        if (!bankData.questions.find(function(bq){return bq.id===refId;})) {
+          w.push('Q' + (i+1) + ' (' + q.id + '): excludes ref "' + refId + '" not found in bank.');
+        }
+      });
+      (q.relationships.related || []).forEach(function(refId) {
+        if (!bankData.questions.find(function(bq){return bq.id===refId;})) {
+          w.push('Q' + (i+1) + ' (' + q.id + '): related ref "' + refId + '" not found in bank.');
+        }
+      });
+    }
+  });
+
+  // Check duplicate IDs
+  var ids = {};
+  bankData.questions.forEach(function(q, i) {
+    if (ids[q.id]) w.push('Q' + (i+1) + ': duplicate question ID "' + q.id + '".');
+    ids[q.id] = true;
+  });
+
+  return w;
+}
+
+function downloadBankJson() {
+  bankData.updated_at = nowISO();
+  bankData.question_count = bankData.questions.length;
+  var output = { question_bank: bankData };
+  var jsonStr = JSON.stringify(output, null, 2);
+  var blob = new Blob([jsonStr], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var title = locStr(bankData.title, bankData.default_locale) || 'question_bank';
+  title = title.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 40);
+  a.href = url;
+  a.download = title + '_bank_v' + (bankData.version || 1) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ==================== LOCALE FIELD RENDERING ====================
@@ -730,17 +1160,30 @@ function saveMetadata() {
 
 // ==================== QUESTION LIST SCREEN ====================
 function renderQuestionList() {
-  var qs = testData.questions;
+  var d = getActiveData();
+  var qs = d.questions;
   var area = document.getElementById('question-list-area');
   if (!qs.length) {
     area.innerHTML = '<div class="empty-state">No questions yet. Add one to get started.</div>';
     return;
   }
   var html = '';
+  var isBank = editorMode === 'bank';
   qs.forEach(function(q, i) {
-    var text = locStr(q.text, testData.default_locale) || '(no text)';
+    var text = locStr(q.text, d.default_locale) || '(no text)';
     if (text.length > 60) text = text.substring(0, 60) + '...';
-    var diffClass = 'badge-diff-' + (q.difficulty || 'medium');
+    var diff = q.difficulty;
+    var diffLabel = diff;
+    var diffClass = 'badge-diff-medium';
+    if (isBank) {
+      // numeric difficulty: 1-2=easy, 3=medium, 4-5=hard
+      if (typeof diff === 'number') {
+        diffLabel = diff;
+        diffClass = diff <= 2 ? 'badge-diff-easy' : diff >= 4 ? 'badge-diff-hard' : 'badge-diff-medium';
+      }
+    } else {
+      diffClass = 'badge-diff-' + (diff || 'medium');
+    }
     html += '<div class="card">';
     html += '<div class="card-header">';
     html += '<span class="card-title">' + (i+1) + '. ' + escHtml(text) + '</span>';
@@ -750,8 +1193,9 @@ function renderQuestionList() {
     html += '</div></div>';
     html += '<div class="card-subtitle">';
     html += '<span class="badge badge-type">' + escHtml(q.answer_type) + '</span> ';
-    if (q.difficulty) html += '<span class="badge ' + diffClass + '">' + escHtml(q.difficulty) + '</span> ';
-    if (q.weight) html += '<span class="badge badge-type">w:' + q.weight + '</span> ';
+    if (diff != null) html += '<span class="badge ' + diffClass + '">' + escHtml(String(diffLabel)) + '</span> ';
+    if (!isBank && q.weight) html += '<span class="badge badge-type">w:' + q.weight + '</span> ';
+    if (isBank && q.variant_group) html += '<span class="badge badge-type">vg:' + escHtml(q.variant_group) + '</span> ';
     html += '</div>';
     html += '<div class="card-actions" style="margin-top:8px">';
     html += '<button class="btn-small" onclick="showQuestionEditor(' + i + ')">Edit</button> ';
@@ -762,16 +1206,14 @@ function renderQuestionList() {
 }
 
 function addQuestion() {
+  var d = getActiveData();
+  var isBank = editorMode === 'bank';
   var q = {
-    id: genId('q'),
+    id: genId(isBank ? 'qb' : 'q'),
     text: locObj(''),
     media_refs: [],
     answer_type: 'single_choice',
-    required: true,
-    difficulty: 'medium',
     tags: [],
-    weight: 1,
-    time_limit_seconds: null,
     answer_config: {
       options: [
         { id: genId('opt'), text: locObj(''), media_ref: null },
@@ -783,35 +1225,52 @@ function addQuestion() {
     evaluation: { method: 'deterministic', result_type: 'boolean', ai_prompt_context: null },
     feedback: { hint: null, correct_comment: null, explanation: null }
   };
-  testData.questions.push(q);
-  showQuestionEditor(testData.questions.length - 1);
+  if (isBank) {
+    q.difficulty = 3;
+    q.estimated_time_seconds = 30;
+    q.variant_group = null;
+    q.relationships = { excludes: [], related: [] };
+  } else {
+    q.required = true;
+    q.difficulty = 'medium';
+    q.weight = 1;
+    q.time_limit_seconds = null;
+  }
+  d.questions.push(q);
+  showQuestionEditor(d.questions.length - 1);
 }
 
 function deleteQuestion(i) {
   if (!confirm('Delete question ' + (i+1) + '?')) return;
-  var qid = testData.questions[i].id;
-  testData.questions.splice(i, 1);
-  // Remove from sections
-  (testData.sections || []).forEach(function(s) {
-    var idx = s.question_ids.indexOf(qid);
-    if (idx >= 0) s.question_ids.splice(idx, 1);
-  });
+  var d = getActiveData();
+  var qid = d.questions[i].id;
+  d.questions.splice(i, 1);
+  // Remove from sections (test mode only)
+  if (editorMode === 'test') {
+    (d.sections || []).forEach(function(s) {
+      var idx = s.question_ids.indexOf(qid);
+      if (idx >= 0) s.question_ids.splice(idx, 1);
+    });
+  }
   renderQuestionList();
 }
 
 function moveQuestion(i, dir) {
+  var d = getActiveData();
   var j = i + dir;
-  if (j < 0 || j >= testData.questions.length) return;
-  var tmp = testData.questions[i];
-  testData.questions[i] = testData.questions[j];
-  testData.questions[j] = tmp;
+  if (j < 0 || j >= d.questions.length) return;
+  var tmp = d.questions[i];
+  d.questions[i] = d.questions[j];
+  d.questions[j] = tmp;
   renderQuestionList();
 }
 
 // ==================== QUESTION EDITOR SCREEN ====================
 function renderQuestionEditorForm() {
-  var q = testData.questions[editingQuestionIndex];
+  var d = getActiveData();
+  var q = d.questions[editingQuestionIndex];
   if (!q) return;
+  var isBank = editorMode === 'bank';
   var html = '';
 
   // Question text
@@ -873,29 +1332,51 @@ function renderQuestionEditorForm() {
   html += renderLocaleInputs('qe-fb-expl', fb.explanation, 'textarea');
   html += '</div>';
 
-  // Other properties
+  // Properties
   html += '<div class="card">';
   html += '<div class="section-heading">Properties</div>';
-  html += renderToggleRow('qe-required', 'Required', q.required !== false);
-  html += '<div class="inline-row">';
-  html += '<div class="form-group"><label>Difficulty</label><select id="qe-difficulty">';
-  ['easy','medium','hard'].forEach(function(d) {
-    html += '<option value="' + d + '"' + (q.difficulty===d?' selected':'') + '>' + d + '</option>';
-  });
-  html += '</select></div>';
-  html += '<div class="form-group"><label>Weight</label>';
-  html += '<input type="number" id="qe-weight" value="' + (q.weight||1) + '" min="0" style="width:60px"></div>';
-  html += '<div class="form-group"><label>Time (s)</label>';
-  html += '<input type="number" id="qe-time" value="' + (q.time_limit_seconds||'') + '" min="0" style="width:70px"></div>';
-  html += '</div>';
-  html += '<div class="form-group"><label>Tags (comma-separated)</label>';
-  html += '<input type="text" id="qe-tags" value="' + escHtml((q.tags||[]).join(', ')) + '"></div>';
+
+  if (isBank) {
+    // Bank: numeric difficulty 1-5, estimated time, variant group, relationships
+    html += '<div class="inline-row">';
+    html += '<div class="form-group"><label>Difficulty (1-5)</label>';
+    html += '<input type="number" id="qe-difficulty-num" value="' + (q.difficulty || 3) + '" min="1" max="5" style="width:60px"></div>';
+    html += '<div class="form-group"><label>Est. Time (s)</label>';
+    html += '<input type="number" id="qe-est-time" value="' + (q.estimated_time_seconds||'') + '" min="0" style="width:70px"></div>';
+    html += '</div>';
+    html += '<div class="form-group"><label>Tags (comma-separated)</label>';
+    html += '<input type="text" id="qe-tags" value="' + escHtml((q.tags||[]).join(', ')) + '"></div>';
+    html += '<div class="form-group"><label>Variant Group</label>';
+    html += '<input type="text" id="qe-variant-group" value="' + escHtml(q.variant_group || '') + '"></div>';
+    var rels = q.relationships || {};
+    html += '<div class="form-group"><label>Excludes (comma-separated question IDs)</label>';
+    html += '<input type="text" id="qe-excludes" value="' + escHtml((rels.excludes||[]).join(', ')) + '"></div>';
+    html += '<div class="form-group"><label>Related (comma-separated question IDs)</label>';
+    html += '<input type="text" id="qe-related" value="' + escHtml((rels.related||[]).join(', ')) + '"></div>';
+  } else {
+    // Test: string difficulty, required, weight, time limit
+    html += renderToggleRow('qe-required', 'Required', q.required !== false);
+    html += '<div class="inline-row">';
+    html += '<div class="form-group"><label>Difficulty</label><select id="qe-difficulty">';
+    ['easy','medium','hard'].forEach(function(dl) {
+      html += '<option value="' + dl + '"' + (q.difficulty===dl?' selected':'') + '>' + dl + '</option>';
+    });
+    html += '</select></div>';
+    html += '<div class="form-group"><label>Weight</label>';
+    html += '<input type="number" id="qe-weight" value="' + (q.weight||1) + '" min="0" style="width:60px"></div>';
+    html += '<div class="form-group"><label>Time (s)</label>';
+    html += '<input type="number" id="qe-time" value="' + (q.time_limit_seconds||'') + '" min="0" style="width:70px"></div>';
+    html += '</div>';
+    html += '<div class="form-group"><label>Tags (comma-separated)</label>';
+    html += '<input type="text" id="qe-tags" value="' + escHtml((q.tags||[]).join(', ')) + '"></div>';
+  }
   html += '</div>';
 
   document.getElementById('question-editor-form').innerHTML = html;
 }
 
 function renderAnswerConfig(q) {
+  var d = getActiveData();
   var type = q.answer_type;
   var cfg = q.answer_config || {};
   var html = '';
@@ -920,7 +1401,7 @@ function renderAnswerConfig(q) {
       html += '<div class="form-group"><label>Media</label>';
       html += '<select id="opt-media-' + i + '">';
       html += '<option value="">None</option>';
-      (testData.media || []).forEach(function(m) {
+      (d.media || []).forEach(function(m) {
         html += '<option value="' + escHtml(m.id) + '"' + (opt.media_ref===m.id?' selected':'') + '>' + escHtml(m.filename || m.id) + '</option>';
       });
       html += '</select></div>';
@@ -948,14 +1429,15 @@ function renderAnswerConfig(q) {
 }
 
 function renderMediaRefSelector(id, refs) {
+  var d = getActiveData();
   refs = refs || [];
   var html = '<div id="' + id + '-container">';
-  if (testData.media.length === 0) {
+  if (d.media.length === 0) {
     html += '<div style="font-size:0.85rem;color:#888">No media uploaded yet. Go to Media to add images.</div>';
   } else {
     // Show currently attached
     refs.forEach(function(refId, i) {
-      var m = testData.media.find(function(x){return x.id===refId;});
+      var m = d.media.find(function(x){return x.id===refId;});
       if (m) {
         var src = getMediaThumbSrc(m);
         html += '<div class="media-card">';
@@ -969,7 +1451,7 @@ function renderMediaRefSelector(id, refs) {
     html += '<div class="form-group"><label>Attach Media</label>';
     html += '<select id="' + id + '-add">';
     html += '<option value="">-- Select --</option>';
-    testData.media.forEach(function(m) {
+    d.media.forEach(function(m) {
       if (refs.indexOf(m.id) < 0) {
         html += '<option value="' + escHtml(m.id) + '">' + escHtml(m.filename||m.id) + '</option>';
       }
@@ -983,8 +1465,14 @@ function renderMediaRefSelector(id, refs) {
 }
 
 function getMediaThumbSrc(m) {
-  var loc = testData.default_locale;
+  var d = getActiveData();
+  var loc = d ? d.default_locale : 'en';
   if (m.data) {
+    // Check for "*" (language-neutral) first
+    if (typeof m.data === 'object' && m.data['*']) {
+      var b64star = m.data['*'];
+      if (b64star && b64star.indexOf('<') < 0) return 'data:' + (m.mime_type||'image/png') + ';base64,' + b64star;
+    }
     var b64 = locStr(m.data, loc);
     if (b64 && b64.indexOf('<') < 0) return 'data:' + (m.mime_type||'image/png') + ';base64,' + b64;
   }
@@ -998,21 +1486,24 @@ function getMediaThumbSrc(m) {
 function addMediaRef(id) {
   var sel = document.getElementById(id + '-add');
   if (!sel || !sel.value) return;
-  var q = testData.questions[editingQuestionIndex];
+  var d = getActiveData();
+  var q = d.questions[editingQuestionIndex];
   if (!q) return;
   q.media_refs.push(sel.value);
   renderQuestionEditorForm();
 }
 
 function removeMediaRef(id, i) {
-  var q = testData.questions[editingQuestionIndex];
+  var d = getActiveData();
+  var q = d.questions[editingQuestionIndex];
   if (!q) return;
   q.media_refs.splice(i, 1);
   renderQuestionEditorForm();
 }
 
 function onAnswerTypeChange() {
-  var q = testData.questions[editingQuestionIndex];
+  var d = getActiveData();
+  var q = d.questions[editingQuestionIndex];
   if (!q) return;
   collectQuestionBasics(q);
   var newType = document.getElementById('qe-answer-type').value;
@@ -1037,7 +1528,8 @@ function getDefaultAnswerConfig(type) {
 }
 
 function addOption() {
-  var q = testData.questions[editingQuestionIndex];
+  var d = getActiveData();
+  var q = d.questions[editingQuestionIndex];
   if (!q) return;
   collectAnswerConfig(q);
   q.answer_config.options.push({ id: genId('opt'), text: locObj(''), media_ref: null });
@@ -1045,7 +1537,8 @@ function addOption() {
 }
 
 function removeOption(i) {
-  var q = testData.questions[editingQuestionIndex];
+  var d = getActiveData();
+  var q = d.questions[editingQuestionIndex];
   if (!q) return;
   collectAnswerConfig(q);
   if (q.answer_config.options.length <= 2) { alert('Minimum 2 options required.'); return; }
@@ -1054,7 +1547,8 @@ function removeOption(i) {
 }
 
 function updateCorrectHighlight() {
-  var q = testData.questions[editingQuestionIndex];
+  var d = getActiveData();
+  var q = d.questions[editingQuestionIndex];
   if (!q) return;
   var opts = (q.answer_config || {}).options || [];
   opts.forEach(function(opt, i) {
@@ -1075,11 +1569,27 @@ function updateCorrectHighlight() {
 
 function collectQuestionBasics(q) {
   q.text = collectLocaleInputs('qe-text');
-  q.required = isToggleOn('qe-required');
-  q.difficulty = document.getElementById('qe-difficulty') ? document.getElementById('qe-difficulty').value : 'medium';
-  q.weight = parseInt(document.getElementById('qe-weight') ? document.getElementById('qe-weight').value : '1') || 1;
-  q.time_limit_seconds = parseInt(document.getElementById('qe-time') ? document.getElementById('qe-time').value : '') || null;
   q.tags = document.getElementById('qe-tags') ? document.getElementById('qe-tags').value.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
+
+  if (editorMode === 'bank') {
+    var diffEl = document.getElementById('qe-difficulty-num');
+    q.difficulty = diffEl ? parseInt(diffEl.value) || 3 : 3;
+    var estEl = document.getElementById('qe-est-time');
+    q.estimated_time_seconds = estEl && estEl.value ? parseInt(estEl.value) || null : null;
+    var vgEl = document.getElementById('qe-variant-group');
+    q.variant_group = vgEl && vgEl.value.trim() ? vgEl.value.trim() : null;
+    var exclEl = document.getElementById('qe-excludes');
+    var relEl = document.getElementById('qe-related');
+    q.relationships = {
+      excludes: exclEl ? exclEl.value.split(',').map(function(s){return s.trim();}).filter(Boolean) : [],
+      related: relEl ? relEl.value.split(',').map(function(s){return s.trim();}).filter(Boolean) : []
+    };
+  } else {
+    q.required = isToggleOn('qe-required');
+    q.difficulty = document.getElementById('qe-difficulty') ? document.getElementById('qe-difficulty').value : 'medium';
+    q.weight = parseInt(document.getElementById('qe-weight') ? document.getElementById('qe-weight').value : '1') || 1;
+    q.time_limit_seconds = parseInt(document.getElementById('qe-time') ? document.getElementById('qe-time').value : '') || null;
+  }
 }
 
 function collectAnswerConfig(q) {
@@ -1117,7 +1627,8 @@ function collectAnswerConfig(q) {
 }
 
 function saveQuestion() {
-  var q = testData.questions[editingQuestionIndex];
+  var d = getActiveData();
+  var q = d.questions[editingQuestionIndex];
   if (!q) return;
   collectQuestionBasics(q);
   q.answer_type = document.getElementById('qe-answer-type').value;
@@ -1145,13 +1656,14 @@ function saveQuestion() {
     explanation: Object.values(expl).some(function(v){return !!v;}) ? expl : null
   };
 
-  testData.updated_at = nowISO();
+  d.updated_at = nowISO();
   showQuestionList();
 }
 
 // ==================== MEDIA MANAGER ====================
 function renderMediaList() {
-  var media = testData.media || [];
+  var d = getActiveData();
+  var media = d.media || [];
   var area = document.getElementById('media-list-area');
   if (!media.length) {
     area.innerHTML = '<div class="empty-state">No media uploaded yet.</div>';
@@ -1187,16 +1699,20 @@ function renderMediaList() {
 }
 
 function triggerImageUpload() {
-  imageUploadLocale = testData.default_locale;
+  var d = getActiveData();
+  // In bank mode, default to "*" (language-neutral)
+  imageUploadLocale = editorMode === 'bank' ? '*' : d.default_locale;
   editingMediaId = null;
   document.getElementById('image-file-input').click();
 }
 
 function uploadMediaLocale(i) {
-  var m = testData.media[i];
+  var d = getActiveData();
+  var m = d.media[i];
   if (!m) return;
-  var loc = prompt('Upload image for which locale? (' + getLocales().join(', ') + ')');
-  if (!loc || getLocales().indexOf(loc) < 0) { alert('Invalid locale.'); return; }
+  var validLocs = getLocales().concat(editorMode === 'bank' ? ['*'] : []);
+  var loc = prompt('Upload image for which locale? (' + validLocs.join(', ') + ')');
+  if (!loc || validLocs.indexOf(loc) < 0) { alert('Invalid locale.'); return; }
   imageUploadLocale = loc;
   editingMediaId = m.id;
   document.getElementById('image-file-input').click();
@@ -1213,16 +1729,17 @@ function handleImageUpload(event) {
     var mimeMatch = parts[0].match(/data:(.*?);/);
     var mime = mimeMatch ? mimeMatch[1] : 'image/png';
 
+    var d = getActiveData();
     if (editingMediaId) {
       // Adding locale variant to existing media
-      var m = testData.media.find(function(x){return x.id===editingMediaId;});
+      var m = d.media.find(function(x){return x.id===editingMediaId;});
       if (m) {
         if (!m.data) m.data = {};
         // Convert plain string data to locale object
         if (typeof m.data === 'string') {
           var old = m.data;
           m.data = {};
-          m.data[testData.default_locale] = old;
+          m.data[d.default_locale] = old;
         }
         m.data[imageUploadLocale] = b64;
       }
@@ -1238,7 +1755,7 @@ function handleImageUpload(event) {
         alt_text: locObj('')
       };
       newMedia.data[imageUploadLocale] = b64;
-      testData.media.push(newMedia);
+      d.media.push(newMedia);
     }
     renderMediaList();
   };
@@ -1247,7 +1764,8 @@ function handleImageUpload(event) {
 }
 
 function editMediaAlt(i) {
-  var m = testData.media[i];
+  var d = getActiveData();
+  var m = d.media[i];
   if (!m) return;
   var locales = getLocales();
   var newAlt = {};
@@ -1262,11 +1780,12 @@ function editMediaAlt(i) {
 }
 
 function deleteMedia(i) {
-  var m = testData.media[i];
+  var d = getActiveData();
+  var m = d.media[i];
   if (!m) return;
   // Check references
   var refs = [];
-  testData.questions.forEach(function(q, qi) {
+  d.questions.forEach(function(q, qi) {
     if ((q.media_refs||[]).indexOf(m.id) >= 0) refs.push('Q' + (qi+1));
     if (q.answer_config && q.answer_config.options) {
       q.answer_config.options.forEach(function(opt) {
@@ -1279,7 +1798,7 @@ function deleteMedia(i) {
   if (!confirm(msg)) return;
 
   // Remove references
-  testData.questions.forEach(function(q) {
+  d.questions.forEach(function(q) {
     q.media_refs = (q.media_refs||[]).filter(function(r){return r!==m.id;});
     if (q.answer_config && q.answer_config.options) {
       q.answer_config.options.forEach(function(opt) {
@@ -1287,7 +1806,7 @@ function deleteMedia(i) {
       });
     }
   });
-  testData.media.splice(i, 1);
+  d.media.splice(i, 1);
   renderMediaList();
 }
 

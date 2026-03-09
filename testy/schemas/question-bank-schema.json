@@ -1,0 +1,275 @@
+{
+  "question_bank": {
+    "id": "bank_uuid",
+    "topic": "animals",
+    "default_locale": "en",
+    "supported_locales": ["en", "fr"],
+    "title": {
+      "en": "Animals — 5th Grade Science",
+      "fr": "Les Animaux — Sciences 5ème"
+    },
+    "description": {
+      "en": "Question bank covering animal classification, habitats, adaptations, and life cycles.",
+      "fr": "Banque de questions couvrant la classification, les habitats, les adaptations et les cycles de vie des animaux."
+    },
+    "subject": "science",
+    "level": "grade_5",
+    "version": 1,
+    "status": "draft",
+    "created_at": "2026-03-09T10:00:00Z",
+    "updated_at": "2026-03-09T10:00:00Z",
+    "question_count": 4,
+
+    "media": [
+      {
+        "id": "media_001",
+        "type": "image",
+        "mime_type": "image/png",
+        "filename": "whale.png",
+        "data": {
+          "*": "<base64 encoded bytes>"
+        },
+        "url": null,
+        "alt_text": {
+          "en": "Photograph of a humpback whale breaching",
+          "fr": "Photographie d'une baleine à bosse sautant hors de l'eau"
+        }
+      },
+      {
+        "id": "media_002",
+        "type": "image",
+        "mime_type": "image/png",
+        "filename": "eagle.png",
+        "data": {
+          "*": "<base64 encoded bytes>"
+        },
+        "url": null,
+        "alt_text": {
+          "en": "Photograph of a bald eagle in flight"
+        }
+      },
+      {
+        "id": "media_003",
+        "type": "image",
+        "mime_type": "image/png",
+        "filename": "frog_lifecycle.png",
+        "data": {
+          "en": "<base64 encoded bytes>",
+          "fr": "<base64 encoded bytes for French labelled version>"
+        },
+        "url": null,
+        "alt_text": {
+          "en": "Diagram showing the life cycle of a frog",
+          "fr": "Diagramme montrant le cycle de vie d'une grenouille"
+        }
+      }
+    ],
+
+    "questions": [
+      {
+        "_comment": "--- Single choice, easy classification question ---",
+        "id": "qb_001",
+        "text": {
+          "en": "Which of these animals is a mammal?",
+          "fr": "Lequel de ces animaux est un mammifère?"
+        },
+        "media_refs": ["media_001"],
+        "tags": ["classification", "mammals", "vertebrates"],
+        "difficulty": 2,
+        "estimated_time_seconds": 20,
+        "answer_type": "single_choice",
+        "answer_config": {
+          "options": [
+            {
+              "id": "opt_a",
+              "text": { "en": "Whale", "fr": "Baleine" },
+              "media_ref": null
+            },
+            {
+              "id": "opt_b",
+              "text": { "en": "Shark", "fr": "Requin" },
+              "media_ref": null
+            },
+            {
+              "id": "opt_c",
+              "text": { "en": "Salmon", "fr": "Saumon" },
+              "media_ref": null
+            }
+          ],
+          "correct_answer": "opt_a",
+          "shuffle_options": true
+        },
+        "evaluation": {
+          "method": "deterministic",
+          "result_type": "boolean",
+          "ai_prompt_context": null
+        },
+        "feedback": {
+          "hint": {
+            "en": "Think about how each animal breathes and feeds its young.",
+            "fr": "Pensez à comment chaque animal respire et nourrit ses petits."
+          },
+          "correct_comment": {
+            "en": "Correct! Whales are mammals — they breathe air and nurse their young with milk.",
+            "fr": "Correct! Les baleines sont des mammifères — elles respirent de l'air et allaitent leurs petits."
+          },
+          "explanation": {
+            "en": "Although whales live in water, they are mammals, not fish. They breathe air through a blowhole, are warm-blooded, and feed their calves with milk.",
+            "fr": "Bien que les baleines vivent dans l'eau, ce sont des mammifères, pas des poissons. Elles respirent par un évent, sont à sang chaud et allaitent leurs petits."
+          }
+        },
+        "variant_group": "whale_is_mammal",
+        "relationships": {
+          "excludes": ["qb_002"],
+          "related": ["qb_003"]
+        }
+      },
+      {
+        "_comment": "--- Free text variant of the same concept ---",
+        "id": "qb_002",
+        "text": {
+          "en": "Look at the picture. What type of animal is this? Explain how you know.",
+          "fr": "Regardez l'image. Quel type d'animal est-ce? Expliquez comment vous le savez."
+        },
+        "media_refs": ["media_001"],
+        "tags": ["classification", "mammals", "vertebrates"],
+        "difficulty": 5,
+        "estimated_time_seconds": 60,
+        "answer_type": "free_text",
+        "answer_config": {
+          "correct_answer": {
+            "en": "This is a whale, which is a mammal. We can tell because whales breathe air, are warm-blooded, and nurse their young with milk.",
+            "fr": "C'est une baleine, qui est un mammifère. On le sait car les baleines respirent de l'air, sont à sang chaud et allaitent leurs petits."
+          },
+          "alternatives": null,
+          "case_sensitive": false
+        },
+        "evaluation": {
+          "method": "ai",
+          "result_type": "percentage",
+          "ai_prompt_context": {
+            "en": "The image shows a whale. Evaluate whether the student correctly identifies it as a mammal and provides valid reasoning. Key indicators: breathes air, warm-blooded, nurses young with milk, has blowhole. Award partial credit for correct identification without reasoning.",
+            "fr": "L'image montre une baleine. Évaluez si l'étudiant l'identifie correctement comme mammifère et fournit un raisonnement valide. Indicateurs clés: respire de l'air, sang chaud, allaite ses petits, a un évent. Accordez un crédit partiel pour une identification correcte sans raisonnement."
+          }
+        },
+        "feedback": {
+          "hint": {
+            "en": "Think about how this animal breathes. Does it have gills or lungs?",
+            "fr": "Pensez à comment cet animal respire. A-t-il des branchies ou des poumons?"
+          },
+          "correct_comment": {
+            "en": "Great reasoning! Whales are indeed mammals.",
+            "fr": "Excellent raisonnement! Les baleines sont en effet des mammifères."
+          },
+          "explanation": {
+            "en": "This is a whale, which is a mammal. Key characteristics: it breathes air through a blowhole, is warm-blooded, and feeds its calves with milk.",
+            "fr": "C'est une baleine, qui est un mammifère. Caractéristiques clés: elle respire par un évent, est à sang chaud et allaite ses petits."
+          }
+        },
+        "variant_group": "whale_is_mammal",
+        "relationships": {
+          "excludes": ["qb_001"],
+          "related": ["qb_003"]
+        }
+      },
+      {
+        "_comment": "--- Multi choice question ---",
+        "id": "qb_003",
+        "text": {
+          "en": "Which of the following are characteristics of mammals? Select all that apply.",
+          "fr": "Lesquelles des caractéristiques suivantes sont propres aux mammifères? Sélectionnez toutes les réponses correctes."
+        },
+        "media_refs": [],
+        "tags": ["classification", "mammals", "vertebrates"],
+        "difficulty": 4,
+        "estimated_time_seconds": 30,
+        "answer_type": "multi_choice",
+        "answer_config": {
+          "options": [
+            {
+              "id": "opt_a",
+              "text": { "en": "They are warm-blooded", "fr": "Ils sont à sang chaud" },
+              "media_ref": null
+            },
+            {
+              "id": "opt_b",
+              "text": { "en": "They lay eggs", "fr": "Ils pondent des œufs" },
+              "media_ref": null
+            },
+            {
+              "id": "opt_c",
+              "text": { "en": "They feed young with milk", "fr": "Ils nourrissent leurs petits avec du lait" },
+              "media_ref": null
+            },
+            {
+              "id": "opt_d",
+              "text": { "en": "They have hair or fur", "fr": "Ils ont des poils ou de la fourrure" },
+              "media_ref": null
+            }
+          ],
+          "correct_answers": ["opt_a", "opt_c", "opt_d"],
+          "shuffle_options": true
+        },
+        "evaluation": {
+          "method": "deterministic",
+          "result_type": "boolean",
+          "ai_prompt_context": null
+        },
+        "feedback": {
+          "hint": {
+            "en": "Think about how most mammals are born. Are they hatched from eggs?",
+            "fr": "Pensez à comment la plupart des mammifères naissent. Éclosent-ils d'œufs?"
+          },
+          "correct_comment": {
+            "en": "Right! Warm-blooded, milk-feeding, and hair/fur are key mammal traits. Most mammals give live birth.",
+            "fr": "Correct! Sang chaud, allaitement et poils/fourrure sont des caractéristiques clés des mammifères."
+          },
+          "explanation": null
+        },
+        "variant_group": null,
+        "relationships": {
+          "excludes": [],
+          "related": ["qb_001", "qb_002"]
+        }
+      },
+      {
+        "_comment": "--- Number question ---",
+        "id": "qb_004",
+        "text": {
+          "en": "How many legs does a spider have?",
+          "fr": "Combien de pattes a une araignée?"
+        },
+        "media_refs": [],
+        "tags": ["arthropods", "invertebrates"],
+        "difficulty": 1,
+        "estimated_time_seconds": 15,
+        "answer_type": "number",
+        "answer_config": {
+          "correct_answer": 8,
+          "numeric_tolerance": 0
+        },
+        "evaluation": {
+          "method": "deterministic",
+          "result_type": "boolean",
+          "ai_prompt_context": null
+        },
+        "feedback": {
+          "hint": {
+            "en": "Count carefully — spiders have more legs than insects.",
+            "fr": "Comptez bien — les araignées ont plus de pattes que les insectes."
+          },
+          "correct_comment": {
+            "en": "Correct! Spiders have 8 legs, which distinguishes them from insects (6 legs).",
+            "fr": "Correct! Les araignées ont 8 pattes, ce qui les distingue des insectes (6 pattes)."
+          },
+          "explanation": null
+        },
+        "variant_group": "spider_legs",
+        "relationships": {
+          "excludes": [],
+          "related": []
+        }
+      }
+    ]
+  }
+}
