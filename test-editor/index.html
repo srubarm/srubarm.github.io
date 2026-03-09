@@ -1027,6 +1027,16 @@ function generateBankYaml(locale) {
 
   bankData.questions.forEach(function(q) {
     var qText = locStr(q.text, locale) || locStr(q.text, bankData.default_locale) || '';
+    // Prepend image reference if question has media
+    if (q.media_refs && q.media_refs.length) {
+      var mediaItem = bankData.media.find(function(m) { return m.id === q.media_refs[0]; });
+      var imgLabel = q.media_refs[0];
+      if (mediaItem && mediaItem.alt_text) {
+        var alt = locStr(mediaItem.alt_text, locale) || locStr(mediaItem.alt_text, bankData.default_locale) || '';
+        if (alt) imgLabel = alt;
+      }
+      qText = '[image: ' + imgLabel + '] ' + qText;
+    }
     lines.push('  - id: ' + q.id);
     lines.push('    question: ' + yamlQuote(qText));
     lines.push('    type: ' + q.answer_type);
@@ -1082,15 +1092,14 @@ function generateBankYaml(locale) {
       lines.push('    variant_group: ' + q.variant_group);
     }
 
-    // Relationships
+    // Relationships (only if non-empty)
     var excludes = (q.relationships && q.relationships.excludes) || [];
     var related = (q.relationships && q.relationships.related) || [];
-    lines.push('    excludes: [' + excludes.join(', ') + ']');
-    lines.push('    related: [' + related.join(', ') + ']');
-
-    // Media ref (first one if any)
-    if (q.media_refs && q.media_refs.length) {
-      lines.push('    media_ref: ' + q.media_refs[0]);
+    if (excludes.length) {
+      lines.push('    excludes: [' + excludes.join(', ') + ']');
+    }
+    if (related.length) {
+      lines.push('    related: [' + related.join(', ') + ']');
     }
 
     lines.push('');
