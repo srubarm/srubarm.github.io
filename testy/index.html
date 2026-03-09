@@ -477,6 +477,13 @@ layout: null
     .score-circle.poor { border-color: #e55; }
     .score-pct { font-size: 2.2rem; font-weight: 700; color: #111; line-height: 1; }
     .score-label { font-size: 0.85rem; color: #888; }
+    .result-topic-score {
+      text-align: center;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .result-topic-score b { color: #555; }
     .result-summary {
       text-align: center;
       margin-bottom: 20px;
@@ -3317,6 +3324,19 @@ function showResults(results) {
   if (skipped > 0) scoreHtml += ', ' + skipped + ' ' + tr('skipped').toLowerCase();
   if (pending > 0) scoreHtml += ', ' + pending + ' ' + tr('pendingReview');
   scoreHtml += '</div>';
+
+  // Show topic score (already recalculated by saveTestResult above)
+  var topicId = null;
+  if (currentTest._sourceFile) {
+    var parts = currentTest._sourceFile.split('/');
+    if (parts.length >= 2) topicId = parts[0];
+  }
+  if (topicId) {
+    var userName = getSelectedUser() || 'Anonymous';
+    var topicScore = getUserTopicScore(userName, topicId);
+    scoreHtml += '<div class="result-topic-score">' + escHtml(tr('topicScore')) + ': <b>' + topicScore + '%</b></div>';
+  }
+
   document.getElementById('score-area').innerHTML = scoreHtml;
 
   // AI Evaluation section (if available)
@@ -3496,7 +3516,8 @@ function saveTestResult(pct, results) {
     testFile: testFile,
     earnedWeight: earnedWeight,
     totalWeight: totalWeight,
-    aiEvaluation: currentTest._aiEvaluation || null
+    aiEvaluation: currentTest._aiEvaluation || null,
+    topicScore: null  // filled in after recalculation below
   });
 
   saveAppData(data);
@@ -3504,6 +3525,14 @@ function saveTestResult(pct, results) {
   // Recalculate topic score if this test belongs to a topic
   if (topicId && currentTopicConfig) {
     recalculateTopicScore(topicId, userName, currentTopicConfig);
+    // Store the updated topic score in the result record
+    var updatedTopicScore = getUserTopicScore(userName, topicId);
+    var d2 = getAppData();
+    var lastResult = d2.testResults[d2.testResults.length - 1];
+    if (lastResult) {
+      lastResult.topicScore = updatedTopicScore;
+      saveAppData(d2);
+    }
   }
 }
 
@@ -3599,6 +3628,9 @@ function showHistoryDetail(index) {
   scoreHtml += '<div class="result-summary">' +
     escHtml(r.user) + ' &middot; ' + new Date(r.date).toLocaleDateString() + '<br>' +
     r.correct + '/' + r.totalQuestions + ' ' + tr('correct') + '</div>';
+  if (r.topicScore != null) {
+    scoreHtml += '<div class="result-topic-score">' + escHtml(tr('topicScore')) + ': <b>' + r.topicScore + '%</b></div>';
+  }
   document.getElementById('score-area').innerHTML = scoreHtml;
 
   // Show AI evaluation if stored
