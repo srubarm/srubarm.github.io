@@ -799,18 +799,23 @@ function handleImportFromTestFile(event) {
       editorMode = 'bank';
 
       // Import media first
-      var mediaIdMap = {}; // old id -> new id
+      var mediaIdMap = {}; // old id -> new id (only entries that changed)
       if (data.media && data.media.length) {
         data.media.forEach(function(m) {
           // Check if media with same filename already exists
           var existing = bankData.media.find(function(bm) { return bm.filename === m.filename; });
           if (existing) {
-            mediaIdMap[m.id] = existing.id;
+            if (m.id !== existing.id) mediaIdMap[m.id] = existing.id;
           } else {
-            var newId = genId('media');
-            mediaIdMap[m.id] = newId;
+            // Preserve original ID unless there's a collision (same ID, different content)
+            var idCollision = bankData.media.find(function(bm) { return bm.id === m.id; });
             var newMedia = JSON.parse(JSON.stringify(m));
-            newMedia.id = newId;
+            if (idCollision) {
+              var newId = genId('media');
+              mediaIdMap[m.id] = newId;
+              newMedia.id = newId;
+            }
+            // else: keep m.id as-is, no remap needed
             bankData.media.push(newMedia);
           }
         });
