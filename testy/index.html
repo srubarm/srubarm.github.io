@@ -1935,6 +1935,7 @@ function buildAISystemPrompt() {
     '- Respect the question bank\'s "related" relationships as a hint for thematic grouping, but they are not constraints.\n' +
     '- Keep the test between 8 and 15 questions unless instructed otherwise.\n' +
     '- Aim for a test duration of 10-20 minutes based on the estimated times.\n' +
+    '- Include at least one question that the student previously answered incorrectly, so they can demonstrate improvement. However, no more than roughly 15% of the total questions in the test should be previously incorrect questions.\n' +
     'When choosing variant difficulty and answer type:\n' +
     '- If the student has consistently answered a concept correctly as single/multi choice, consider moving to free text for that concept.\n' +
     '- If the student has struggled with a concept, stay at or reduce difficulty and use single/multi choice to build confidence.\n' +
@@ -1953,7 +1954,8 @@ function buildAIUserPrompt(bankYaml, history, purpose, testLocale, uiLang, sessi
   prompt += 'Student primary language: ' + uiLang + '\n';
   if (studentAge) prompt += 'Student age: ' + studentAge + ' years old\n';
   prompt += 'Session number: ' + sessionNumber + '\n';
-  prompt += 'Focus on areas where the student is weakest. Include some review of strong areas to maintain confidence. Introduce new topics if the student has not been tested on all tag areas.\n\n';
+  prompt += 'Focus on areas where the student is weakest. Include some review of strong areas to maintain confidence. Introduce new topics if the student has not been tested on all tag areas.\n';
+  prompt += 'Important: Include at least one question the student previously answered incorrectly (so they can demonstrate improvement), but keep previously-incorrect questions to roughly 15% of the test.\n\n';
   prompt += '---\n\n### Question Bank\n';
   prompt += bankYaml + '\n\n';
   prompt += '---\n\n### Student History\n';
@@ -3260,20 +3262,67 @@ function recalculateTopicScore(topicId, userName, topicConfig) {
   });
   if (totalMaxWeighted === 0) return;
 
-  // Find best earnedWeight per test file from history
+  // Collect all results for this user + topic
   var allResults = getTestResults();
   var userResults = allResults.filter(function(r) { return r.user === userName && r.topicId === topicId; });
 
-  var bestByFile = {};
+  // Build global best score per question across ALL attempts (standard + AI)
+  // questionId -> { bestScore: 0-1, weight: number }
+  var bestByQuestion = {};
   userResults.forEach(function(r) {
-    if (!r.testFile) return;
-    var prev = bestByFile[r.testFile] || 0;
-    var earned = r.earnedWeight || 0;
-    if (earned > prev) bestByFile[r.testFile] = earned;
+    if (!r.details) return;
+    r.details.forEach(function(d) {
+      var qId = d.questionId;
+      if (!qId) return;
+      var score = d.score || 0;
+      var weight = d.weight || 1;
+      if (!bestByQuestion[qId]) {
+        bestByQuestion[qId] = { bestScore: score, weight: weight };
+      } else {
+        if (score > bestByQuestion[qId].bestScore) {
+          bestByQuestion[qId].bestScore = score;
+        }
+        // Use the largest weight seen for this question
+        if (weight > bestByQuestion[qId].weight) {
+          bestByQuestion[qId].weight = weight;
+        }
+      }
+    });
   });
 
+  // For each visible test, find its questions from the best attempt for that test file,
+  // then sum the best per-question scores (from the global map)
   var totalEarned = 0;
-  Object.keys(bestByFile).forEach(function(f) { totalEarned += bestByFile[f]; });
+  visibleTests.forEach(function(t) {
+    // Find all attempts for this test file to discover which questions it contains
+    var testResults = userResults.filter(function(r) { return r.testFile === t.file; });
+    if (!testResults.length) return;
+
+    // Collect all unique question IDs from any attempt of this test
+    var testQuestionIds = {};
+    testResults.forEach(function(r) {
+      if (!r.details) return;
+      r.details.forEach(function(d) {
+        if (d.questionId && !testQuestionIds[d.questionId]) {
+          testQuestionIds[d.questionId] = d.weight || 1;
+        }
+      });
+    });
+
+    // Sum best scores for this test's questions
+    var testEarned = 0;
+    Object.keys(testQuestionIds).forEach(function(qId) {
+      var best = bestByQuestion[qId];
+      if (best) {
+        testEarned += best.bestScore * best.weight;
+      }
+    });
+
+    // Cap at this test's maxWeightedScore
+    var maxW = t.maxWeightedScore || 0;
+    if (testEarned > maxW) testEarned = maxW;
+    totalEarned += testEarned;
+  });
 
   var newScore = Math.round(totalEarned / totalMaxWeighted * 100);
   var oldScore = getUserTopicScore(userName, topicId);
@@ -3461,6 +3510,7 @@ function saveTestResult(pct, results) {
   // Build display-friendly details with resolved answer text
   var savedDetails = results.map(function(r, i) {
     var detail = {
+      questionId: r.questionId || null,
       questionText: r.questionText,
       status: r.status,
       score: r.score,
