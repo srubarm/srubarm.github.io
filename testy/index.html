@@ -1679,9 +1679,9 @@ function renderTopicTestList(topicId, config, locale) {
     html += '</div>';
   }
 
-  // Find the highest test index the user has completed (for AI practice card placement)
+  // Find which tests the user has completed (for AI practice card placement)
   // Also backfill topicId/testFile on legacy results that lack them
-  var highestCompleted = -1;
+  var completedTests = {};  // index -> true
   if (userName) {
     var data = getAppData();
     var userResults = (data.testResults || []).filter(function(r) { return r.user === userName; });
@@ -1698,26 +1698,48 @@ function renderTopicTestList(topicId, config, locale) {
         }
         return false;
       });
-      if (hasResult) highestCompleted = i;
+      if (hasResult) completedTests[i] = true;
     });
     if (needsSave) saveAppData(data);
   }
 
-  // Determine where to insert the AI practice card:
-  // After highestCompleted if any tests done, otherwise after the last unlocked test
-  var aiCardPosition = highestCompleted;
-  if (aiCardPosition === -1) {
-    // No tests completed: find the last unlocked test index
+  // Determine AI practice card placement:
+  // Show only when the student has "hit a wall" — they've completed all accessible
+  // tests but the next one is locked (or doesn't exist). The card appears after the
+  // highest completed accessible test.
+  // - No tests completed → no AI card (do the diagnostic first)
+  // - Completed test but next unlocked test exists → no AI card (do that test next)
+  // - Completed test and next test is locked/nonexistent → show AI card after it
+  var aiCardPosition = -1;  // -1 means don't show
+  if (isAIEnabled()) {
+    // Find the highest completed test that is also accessible
+    var highestCompletedAccessible = -1;
     tests.forEach(function(t, i) {
       var configRunnable = t.runnable !== false;
       var minScore = t.minScore || 0;
       var locked = configRunnable && minScore > 0 && userScore < minScore;
-      if (!locked && configRunnable) aiCardPosition = i;
+      if (completedTests[i] && !locked) highestCompletedAccessible = i;
     });
-    // If all tests are locked, aiCardPosition stays -1 (show before first test)
+
+    if (highestCompletedAccessible >= 0) {
+      // Check if there's a next unlocked, uncompleted test available
+      var hasNextUncompletedUnlocked = false;
+      for (var ni = highestCompletedAccessible + 1; ni < tests.length; ni++) {
+        var nt = tests[ni];
+        var nRunnable = nt.runnable !== false;
+        var nMinScore = nt.minScore || 0;
+        var nLocked = nRunnable && nMinScore > 0 && userScore < nMinScore;
+        if (nRunnable && !nLocked && !completedTests[ni]) {
+          hasNextUncompletedUnlocked = true;
+          break;
+        }
+      }
+      if (!hasNextUncompletedUnlocked) {
+        aiCardPosition = highestCompletedAccessible;
+      }
+    }
   }
 
-  var aiCardInserted = false;
   tests.forEach(function(t, i) {
     var title = locStr(t.title, locale) || t.file;
     var desc = t.description ? locStr(t.description, locale) : '';
@@ -1725,16 +1747,6 @@ function renderTopicTestList(topicId, config, locale) {
     var minScore = t.minScore || 0;
     var locked = configRunnable && minScore > 0 && userScore < minScore;
     var runnable = configRunnable && !locked;
-
-    // If AI card should go before first test (all locked, nothing completed)
-    if (i === 0 && aiCardPosition === -1 && !aiCardInserted && isAIEnabled()) {
-      aiCardInserted = true;
-      html += '<div class="test-list-card tl-ai" onclick="startAIPractice(\'' + escHtml(topicId) + '\')">';
-      html += '<div class="tl-title">🤖 ' + escHtml(tr('aiPractice')) + '</div>';
-      html += '<div class="tl-desc">' + escHtml(tr('aiPracticeDesc')) + '</div>';
-      html += '<div class="tl-meta"><span>AI</span></div>';
-      html += '</div>';
-    }
 
     var cls = 'test-list-card' + (runnable ? '' : ' tl-disabled');
     html += '<div class="' + cls + '"' + (runnable ? ' onclick="loadTopicTest(\'' + escHtml(topicId) + '\',' + i + ')"' : '') + '>';
@@ -1752,8 +1764,7 @@ function renderTopicTestList(topicId, config, locale) {
     html += '</div>';
 
     // Insert AI practice card after the target position
-    if (i === aiCardPosition && !aiCardInserted && isAIEnabled()) {
-      aiCardInserted = true;
+    if (i === aiCardPosition) {
       html += '<div class="test-list-card tl-ai" onclick="startAIPractice(\'' + escHtml(topicId) + '\')">';
       html += '<div class="tl-title">🤖 ' + escHtml(tr('aiPractice')) + '</div>';
       html += '<div class="tl-desc">' + escHtml(tr('aiPracticeDesc')) + '</div>';
@@ -1761,15 +1772,6 @@ function renderTopicTestList(topicId, config, locale) {
       html += '</div>';
     }
   });
-
-  // Fallback: if AI card wasn't inserted yet (e.g. no tests at all)
-  if (!aiCardInserted && isAIEnabled()) {
-    html += '<div class="test-list-card tl-ai" onclick="startAIPractice(\'' + escHtml(topicId) + '\')">';
-    html += '<div class="tl-title">🤖 ' + escHtml(tr('aiPractice')) + '</div>';
-    html += '<div class="tl-desc">' + escHtml(tr('aiPracticeDesc')) + '</div>';
-    html += '<div class="tl-meta"><span>AI</span></div>';
-    html += '</div>';
-  }
 
   area.innerHTML = html;
 }
