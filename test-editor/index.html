@@ -397,6 +397,8 @@ layout: null
   <div id="question-list-area"></div>
   <button class="btn-block" onclick="addQuestion()">+ Add Question</button>
   <button id="import-from-test-btn" class="btn-block btn-secondary" onclick="startImportIntoBank()" style="display:none">Import Questions from Test JSON</button>
+  <button id="replace-from-bank-btn" class="btn-block btn-secondary" onclick="startReplaceFromBank()" style="display:none">Replace Questions from Bank JSON</button>
+  <input type="file" id="replace-bank-file-input" accept=".json" style="display:none" onchange="handleReplaceFromBankFile(event)">
 </div>
 
 <!-- QUESTION EDITOR -->
@@ -570,6 +572,7 @@ function showQuestionList() {
   hideAll();
   document.getElementById('question-list').style.display = 'block';
   document.getElementById('import-from-test-btn').style.display = editorMode === 'bank' ? 'block' : 'none';
+  document.getElementById('replace-from-bank-btn').style.display = editorMode === 'bank' ? 'block' : 'none';
   if (editorMode === 'bank') {
     setBackArrow(showBankMetadata);
     showBottomNav('bnav-questions');
@@ -993,7 +996,8 @@ function renderBankExport() {
   if (bankExportFormat === 'json') {
     var output = { question_bank: bankData };
     var jsonStr = JSON.stringify(output, null, 2);
-    html += '<button class="btn-block btn-success" onclick="downloadBankJson()">Download JSON</button>';
+    html += '<button class="btn-block btn-success" onclick="downloadBankJson(false)">Download JSON</button>';
+    html += '<button class="btn-block btn-secondary" onclick="downloadBankJson(true)">Download JSON (without media data)</button>';
     html += '<div class="json-preview">' + escHtml(jsonStr) + '</div>';
   } else {
     // Locale selector for YAML
@@ -1187,22 +1191,117 @@ function validateBank() {
   return w;
 }
 
-function downloadBankJson() {
+function downloadBankJson(stripMedia) {
   bankData.updated_at = nowISO();
   bankData.question_count = bankData.questions.length;
-  var output = { question_bank: bankData };
+  var exportData = JSON.parse(JSON.stringify(bankData));
+  if (stripMedia) {
+    exportData.media = exportData.media.map(function(m) {
+      var copy = JSON.parse(JSON.stringify(m));
+      delete copy.data;
+      return copy;
+    });
+  }
+  var output = { question_bank: exportData };
   var jsonStr = JSON.stringify(output, null, 2);
   var blob = new Blob([jsonStr], { type: 'application/json' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
   var title = locStr(bankData.title, bankData.default_locale) || 'question_bank';
   title = title.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 40);
+  var suffix = stripMedia ? '_nomedia' : '';
   a.href = url;
-  a.download = title + '_bank_v' + (bankData.version || 1) + '.json';
+  a.download = title + '_bank_v' + (bankData.version || 1) + suffix + '.json';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+// ==================== REPLACE QUESTIONS FROM BANK JSON ====================
+function startReplaceFromBank() {
+  document.getElementById('replace-bank-file-input').click();
+}
+
+function handleReplaceFromBankFile(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var parsed = JSON.parse(e.target.result);
+      var imported = parsed.question_bank;
+      if (!imported || !imported.questions) {
+        alert('Invalid question bank JSON — missing question_bank.questions');
+        return;
+      }
+
+      // Replace questions
+      bankData.questions = imported.questions;
+      bankData.question_count = imported.questions.length;
+
+      // Replace metadata from import
+      if (imported.title) bankData.title = imported.title;
+      if (imported.description) bankData.description = imported.description;
+      if (imported.topic) bankData.topic = imported.topic;
+      if (imported.default_locale) bankData.default_locale = imported.default_locale;
+      if (imported.supported_locales) bankData.supported_locales = imported.supported_locales;
+      if (imported.version) bankData.version = imported.version;
+      if (imported.tags) bankData.tags = imported.tags;
+
+      // Merge media: preserve data from current bank for matching IDs
+      var currentMediaMap = {};
+      bankData.media.forEach(function(m) {
+        currentMediaMap[m.id] = m;
+      });
+
+      var warnings = [];
+      if (imported.media && imported.media.length) {
+        var mergedMedia = imported.media.map(function(im) {
+          if (!im.data || Object.keys(im.data).length === 0) {
+            // No data in import — try to fill from current bank
+            if (currentMediaMap[im.id]) {
+              im.data = currentMediaMap[im.id].data;
+            } else {
+              warnings.push('Media "' + im.id + '" has no data and was not found in current bank.');
+            }
+          }
+          return im;
+        });
+        // Also keep any current media not in the import (orphaned but preserves data)
+        var importedIds = {};
+        mergedMedia.forEach(function(m) { importedIds[m.id] = true; });
+        bankData.media.forEach(function(m) {
+          if (!importedIds[m.id]) {
+            mergedMedia.push(m);
+          }
+        });
+        bankData.media = mergedMedia;
+      }
+      // If import has no media array at all, keep current media untouched
+
+      // Check for question media_refs pointing to missing media
+      bankData.questions.forEach(function(q) {
+        (q.media_refs || []).forEach(function(ref) {
+          if (!bankData.media.find(function(m) { return m.id === ref; })) {
+            warnings.push('Q "' + q.id + '" references media "' + ref + '" which has no data.');
+          }
+        });
+      });
+
+      if (warnings.length) {
+        alert('Questions replaced with warnings:\n\n' + warnings.join('\n'));
+      } else {
+        alert('Questions replaced successfully (' + bankData.questions.length + ' questions).');
+      }
+
+      renderQuestionList();
+    } catch (err) {
+      alert('Error parsing JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 }
 
 // ==================== LOCALE FIELD RENDERING ====================
