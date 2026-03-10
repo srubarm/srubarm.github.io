@@ -1832,37 +1832,39 @@ function startAIPractice(topicId) {
   var locale = getUILang();
   var config = currentTopicConfig;
 
-  // Fetch question bank YAML and all test files in parallel
-  var bankPromise = fetch('topics/' + topicId + '/questionBank.yaml').then(function(r) {
-    if (!r.ok) throw new Error('Could not load question bank');
+  // Read question bank filenames from config (with fallbacks)
+  var bankYamlFile = (config.questionBank && config.questionBank.yaml) || 'questionBank.yaml';
+  var bankJsonFile = (config.questionBank && config.questionBank.json) || null;
+
+  // Fetch question bank YAML (for AI prompt) and JSON (for questions/media)
+  var bankYamlPromise = fetch('topics/' + topicId + '/' + bankYamlFile).then(function(r) {
+    if (!r.ok) throw new Error('Could not load question bank YAML');
     return r.text();
   });
 
-  // Fetch all test JSON files to build question + media maps
-  var testFiles = (config.tests || []).map(function(t) { return t.file; });
-  var testPromises = testFiles.map(function(file) {
-    return fetch('topics/' + topicId + '/' + file).then(function(r) {
-      return r.ok ? r.json() : null;
-    }).catch(function() { return null; });
-  });
+  var bankJsonPromise = bankJsonFile
+    ? fetch('topics/' + topicId + '/' + bankJsonFile).then(function(r) {
+        if (!r.ok) throw new Error('Could not load question bank JSON');
+        return r.json();
+      })
+    : Promise.resolve(null);
 
-  Promise.all([bankPromise, Promise.all(testPromises)]).then(function(results) {
+  Promise.all([bankYamlPromise, bankJsonPromise]).then(function(results) {
     var bankYaml = results[0];
-    var testDataList = results[1];
+    var bankJson = results[1];
 
-    // Build master question map (q_id -> question object) and media map
+    // Build question map and media map from question bank JSON
     var questionMap = {};
     var mediaMap = {};
-    testDataList.forEach(function(data) {
-      if (!data) return;
-      var test = data.test || data;
-      if (test.media) {
-        test.media.forEach(function(m) { mediaMap[m.id] = m; });
+    if (bankJson) {
+      var bank = bankJson.question_bank || bankJson;
+      if (bank.media) {
+        bank.media.forEach(function(m) { mediaMap[m.id] = m; });
       }
-      if (test.questions) {
-        test.questions.forEach(function(q) { questionMap[q.id] = q; });
+      if (bank.questions) {
+        bank.questions.forEach(function(q) { questionMap[q.id] = q; });
       }
-    });
+    }
 
     // Build student history
     var history = buildStudentHistoryPrompt(topicId, userName, questionMap);
@@ -2066,18 +2068,19 @@ function buildStudentHistoryPrompt(topicId, userName, questionMap) {
           if (evalKeys[qi]) qId = evalKeys[qi];
         }
 
-        // Map q_XXX -> qb_XXX for the prompt
-        var bankId = qId ? qId.replace(/^q_/, 'qb_') : 'unknown';
+        // Normalise to qb_ for the prompt; look up in questionMap (which uses qb_ keys)
+        var bankId = qId ? (qId.indexOf('qb_') === 0 ? qId : qId.replace(/^q_/, 'qb_')) : 'unknown';
+        var qEntry = questionMap[bankId] || (qId ? questionMap[qId] : null);
 
         // Get tags from questionMap
         var tags = [];
-        if (qId && questionMap[qId] && questionMap[qId].tags) tags = questionMap[qId].tags;
+        if (qEntry && qEntry.tags) tags = qEntry.tags;
 
         var answerType = '';
-        if (qId && questionMap[qId]) answerType = questionMap[qId].answer_type || '';
+        if (qEntry) answerType = qEntry.answer_type || '';
 
         var difficulty = '';
-        if (qId && questionMap[qId]) difficulty = questionMap[qId].difficulty || '';
+        if (qEntry) difficulty = qEntry.difficulty || '';
 
         var timeSpent = '';
         if (qId && responses[qId] && responses[qId].time_spent_seconds) {
@@ -2193,12 +2196,11 @@ function processAITestResponse(aiResponse, questionMap, mediaMap, topicId, testL
 
   if (!allQIds.length) return null;
 
-  // Map qb_XXX -> q_XXX and build question array
+  // Look up questions in the question bank map
   var questions = [];
   var usedMedia = {};
   allQIds.forEach(function(bankId) {
-    var qId = bankId.replace(/^qb_/, 'q_');
-    var src = questionMap[qId];
+    var src = questionMap[bankId];
     if (!src) return; // Skip unknown question IDs
 
     // Deep copy the question
@@ -2215,14 +2217,14 @@ function processAITestResponse(aiResponse, questionMap, mediaMap, topicId, testL
 
   if (!questions.length) return null;
 
-  // Build sections with correct q_XXX IDs
+  // Build sections
   var sections = plan.sections.map(function(s, i) {
     return {
       id: 'section_' + String(i + 1).padStart(3, '0'),
       title: s.title || null,
       description: s.description || null,
       instructions: s.instructions || null,
-      question_ids: (s.question_ids || []).map(function(bankId) { return bankId.replace(/^qb_/, 'q_'); }),
+      question_ids: (s.question_ids || []),
       shuffle_questions: s.shuffle_questions || false,
       time_limit_seconds: s.time_limit_seconds || null
     };

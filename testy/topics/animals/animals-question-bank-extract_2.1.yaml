@@ -1,0 +1,642 @@
+bank: bank_v1
+locale: en
+question_count: 62
+questions:
+  - id: qb_b8b4530a
+    question: "What are the two main groups that animals are divided into?"
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct answer: Animals are divided into invertebrates (lower) and vertebrates (higher). The student must mention both groups. Synonyms like 'lower/higher animals' are acceptable."
+    tags: [classification]
+    time_est: 30s
+
+  - id: qb_b905e7e7
+    question: "What is the main characteristic of vertebrates?"
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct answer: They have a spine made of vertebrae and a skeleton that supports and holds the body. The student must mention the spine/vertebrae or skeleton."
+    tags: [vertebrates]
+    time_est: 30s
+
+  - id: qb_f82adcdb
+    question: "Which groups belong to vertebrates?"
+    type: multi_choice
+    options:
+      - opt_a: "Fish"
+      - opt_b: "Arthropods"
+      - opt_c: "Amphibians"
+      - opt_d: "Reptiles"
+      - opt_e: "Annelids"
+      - opt_f: "Birds"
+      - opt_g: "Mammals"
+    difficulty: 2
+    eval: deterministic
+    tags: [vertebrates, classification]
+    time_est: 30s
+
+  - id: qb_7b09e3fb
+    question: "How do fish breathe?"
+    type: single_choice
+    options:
+      - opt_a: "Lungs"
+      - opt_b: "Gills" (correct)
+      - opt_c: "Skin"
+      - opt_d: "Trachea"
+    difficulty: 2
+    eval: deterministic
+    tags: [fish, vertebrates]
+    time_est: 30s
+
+  - id: qb_895f877a
+    question: "Which of these fish is NOT listed among common Czech species?"
+    type: single_choice
+    options:
+      - opt_a: "Common carp"
+      - opt_b: "Atlantic salmon" (correct)
+      - opt_c: "Northern pike"
+      - opt_d: "Wels catfish"
+    difficulty: 3
+    eval: deterministic
+    tags: [fish, vertebrates]
+    time_est: 30s
+
+  - id: qb_7fd4f3ac
+    question: "Where do amphibians reproduce?"
+    type: single_choice
+    options:
+      - opt_a: "On land"
+      - opt_b: "In water" (correct)
+      - opt_c: "In the air"
+      - opt_d: "Underground"
+    difficulty: 2
+    eval: deterministic
+    tags: [amphibians, vertebrates]
+    time_est: 30s
+
+  - id: qb_f52ec9cd
+    question: "How do most frogs catch their prey?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct answer: With a long sticky tongue that they shoot out at high speed. The student must mention the tongue and its stickiness or shooting mechanism."
+    tags: [amphibians, vertebrates]
+    time_est: 30s
+
+  - id: qb_4e24ab0e
+    question: "Which of these animals is an amphibian?"
+    type: multi_choice
+    options:
+      - opt_a: "Edible frog"
+      - opt_b: "Common lizard"
+      - opt_c: "Fire salamander"
+      - opt_d: "Grass snake"
+      - opt_e: "European tree frog"
+    difficulty: 3
+    eval: deterministic
+    tags: [amphibians, vertebrates]
+    time_est: 30s
+
+  - id: qb_5f54a169
+    question: "What is typical of reptiles? Select ALL correct answers."
+    type: multi_choice
+    options:
+      - opt_a: "They give birth to live young"
+      - opt_b: "They hatch from eggs laid on land"
+      - opt_c: "Most are carnivores"
+      - opt_d: "Their body temperature changes with the environment"
+      - opt_e: "They have a constant body temperature"
+    difficulty: 3
+    eval: deterministic
+    tags: [reptiles, vertebrates]
+    time_est: 30s
+
+  - id: qb_08c8a746
+    question: "Assign each animal to the correct group – reptile (R) or amphibian (A): Slow worm, Great crested newt, Common viper, Common toad."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct answers: Slow worm = reptile, Great crested newt = amphibian, Common viper = reptile, Common toad = amphibian. Award 25% per correct answer."
+    tags: [reptiles, amphibians, vertebrates]
+    time_est: 30s
+
+  - id: qb_e7383574
+    question: "What characteristics are typical of birds? Select ALL correct answers."
+    type: multi_choice
+    options:
+      - opt_a: "Body covered with feathers"
+      - opt_b: "Front limbs transformed into wings"
+      - opt_c: "They have a beak"
+      - opt_d: "They give birth to live young"
+      - opt_e: "They hatch from eggs"
+    difficulty: 2
+    eval: deterministic
+    tags: [birds, vertebrates]
+    time_est: 30s
+
+  - id: qb_4f8c3437
+    question: "What is the most important characteristic of mammals?"
+    type: single_choice
+    options:
+      - opt_a: "They have scales"
+      - opt_b: "They hatch from eggs"
+      - opt_c: "They give birth to live young that feed on mother's milk" (correct)
+      - opt_d: "They breathe with gills"
+    difficulty: 2
+    eval: deterministic
+    tags: [mammals, vertebrates]
+    time_est: 30s
+
+  - id: qb_d38b6928
+    question: "Which mammal has adapted to flight?"
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct answer: Bat. Acceptable variants: bat, bats, netopýr."
+    tags: [mammals, vertebrates]
+    time_est: 30s
+
+  - id: qb_b8b35539
+    question: "Which mammals have adapted to life in water? Name at least two examples."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct answers include: whale, dolphin (live only in water), beaver, otter (live on land and in water). Student must name at least two. 50% for one correct, 100% for two or more."
+    tags: [mammals, vertebrates]
+    time_est: 30s
+
+  - id: qb_7cb6182a
+    question: "What three main groups make up the invertebrates?"
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct answer: Mollusks, annelids, arthropods. Award 33% for each correctly named group."
+    tags: [invertebrates, classification]
+    time_est: 30s
+
+  - id: qb_b08c748e
+    question: "Which group of invertebrates is the most numerous?"
+    type: single_choice
+    options:
+      - opt_a: "Mollusks"
+      - opt_b: "Annelids"
+      - opt_c: "Insects" (correct)
+      - opt_d: "Spiders"
+    difficulty: 2
+    eval: deterministic
+    tags: [invertebrates]
+    time_est: 30s
+
+  - id: qb_c07df613
+    question: "How are mollusks classified?"
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct answer: Gastropods (snails), bivalves and cephalopods. Award 33% per correct group."
+    tags: [mollusks, invertebrates]
+    time_est: 30s
+
+  - id: qb_58ac7baa
+    question: "What protects the body of bivalves?"
+    type: single_choice
+    options:
+      - opt_a: "A snail shell"
+      - opt_b: "A bivalve shell" (correct)
+      - opt_c: "A carapace"
+      - opt_d: "Scales"
+    difficulty: 2
+    eval: deterministic
+    tags: [mollusks, invertebrates]
+    time_est: 30s
+
+  - id: qb_1382a787
+    question: "Which group of mollusks is the most evolutionarily advanced?"
+    type: single_choice
+    options:
+      - opt_a: "Gastropods"
+      - opt_b: "Bivalves"
+      - opt_c: "Cephalopods" (correct)
+      - opt_d: "Annelids"
+    difficulty: 3
+    eval: deterministic
+    tags: [mollusks, invertebrates]
+    time_est: 30s
+
+  - id: qb_a3c3460a
+    question: "How many legs do spiders have?"
+    type: number
+    correct_answer: 8
+    tolerance: 0
+    difficulty: 2
+    eval: deterministic
+    tags: [arthropods, invertebrates]
+    time_est: 30s
+
+  - id: qb_fabfb60f
+    question: "What three parts make up an insect's body?"
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct answer: Head, thorax, abdomen. Award 33% per correct part."
+    tags: [insects, arthropods]
+    time_est: 30s
+
+  - id: qb_00258e3a
+    question: "How many legs does an insect have?"
+    type: number
+    correct_answer: 6
+    tolerance: 0
+    difficulty: 2
+    eval: deterministic
+    tags: [insects, arthropods]
+    time_est: 30s
+
+  - id: qb_a8796621
+    question: "What is the difference between complete and incomplete metamorphosis in insects?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Complete metamorphosis includes a pupa stage (egg → larva → pupa → adult), incomplete does not (egg → larva → adult). 50% for correct complete stages, 50% for correct incomplete stages. Key difference is presence/absence of pupa."
+    tags: [insects, arthropods]
+    time_est: 30s
+
+  - id: qb_f821baf7
+    question: "Arrange the stages of complete insect metamorphosis in the correct order:"
+    type: single_choice
+    options:
+      - opt_a: "Egg → Larva → Pupa → Adult" (correct)
+      - opt_b: "Larva → Egg → Adult → Pupa"
+      - opt_c: "Pupa → Egg → Larva → Adult"
+      - opt_d: "Egg → Pupa → Larva → Adult"
+    difficulty: 2
+    eval: deterministic
+    tags: [insects, arthropods]
+    time_est: 30s
+
+  - id: qb_df6584b1
+    question: "What are chelicerae in spiders?"
+    type: single_choice
+    options:
+      - opt_a: "Eyes"
+      - opt_b: "Fangs with a venom gland" (correct)
+      - opt_c: "Antennae"
+      - opt_d: "Legs"
+    difficulty: 3
+    eval: deterministic
+    tags: [arthropods, invertebrates]
+    time_est: 30s
+
+  - id: qb_57952cb7
+    question: "List the basic vertebrate groups and for each one give a representative species with both genus and species name."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct answer: 5 groups with examples: Fish (e.g. Common carp), Amphibians (e.g. Edible frog), Reptiles (e.g. Common lizard), Birds (e.g. Barn swallow), Mammals (e.g. Eurasian otter). Award 10% per correct group and 10% per correct species with both genus and species name. Species must match the group."
+    tags: [vertebrates, classification]
+    time_est: 30s
+
+  - id: qb_8e0616d8
+    question: "How are invertebrates classified? For each group, give at least one representative (genus name is sufficient)."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: Mollusks (gastropods – snail, bivalves – mussel, cephalopods – octopus), Annelids (earthworm), Arthropods (spiders, crustaceans, insects). Award: 20% per correct group (3 groups), 40% total for correct representatives."
+    tags: [invertebrates, classification]
+    time_est: 30s
+
+  - id: qb_8b2d5329
+    question: "Choose one vertebrate group and describe its characteristics: appearance, breathing and movement, reproduction, diet."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Student picks one vertebrate group and describes it. Score: 25% appearance, 25% breathing/movement, 25% reproduction, 25% diet. Must be factually correct for chosen group."
+    tags: [vertebrates]
+    time_est: 30s
+
+  - id: qb_5bf1d9c3
+    question: "Why are reptiles considered the first vertebrates fully adapted to life on land?"
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: They lay eggs on land (don't need water for reproduction like amphibians) and their body is adapted to terrestrial life. 50% for eggs on land, 50% for comparison with amphibians or mention of terrestrial adaptation."
+    tags: [reptiles, vertebrates]
+    time_est: 30s
+
+  - id: qb_750e249f
+    question: "How do mammals differ from all other vertebrate groups? Name five characteristics."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct traits: give birth to live young, young feed on mother's milk, more developed brain, body covered with fur, constant body temperature. Student must list at least 2. Award 20% per correct trait (max 100%)."
+    tags: [mammals, vertebrates]
+    time_est: 30s
+
+  - id: qb_e2805ad9
+    question: "Give an example of a mammal that lives: a) only on land, b) on land and in water, c) in the air, d) only in water."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: a) land – mouse, cat, wolf, bear, elephant, giraffe, tiger, b) land+water – beaver, otter, c) air – bat, d) water – whale, dolphin. Award 25% per correct example (a–d)."
+    tags: [mammals, vertebrates]
+    time_est: 30s
+
+  - id: qb_d98bed61
+    question: "Which of these statements about amphibians is FALSE?"
+    type: single_choice
+    options:
+      - opt_a: "They live on land but reproduce in water"
+      - opt_b: "Tadpoles hatch from eggs"
+      - opt_c: "Tadpoles breathe with lungs" (correct)
+      - opt_d: "They mainly feed on insects and invertebrates"
+    difficulty: 3
+    eval: deterministic
+    tags: [amphibians, vertebrates]
+    time_est: 30s
+
+  - id: qb_bda4c2c3
+    question: "How do bivalves obtain food and oxygen?"
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: By drawing in water through an intake opening – food goes to the mouth opening, oxygen is absorbed by gills. 50% for mentioning water intake, 50% for distinguishing food and oxygen pathways."
+    tags: [mollusks, invertebrates]
+    time_est: 30s
+
+  - id: qb_04c0caec
+    question: "Why are spiders considered useful?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: They are, alongside birds and bats, the main predators of insects. Student must mention that spiders hunt/kill insects."
+    tags: [arthropods, invertebrates]
+    time_est: 30s
+
+  - id: qb_9ad2d61b
+    question: "What is the difference between a snail shell (ulita) and a bivalve shell (lastura)?"
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: Snail shell (ulita) belongs to gastropods (single-piece), bivalve shell (lastura) belongs to bivalves (two-piece held by strong ligaments). 50% for correct assignment, 50% for describing the structural difference."
+    tags: [mollusks, invertebrates]
+    time_est: 30s
+
+  - id: qb_83ea3feb
+    question: "Describe the body structure of an insect – what parts does it consist of and what sensory organs does it have on its head?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Body = head, thorax, abdomen. Head has antennae. Has 6 legs, most insects have wings. 25% for body parts, 25% for antennae, 25% for 6 legs, 25% for wings."
+    tags: [insects, arthropods]
+    time_est: 30s
+
+  - id: qb_8c125ec5
+    question: "Which of these groups does NOT belong to arthropods?"
+    type: single_choice
+    options:
+      - opt_a: "Spiders"
+      - opt_b: "Crustaceans"
+      - opt_c: "Cephalopods" (correct)
+      - opt_d: "Insects"
+    difficulty: 3
+    eval: deterministic
+    tags: [arthropods, invertebrates, classification]
+    time_est: 30s
+
+  - id: qb_61350494
+    question: "What type of environment do crustaceans inhabit?"
+    type: single_choice
+    options:
+      - opt_a: "Only freshwater"
+      - opt_b: "Only saltwater"
+      - opt_c: "Fresh and salt water, some also on land" (correct)
+      - opt_d: "Only land"
+    difficulty: 3
+    eval: deterministic
+    tags: [arthropods, invertebrates]
+    time_est: 30s
+
+  - id: qb_0dafd18f
+    question: "Assign these animals to the correct invertebrate group (mollusks / annelids / arthropods): earthworm, octopus, mussel, spider, snail, bee."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: Mollusks – octopus, mussel, snail; Annelids – earthworm; Arthropods – spider, bee. Award ~17% per correct assignment (6 animals = 100%)."
+    tags: [invertebrates, classification]
+    time_est: 30s
+
+  - id: qb_368e43c2
+    question: "What is the venomous structure in spiders called and what is it used for?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Chelicerae (fangs) – used to catch prey and kill it with venom. 50% for name, 50% for function."
+    tags: [arthropods, invertebrates]
+    time_est: 30s
+
+  - id: qb_0dac89cb
+    question: "What do annelids have in common? Name at least two characteristics."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct traits: worm-like appearance, body divided into equal segments (rings) separated by partitions, can be marine, freshwater or terrestrial. 50% per correct trait (max 100%). Student must name at least two."
+    tags: [annelids, invertebrates]
+    time_est: 30s
+
+  - id: qb_a1145880
+    question: "Fill in the missing stage of incomplete insect metamorphosis: egg → _____ → adult."
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct answer: larva. Acceptable: larva, nymph."
+    tags: [insects, arthropods]
+    time_est: 30s
+
+  - id: qb_ac37b6bd
+    question: "What extra stage does complete metamorphosis have compared to incomplete?"
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct answer: pupa (pupal stage)."
+    tags: [insects, arthropods]
+    time_est: 30s
+
+  - id: qb_3e8dd6a9
+    question: "Which of these statements about birds is TRUE?"
+    type: multi_choice
+    options:
+      - opt_a: "Birds' feet adapted to their way of life"
+      - opt_b: "All birds can fly"
+      - opt_c: "The beak is adapted for food intake"
+      - opt_d: "The body is covered with scales"
+      - opt_e: "Front limbs are transformed into wings"
+    difficulty: 3
+    eval: deterministic
+    tags: [birds, vertebrates]
+    time_est: 30s
+
+  - id: qb_441a85f8
+    question: "Do humans belong to mammals? Justify your answer."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: Yes, humans are mammals. Justification: give birth to live young, feed them mother's milk, constant body temperature, developed brain, body covered with (sparse) hair. 20% for 'yes', 80% for justification (20% per correct trait, max 4)."
+    tags: [mammals, vertebrates]
+    time_est: 30s
+
+  - id: qb_4f832663
+    question: "Compare gastropods and bivalves – name at least two differences."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct differences: Gastropods have a single shell and move with a muscular foot. Bivalves have a two-part shell and obtain food/oxygen by drawing in water. 50% per correct difference (min. 2)."
+    tags: [mollusks, invertebrates]
+    time_est: 30s
+
+  - id: qb_aa7afec3
+    question: "Which statement about cephalopods is FALSE?"
+    type: single_choice
+    options:
+      - opt_a: "They are very agile predators"
+      - opt_b: "They have bilateral symmetry"
+      - opt_c: "They are the most advanced mollusks"
+      - opt_d: "They move with a muscular foot like snails" (correct)
+    difficulty: 3
+    eval: deterministic
+    tags: [mollusks, invertebrates]
+    time_est: 30s
+
+  - id: qb_c53dbd2b
+    question: "Name at least three Czech bird species with both genus and species name."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct species from textbook: Mallard, Barn swallow, Barn owl, House sparrow, Hooded crow, Black woodpecker, White stork, Common buzzard. At least 3 needed with both names. 33% each (max 100%). Other Czech birds with correct names also acceptable."
+    tags: [birds, vertebrates]
+    time_est: 30s
+
+  - id: qb_4c57c3a6
+    question: "The slow worm is often mistaken for a snake. What group does it actually belong to and why?"
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: Slow worm is a reptile, specifically a legless lizard. It belongs to reptiles (not snakes). 50% for correct classification, 50% for explanation."
+    tags: [reptiles, vertebrates]
+    time_est: 30s
+
+  - id: qb_882aded1
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Give both genus and species name."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Eurasian otter (Vydra říční). 50% for genus, 50% for species name."
+    tags: [identification, mammals]
+    time_est: 30s
+
+  - id: qb_3841648c
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Give both genus and species name."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Wels catfish (Sumec velký). 50% for genus, 50% for species."
+    tags: [identification, fish]
+    time_est: 30s
+
+  - id: qb_5ead6775
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Give both genus and species name."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Black woodpecker (Datel černý). 50% for genus, 50% for species."
+    tags: [identification, birds]
+    time_est: 30s
+
+  - id: qb_3d51929e
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Which vertebrate group does it belong to?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Grass snake (Užovka obojková), belongs to reptiles. 40% genus, 30% species, 30% group."
+    tags: [identification, reptiles]
+    time_est: 30s
+
+  - id: qb_2f028039
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Which vertebrate group does it belong to?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Fire salamander (Mlok skvrnitý), belongs to amphibians. 40% genus, 30% species, 30% group."
+    tags: [identification, amphibians]
+    time_est: 30s
+
+  - id: qb_448dbfdd
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Give both genus and species name."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Northern pike (Štika obecná). 50% for genus, 50% for species."
+    tags: [identification, fish]
+    time_est: 30s
+
+  - id: qb_cc0f753b
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Is it a vertebrate or invertebrate?"
+    type: free_text
+    difficulty: 2
+    eval: ai
+    ai_prompt: "Correct: European hare (Zajíc polní), it is a vertebrate (mammal). 40% genus, 30% species, 30% classification."
+    tags: [identification, mammals]
+    time_est: 30s
+
+  - id: qb_821622a8
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Give both genus and species name."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Barn swallow (Vlaštovka obecná). 50% for genus, 50% for species."
+    tags: [identification, birds]
+    time_est: 30s
+
+  - id: qb_daf8089c
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Which vertebrate group does it belong to?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Common lizard (Ještěrka obecná), belongs to reptiles. 40% genus, 30% species, 30% group."
+    tags: [identification, reptiles]
+    time_est: 30s
+
+  - id: qb_f1fd6284
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Give both genus and species name."
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Smooth newt (Čolek obecný). 50% for genus, 50% for species."
+    tags: [identification, amphibians]
+    time_est: 30s
+
+  - id: qb_8703f379
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Does it belong to vertebrates or invertebrates?"
+    type: free_text
+    difficulty: 3
+    eval: ai
+    ai_prompt: "Correct: Peacock butterfly (Babočka paví oko), belongs to invertebrates (insects). 40% genus, 30% species, 30% classification."
+    tags: [identification, insects]
+    time_est: 30s
+
+  - id: qb_cf09c18b
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Which invertebrate group does it belong to?"
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: Swan mussel (Škeble rybničná), belongs to mollusks (bivalves). 40% genus, 30% species, 30% group."
+    tags: [identification, mollusks]
+    time_est: 30s
+
+  - id: qb_6eff8d43
+    question: "[image: Photo of an animal to identify] Which animal is in the picture? Give both genus and species name."
+    type: free_text
+    difficulty: 4
+    eval: ai
+    ai_prompt: "Correct: Old World swallowtail (Otakárek fenyklový). 50% for genus, 50% for species."
+    tags: [identification, insects]
+    time_est: 30s

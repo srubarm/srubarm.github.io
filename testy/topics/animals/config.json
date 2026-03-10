@@ -1,17 +1,21 @@
 {
+  "questionBank": {
+    "yaml": "animals-question-bank-extract_2.1.yaml",
+    "json": "animals-question-bank_2.1.json"
+  },
   "tests": [
     {
-      "file": "test-zivocichove-diag.json",
-      "id": "test_zivocichove_diag",
+      "file": "animals-diagnostic-test_v1.json",
+      "id": "f289f974-c285-48de-8523-c815dbdc3631",
       "title": {
-        "cs": "Živočichové – Vstupní test",
-        "en": "Animals – Diagnostic Test"
+        "en": "The World of Animals",
+        "cs": "Svět živočichů"
       },
       "description": {
-        "cs": "Krátký vstupní test pro ověření základních znalostí o živočiších.",
-        "en": "Short diagnostic test to assess basic knowledge of animals."
+        "en": "Assessment of basic knowledge about vertebrates and invertebrates.",
+        "cs": "Prověření základních znalostí o obratlovcích a bezobratlých."
       },
-      "questions": 10,
+      "questions": 12,
       "maxWeightedScore": 14,
       "difficulty": "easy",
       "minScore": 0,
@@ -19,36 +23,36 @@
       "runnable": true
     },
     {
-      "file": "test-zivocichove-mini.json",
-      "id": "test_zivocichove_mini",
+      "file": "animals-overview-test_v1.json",
+      "id": "e55f828e-29c1-4733-a403-e097c5e45887",
       "title": {
-        "cs": "Živočichové – Výběr 20 otázek",
-        "en": "Animals – 20 Selected Questions"
+        "cs": "Živočichové: Souhrnný přehled",
+        "en": "Animals: Comprehensive Coverage"
       },
       "description": {
-        "cs": "Zkrácený test: třídění živočichů, obratlovci, bezobratlí a poznávačka.",
-        "en": "Shorter test: animal classification, vertebrates, invertebrates and image ID."
+        "cs": "Následný test pokrývající obratlovce i bezobratlé se zaměřením na poznávání a klíčové znaky.",
+        "en": "Follow-up test covering vertebrates and invertebrates with a focus on identification and key traits."
       },
-      "questions": 20,
-      "maxWeightedScore": 31,
+      "questions": 22,
+      "maxWeightedScore": 22,
       "difficulty": "easy",
       "minScore": 20,
       "visible": true,
       "runnable": true
     },
     {
-      "file": "test-zivocichove.json",
-      "id": "test_zivocichove_001",
+      "file": "animals-final-test_v1.json",
+      "id": "586e26f2-9e4b-4351-9b41-3aa18730a22c",
       "title": {
-        "cs": "Živočichové – Kompletní test",
-        "en": "Animals – Full Test"
+        "cs": "Závěrečný test: Říše živočichů",
+        "en": "Final Mastery Test: The Animal Kingdom"
       },
       "description": {
-        "cs": "Kompletní test pokrývající třídění živočichů, obratlovce, bezobratlé a poznávačku z obrázků.",
-        "en": "Complete test covering animal classification, vertebrates, invertebrates and image identification."
+        "cs": "Komplexní závěrečné hodnocení zahrnující klasifikaci, znaky a poznávání obratlovců i bezobratlých.",
+        "en": "A comprehensive final assessment covering classification, characteristics, and identification of vertebrates and invertebrates."
       },
-      "questions": 62,
-      "maxWeightedScore": 107,
+      "questions": 24,
+      "maxWeightedScore": 35,
       "difficulty": "medium",
       "minScore": 40,
       "visible": true,
