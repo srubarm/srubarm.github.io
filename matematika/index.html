@@ -342,6 +342,57 @@ layout: null
     }
     .review-table tr.review-wrong td { color: #c33; }
     .review-table tr.review-correct td { color: #111; }
+    .review-table tr.review-timeout td { color: #c33; font-style: italic; }
+    .time-trial-wrap {
+      margin: 15px auto;
+      max-width: 300px;
+      text-align: left;
+      padding: 12px 16px;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      background: #fafafa;
+    }
+    .time-trial-wrap label {
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .time-trial-wrap input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .time-trial-difficulty {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .time-trial-difficulty button {
+      font-size: 0.85rem;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 2px solid #1F96D3;
+      background: #fff;
+      color: #1F96D3;
+      cursor: pointer;
+    }
+    .time-trial-difficulty button.active {
+      background: #1F96D3;
+      color: #fff;
+    }
+    .countdown {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #1F96D3;
+      margin-bottom: 8px;
+      min-height: 1.6em;
+    }
+    .countdown.countdown-warn { color: #e8a020; }
+    .countdown.countdown-danger { color: #e55; }
   </style>
 </head>
 <body>
@@ -467,6 +518,14 @@ layout: null
 
   <!-- Difficulty selection -->
   <div id="difficulty" style="display:none">
+    <div class="time-trial-wrap">
+      <label><input type="checkbox" id="time-trial-check" onchange="toggleTimeTrial()"> Time Trial</label>
+      <div class="time-trial-difficulty" id="time-trial-difficulty" style="display:none">
+        <button id="tt-easy" onclick="setTimeTrialDifficulty('easy')">Easy</button>
+        <button id="tt-medium" onclick="setTimeTrialDifficulty('medium')">Medium</button>
+        <button id="tt-hard" class="active" onclick="setTimeTrialDifficulty('hard')">Hard</button>
+      </div>
+    </div>
     <div id="level-buttons-container"></div>
     <div id="solo-ai-generate-wrap" style="display:none; margin-top:20px;">
       <button onclick="generateAITest(soloName)" style="background:#055585;">Generate test based on your previous results</button>
@@ -514,6 +573,7 @@ layout: null
     <div class="player-label" id="player-label"></div>
     <div class="progress" id="progress"></div>
     <div class="timer" id="timer">0:00</div>
+    <div class="countdown" id="countdown"></div>
     <div class="problem" id="problem"></div>
     <div>
       <input type="tel" inputmode="numeric" pattern="[0-9]*" id="answer">
@@ -591,6 +651,40 @@ layout: null
     let customTestName = null;     // session-only: loaded custom test name
     var backTarget = null; // function to call when back arrow is clicked
 
+    // Time trial state
+    let timeTrialEnabled = false;
+    let timeTrialDifficulty = 'hard'; // 'hard', 'medium', 'easy'
+    let problemCountdownInterval = null;
+    let problemTimeLeft = 0;
+
+    // Time limits per level in seconds (hard baseline). Medium = +2s, Easy = +4s.
+    var TIME_LIMITS = {
+      add10: 2, add50: 3, add200: 4,
+      mul5x5: 2, mul10x10: 3, mul12x12: 4, mul12x50: 5, mul20x100: 8,
+      div50d5: 3, div100d10: 4, div200d10: 5,
+      divmod50d5: 4, divmod100d10: 5, divmod200d10: 6
+    };
+
+    function getTimeLimit(lv) {
+      var base = TIME_LIMITS[lv];
+      if (!base) return null;
+      if (timeTrialDifficulty === 'medium') return base + 2;
+      if (timeTrialDifficulty === 'easy') return base + 4;
+      return base;
+    }
+
+    function toggleTimeTrial() {
+      timeTrialEnabled = document.getElementById('time-trial-check').checked;
+      document.getElementById('time-trial-difficulty').style.display = timeTrialEnabled ? 'flex' : 'none';
+    }
+
+    function setTimeTrialDifficulty(diff) {
+      timeTrialDifficulty = diff;
+      ['easy', 'medium', 'hard'].forEach(function(d) {
+        document.getElementById('tt-' + d).className = d === diff ? 'active' : '';
+      });
+    }
+
     function setBackArrow(fn) {
       var arrow = document.getElementById('back-arrow');
       if (fn) {
@@ -609,7 +703,7 @@ layout: null
     function buildProblemReview(problemList) {
       var h = '<table class="review-table"><tr><th>#</th><th>Problem</th><th>Answer</th><th></th></tr>';
       problemList.forEach(function(p, i) {
-        var cls = p.correct ? 'review-correct' : 'review-wrong';
+        var cls = p.timedOut ? 'review-timeout' : (p.correct ? 'review-correct' : 'review-wrong');
         var answerCol = p.userAnswer;
         var correctCol = '';
         if (!p.correct) {
@@ -802,16 +896,24 @@ layout: null
         dateStarted: new Date(startTime).toISOString(),
         dateCompleted: new Date().toISOString(),
         problems: problems.map(function(p) {
-          return {
+          var prob = {
             problem: formatProblemString(p),
             correctAnswer: formatCorrectAnswer(p),
             userAnswer: p.userAnswer || '',
             correct: !!p.correct,
             timeTaken: p.timeTaken || 0
           };
+          if (p.timedOut) prob.timedOut = true;
+          return prob;
         })
       };
       if (aiTeacherMode) obj.isAiTeacher = true;
+      if (timeTrialEnabled) {
+        obj.timeTrial = {
+          difficulty: timeTrialDifficulty,
+          timeLimit: getTimeLimit(level) || currentProblemTimeLimit || null
+        };
+      }
       return obj;
     }
 
@@ -924,6 +1026,80 @@ layout: null
       return typeof problems[current].remainder !== 'undefined';
     }
 
+    function startProblemCountdown() {
+      clearInterval(problemCountdownInterval);
+      var countdownEl = document.getElementById('countdown');
+      if (!timeTrialEnabled) {
+        countdownEl.textContent = '';
+        return;
+      }
+      var limit = getTimeLimit(level);
+      if (!limit) {
+        // AI-generated or custom test with AI-specified time
+        limit = currentProblemTimeLimit;
+      }
+      if (!limit) {
+        countdownEl.textContent = '';
+        return;
+      }
+      problemTimeLeft = limit;
+      countdownEl.textContent = problemTimeLeft + 's';
+      countdownEl.className = 'countdown';
+      problemCountdownInterval = setInterval(function() {
+        problemTimeLeft--;
+        if (problemTimeLeft <= 0) {
+          clearInterval(problemCountdownInterval);
+          timeUp();
+          return;
+        }
+        countdownEl.textContent = problemTimeLeft + 's';
+        if (problemTimeLeft <= 2) {
+          countdownEl.className = 'countdown countdown-danger';
+        } else if (problemTimeLeft <= Math.ceil(limit * 0.4)) {
+          countdownEl.className = 'countdown countdown-warn';
+        }
+      }, 1000);
+    }
+
+    // Per-problem time limit for AI tests (set externally)
+    var currentProblemTimeLimit = null;
+
+    function timeUp() {
+      var timeTaken = Math.round((Date.now() - problemStartTime) / 100) / 10;
+      var p = problems[current];
+      p.timeTaken = timeTaken;
+      p.correct = false;
+      p.timedOut = true;
+      p.userAnswer = '(time up)';
+
+      mistakes++;
+      var el = document.getElementById('result');
+      var rightAnswer = String(p.answer);
+      if (typeof p.remainder !== 'undefined') rightAnswer += ' r ' + p.remainder;
+      el.textContent = 'Time up! Answer: ' + rightAnswer;
+      el.className = 'result wrong';
+
+      // Disable input briefly
+      document.getElementById('answer').disabled = true;
+      var remInp = document.getElementById('answer-remainder');
+      if (remInp) remInp.disabled = true;
+
+      current++;
+      if (current < problems.length) {
+        setTimeout(function() {
+          document.getElementById('answer').disabled = false;
+          if (remInp) remInp.disabled = false;
+          showProblem();
+        }, 1500);
+      } else {
+        setTimeout(function() {
+          document.getElementById('answer').disabled = false;
+          if (remInp) remInp.disabled = false;
+          finish();
+        }, 1500);
+      }
+    }
+
     function showProblem() {
       problemStartTime = Date.now();
       const p = problems[current];
@@ -940,6 +1116,13 @@ layout: null
       } else {
         remWrap.style.display = 'none';
       }
+      // Set per-problem time limit for AI tests
+      if (timeTrialEnabled && p.timeLimit) {
+        currentProblemTimeLimit = p.timeLimit;
+      } else {
+        currentProblemTimeLimit = null;
+      }
+      startProblemCountdown();
       inp.focus();
       setTimeout(function() { inp.focus(); }, 50);
     }
@@ -948,16 +1131,19 @@ layout: null
       hideAll();
       document.getElementById('game').style.display = 'block';
       document.getElementById('player-label').textContent = label;
+      document.getElementById('countdown').textContent = '';
       current = 0;
       mistakes = 0;
       startTime = Date.now();
       clearInterval(timerInterval);
+      clearInterval(problemCountdownInterval);
       document.getElementById('timer').textContent = '0:00';
       timerInterval = setInterval(updateTimer, 1000);
       showProblem();
     }
 
     function check() {
+      clearInterval(problemCountdownInterval);
       var timeTaken = Math.round((Date.now() - problemStartTime) / 100) / 10;
       const val = parseInt(document.getElementById('answer').value);
       if (isNaN(val)) return;
@@ -1006,6 +1192,7 @@ layout: null
 
     function finish() {
       clearInterval(timerInterval);
+      clearInterval(problemCountdownInterval);
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
 
       if (mode === 'solo' && aiTeacherMode) {
@@ -1023,10 +1210,16 @@ layout: null
         hideAll();
         setBackArrow(showMenu);
         document.getElementById('done').style.display = 'block';
+        var ttInfo = '';
+        if (testObj.timeTrial) {
+          var timedOutCount = testObj.problems.filter(function(p) { return p.timedOut; }).length;
+          ttInfo = '<br><span style="color:#e8a020;">Time Trial (' + testObj.timeTrial.difficulty + ')</span>';
+          if (timedOutCount > 0) ttInfo += '<br>Timed out: <b>' + timedOutCount + '</b>';
+        }
         document.getElementById('summary').innerHTML =
           '<b>' + soloName + '</b><br>' +
           'Mistakes: <b>' + mistakes + '</b><br>' +
-          'Time: <b>' + formatTime(elapsed) + '</b>';
+          'Time: <b>' + formatTime(elapsed) + '</b>' + ttInfo;
         document.getElementById('problem-review').innerHTML = buildProblemReview(testObj.problems);
         document.getElementById('personal-best').innerHTML =
           '<p><b>Top scores \u2013 ' + (LEVEL_LABELS[level] || level) + '</b></p>' +
@@ -1216,13 +1409,19 @@ layout: null
           var levelLabel = LEVEL_LABELS[t.level] || t.level;
           var modeStr = t.isCompetitionMode ? 'Competition' : 'Solo';
           var dateStr = t.dateStarted ? t.dateStarted.slice(0, 10) : 'unknown';
-          lines.push('### Test ' + (ti + 1) + ': ' + levelLabel + ' (' + modeStr + ', ' + dateStr + ')');
+          var ttStr = '';
+          if (t.timeTrial) {
+            ttStr = ', Time Trial ' + t.timeTrial.difficulty + ' (' + (t.timeTrial.timeLimit || '?') + 's/problem)';
+          }
+          lines.push('### Test ' + (ti + 1) + ': ' + levelLabel + ' (' + modeStr + dateStr + ttStr + ')');
 
           var correctCount = 0;
           var totalTime = 0;
+          var timedOutCount = 0;
           t.problems.forEach(function(p, pi) {
-            var mark = p.correct ? '\u2713' : '\u2717';
+            var mark = p.correct ? '\u2713' : (p.timedOut ? '\u23f0' : '\u2717');
             correctCount += p.correct ? 1 : 0;
+            if (p.timedOut) timedOutCount++;
             totalTime += (p.timeTaken || 0);
             lines.push('  ' + (pi + 1) + '. ' + p.problem + ' = ' + p.correctAnswer +
               ', answered ' + p.userAnswer + ' ' + mark + ' (' + (p.timeTaken || 0) + 's)');
@@ -1230,7 +1429,8 @@ layout: null
           var pct = t.problems.length > 0 ? Math.round(correctCount / t.problems.length * 100) : 0;
           var totalTimeSec = Math.round(totalTime);
           var totalTimeStr = Math.floor(totalTimeSec / 60) + ':' + String(totalTimeSec % 60).padStart(2, '0');
-          lines.push('  Summary: ' + correctCount + '/' + t.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr);
+          var summaryExtra = timedOutCount > 0 ? ', ' + timedOutCount + ' timed out' : '';
+          lines.push('  Summary: ' + correctCount + '/' + t.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr + summaryExtra);
           lines.push('');
         });
       }
@@ -1273,6 +1473,13 @@ layout: null
       lines.push('Valid operators: "+" (addition), "-" (subtraction), "*" (multiplication), "/" (exact division), "/r" (division with remainder)');
       lines.push('Rules: b must be > 0 for division. For "/" the division must be exact (no remainder). For "/r" use any integers.');
       lines.push('Validation is strict: checks for valid operators, integer operands, division by zero, and exact divisibility for "/" (suggests "/r" if not even).');
+      if (timeTrialEnabled) {
+        lines.push('');
+        lines.push('IMPORTANT: This test will be run in TIME TRIAL mode. The student has a limited time per problem.');
+        lines.push('For each problem, include a "timeLimit" field (integer seconds) appropriate for the difficulty.');
+        lines.push('Guidelines: simple addition/subtraction under 10 = 2-3s, under 50 = 3-5s, multiplication small = 3-4s, larger = 5-8s, division = 4-6s.');
+        lines.push('Format each problem as: { "a": <int>, "b": <int>, "op": "<operator>", "timeLimit": <seconds> }');
+      }
 
       return lines.join('\n');
     }
@@ -1294,13 +1501,18 @@ layout: null
       lines.push('## AI-Generated Test Results');
       lines.push('Test name: ' + (LEVEL_LABELS[testObj.level] || testObj.level));
       lines.push('Date: ' + (testObj.dateStarted ? testObj.dateStarted.slice(0, 10) : 'today'));
+      if (testObj.timeTrial) {
+        lines.push('Mode: Time Trial (' + testObj.timeTrial.difficulty + ', ' + (testObj.timeTrial.timeLimit || '?') + 's per problem)');
+      }
       lines.push('');
 
       var correctCount = 0;
       var totalTime = 0;
+      var timedOutCount = 0;
       testObj.problems.forEach(function(p, pi) {
-        var mark = p.correct ? '\u2713' : '\u2717';
+        var mark = p.correct ? '\u2713' : (p.timedOut ? '\u23f0' : '\u2717');
         correctCount += p.correct ? 1 : 0;
+        if (p.timedOut) timedOutCount++;
         totalTime += (p.timeTaken || 0);
         lines.push('  ' + (pi + 1) + '. ' + p.problem + ' = ' + p.correctAnswer +
           ', answered ' + p.userAnswer + ' ' + mark + ' (' + (p.timeTaken || 0).toFixed(1) + 's)');
@@ -1308,7 +1520,8 @@ layout: null
       var pct = testObj.problems.length > 0 ? Math.round(correctCount / testObj.problems.length * 100) : 0;
       var totalTimeSec = Math.round(totalTime);
       var totalTimeStr = Math.floor(totalTimeSec / 60) + ':' + String(totalTimeSec % 60).padStart(2, '0');
-      lines.push('  Summary: ' + correctCount + '/' + testObj.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr);
+      var summaryExtra = timedOutCount > 0 ? ', ' + timedOutCount + ' timed out' : '';
+      lines.push('  Summary: ' + correctCount + '/' + testObj.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr + summaryExtra);
       lines.push('');
 
       lines.push('## Instructions');
@@ -1663,6 +1876,13 @@ layout: null
       lines.push('Valid operators: "+" (addition), "-" (subtraction), "*" (multiplication), "/" (exact division), "/r" (division with remainder)');
       lines.push('Rules: b must be > 0 for division. For "/" the division must be exact (no remainder). For "/r" use any integers.');
       lines.push('Validation is strict: checks for valid operators, integer operands, division by zero, and exact divisibility for "/" (suggests "/r" if not even).');
+      if (timeTrialEnabled) {
+        lines.push('');
+        lines.push('IMPORTANT: This test will be run in TIME TRIAL mode. The student has a limited time per problem.');
+        lines.push('For each problem, include a "timeLimit" field (integer seconds) appropriate for the difficulty.');
+        lines.push('Guidelines: simple addition/subtraction under 10 = 2-3s, under 50 = 3-5s, multiplication small = 3-4s, larger = 5-8s, division = 4-6s.');
+        lines.push('Format each problem as: { "a": <int>, "b": <int>, "op": "<operator>", "timeLimit": <seconds> }');
+      }
 
       return lines.join('\n');
     }
@@ -1692,13 +1912,18 @@ layout: null
       lines.push('## Test Just Completed');
       lines.push('Test name: ' + (LEVEL_LABELS[testObj.level] || testObj.level));
       lines.push('Date: ' + (testObj.dateStarted ? testObj.dateStarted.slice(0, 10) : 'today'));
+      if (testObj.timeTrial) {
+        lines.push('Mode: Time Trial (' + testObj.timeTrial.difficulty + ', ' + (testObj.timeTrial.timeLimit || '?') + 's per problem)');
+      }
       lines.push('');
 
       var correctCount = 0;
       var totalTime = 0;
+      var timedOutCount = 0;
       testObj.problems.forEach(function(p, pi) {
-        var mark = p.correct ? '\u2713' : '\u2717';
+        var mark = p.correct ? '\u2713' : (p.timedOut ? '\u23f0' : '\u2717');
         correctCount += p.correct ? 1 : 0;
+        if (p.timedOut) timedOutCount++;
         totalTime += (p.timeTaken || 0);
         lines.push('  ' + (pi + 1) + '. ' + p.problem + ' = ' + p.correctAnswer +
           ', answered ' + p.userAnswer + ' ' + mark + ' (' + (p.timeTaken || 0).toFixed(1) + 's)');
@@ -1706,7 +1931,8 @@ layout: null
       var pct = testObj.problems.length > 0 ? Math.round(correctCount / testObj.problems.length * 100) : 0;
       var totalTimeSec = Math.round(totalTime);
       var totalTimeStr = Math.floor(totalTimeSec / 60) + ':' + String(totalTimeSec % 60).padStart(2, '0');
-      lines.push('  Summary: ' + correctCount + '/' + testObj.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr);
+      var summaryExtra = timedOutCount > 0 ? ', ' + timedOutCount + ' timed out' : '';
+      lines.push('  Summary: ' + correctCount + '/' + testObj.problems.length + ' correct, ' + pct + '%, total time ' + totalTimeStr + summaryExtra);
       lines.push('');
 
       lines.push('## Instructions');
@@ -1905,6 +2131,8 @@ layout: null
       hideAll();
       document.getElementById('difficulty').style.display = 'block';
       setBackArrow(showMenu);
+      // Show time trial option for solo mode
+      document.querySelector('.time-trial-wrap').style.display = 'block';
       var soloAI = document.getElementById('solo-ai-generate-wrap');
       if (soloAI) soloAI.style.display = isAIEnabled() ? 'block' : 'none';
     }
@@ -2063,8 +2291,12 @@ layout: null
       playerNames = [n1, n2];
       playerResults = [];
       mode = 'comp';
+      // Disable time trial in competition mode
+      timeTrialEnabled = false;
+      document.getElementById('time-trial-check').checked = false;
       hideAll();
       document.getElementById('difficulty').style.display = 'block';
+      document.querySelector('.time-trial-wrap').style.display = 'none';
       setBackArrow(function() { showCompSetup(); });
     }
 
@@ -2122,6 +2354,7 @@ layout: null
         var result = mapping.fn(p.a, p.b);
         var prob = { a: p.a, b: p.b, op: mapping.op, answer: result.answer };
         if (typeof result.remainder !== 'undefined') prob.remainder = result.remainder;
+        if (p.timeLimit) prob.timeLimit = p.timeLimit;
         return prob;
       });
     }
