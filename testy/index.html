@@ -525,6 +525,7 @@ layout: null
     }
     .result-item.correct { border-left: 4px solid #2a9d3a; }
     .result-item.incorrect { border-left: 4px solid #e55; }
+    .result-item.partial { border-left: 4px solid #e8a020; }
     .result-item.pending { border-left: 4px solid #e8a020; }
     .result-item.skipped { border-left: 4px solid #ccc; }
     .result-q-text { font-weight: 600; margin-bottom: 6px; }
@@ -765,6 +766,7 @@ var UI_STRINGS = {
     score: 'Score',
     correct: 'correct',
     incorrect: 'incorrect',
+    partial: 'partial',
     skipped: 'Skipped',
     pendingReview: 'pending review',
     backToMenu: 'Back to Menu',
@@ -864,6 +866,7 @@ var UI_STRINGS = {
     score: 'Skóre',
     correct: 'správně',
     incorrect: 'špatně',
+    partial: 'částečně',
     skipped: 'Přeskočeno',
     pendingReview: 'čeká na kontrolu',
     backToMenu: 'Zpět do menu',
@@ -2977,7 +2980,7 @@ function gradeWithAI(aiQueue, results) {
           if (resultType === 'percentage') {
             var pct = Math.max(0, Math.min(100, parsed.score || 0));
             result.score = pct / 100;
-            result.status = pct >= 50 ? 'correct' : 'incorrect';
+            result.status = pct >= 100 ? 'correct' : (pct > 0 ? 'partial' : 'incorrect');
             result.feedback = parsed.feedback || '';
             result.aiScore = pct + '%';
           } else {
@@ -3164,7 +3167,9 @@ function buildTestEvaluationJSON(gradedResults) {
       qr.score = 0;
     } else {
       evaluated++;
-      if (resultType === 'boolean') {
+      if (r.status === 'partial') {
+        qr.correct = null; // partial credit — neither fully correct nor incorrect
+      } else if (resultType === 'boolean') {
         qr.correct = r.status === 'correct';
       } else {
         // percentage — correct is null per schema
@@ -3366,6 +3371,7 @@ function showResults(results) {
   var scoreClass = pct >= 80 ? 'good' : (pct >= 50 ? 'ok' : 'poor');
 
   var correct = results.filter(function(r) { return r.status === 'correct'; }).length;
+  var partial = results.filter(function(r) { return r.status === 'partial'; }).length;
   var incorrect = results.filter(function(r) { return r.status === 'incorrect'; }).length;
   var skipped = results.filter(function(r) { return r.status === 'skipped'; }).length;
   var pending = results.filter(function(r) { return r.status === 'pending'; }).length;
@@ -3390,7 +3396,9 @@ function showResults(results) {
     '<span class="score-label">' + tr('score') + '</span>' +
     '</div>';
   scoreHtml += '<div class="result-summary">' +
-    correct + ' ' + tr('correct') + ', ' + incorrect + ' ' + tr('incorrect');
+    correct + ' ' + tr('correct');
+  if (partial > 0) scoreHtml += ', ' + partial + ' ' + tr('partial');
+  scoreHtml += ', ' + incorrect + ' ' + tr('incorrect');
   if (skipped > 0) scoreHtml += ', ' + skipped + ' ' + tr('skipped').toLowerCase();
   if (pending > 0) scoreHtml += ', ' + pending + ' ' + tr('pendingReview');
   scoreHtml += '</div>';
@@ -3467,7 +3475,7 @@ function showResults(results) {
       detailHtml += '</div>';
     }
 
-    if (r.status === 'incorrect' && r.correctAnswer && showCorrectAnswer) {
+    if ((r.status === 'incorrect' || r.status === 'partial') && r.correctAnswer && showCorrectAnswer) {
       detailHtml += '<div class="result-answer" style="color:#2a9d3a;">' + tr('correctAnswer') + ': <b>' + escHtml(r.correctAnswer) + '</b></div>';
     }
 
@@ -3745,7 +3753,7 @@ function showHistoryDetail(index) {
       if (d.aiScore) detailHtml += ' (AI: ' + d.aiScore + ')';
       detailHtml += '</div>';
     }
-    if (d.status === 'incorrect' && d.correctAnswer) {
+    if ((d.status === 'incorrect' || d.status === 'partial') && d.correctAnswer) {
       detailHtml += '<div class="result-answer" style="color:#2a9d3a;">' + tr('correctAnswer') + ': <b>' + escHtml(d.correctAnswer) + '</b></div>';
     }
     if (d.feedback) {
