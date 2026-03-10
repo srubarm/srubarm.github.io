@@ -3359,6 +3359,14 @@ function recalculateTopicScore(topicId, userName, topicConfig) {
 }
 
 // ── Results Screen ───────────────────────────────────────────────────────────
+// Derive display class from status + score (handles legacy saved results that lack 'partial')
+function resultDisplayClass(status, score) {
+  if (status === 'skipped' || status === 'pending') return status;
+  if (score >= 1) return 'correct';
+  if (score > 0) return 'partial';
+  return 'incorrect';
+}
+
 function showResults(results) {
   // Calculate score
   var totalWeight = 0;
@@ -3463,7 +3471,8 @@ function showResults(results) {
   var showCorrectAnswer = testState.settings.show_correct_answer_comment !== false;
   var detailHtml = '';
   results.forEach(function(r, i) {
-    detailHtml += '<div class="result-item ' + r.status + '">';
+    var cls = resultDisplayClass(r.status, r.score);
+    detailHtml += '<div class="result-item ' + cls + '">';
     detailHtml += '<div class="result-q-text">' + (i + 1) + '. ' + escHtml(r.questionText) + '</div>';
 
     if (r.status === 'skipped') {
@@ -3475,7 +3484,7 @@ function showResults(results) {
       detailHtml += '</div>';
     }
 
-    if ((r.status === 'incorrect' || r.status === 'partial') && r.correctAnswer && showCorrectAnswer) {
+    if (cls !== 'correct' && r.correctAnswer && showCorrectAnswer) {
       detailHtml += '<div class="result-answer" style="color:#2a9d3a;">' + tr('correctAnswer') + ': <b>' + escHtml(r.correctAnswer) + '</b></div>';
     }
 
@@ -3743,7 +3752,8 @@ function showHistoryDetail(index) {
 
   var detailHtml = '';
   r.details.forEach(function(d, i) {
-    detailHtml += '<div class="result-item ' + d.status + '">';
+    var cls = resultDisplayClass(d.status, d.score);
+    detailHtml += '<div class="result-item ' + cls + '">';
     detailHtml += '<div class="result-q-text">' + (i + 1) + '. ' + escHtml(d.questionText) + '</div>';
     if (d.status === 'skipped') {
       detailHtml += '<div class="result-answer" style="color:#999;">' + tr('skipped') + '</div>';
@@ -3753,7 +3763,7 @@ function showHistoryDetail(index) {
       if (d.aiScore) detailHtml += ' (AI: ' + d.aiScore + ')';
       detailHtml += '</div>';
     }
-    if ((d.status === 'incorrect' || d.status === 'partial') && d.correctAnswer) {
+    if (cls !== 'correct' && d.correctAnswer) {
       detailHtml += '<div class="result-answer" style="color:#2a9d3a;">' + tr('correctAnswer') + ': <b>' + escHtml(d.correctAnswer) + '</b></div>';
     }
     if (d.feedback) {
