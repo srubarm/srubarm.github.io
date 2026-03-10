@@ -845,7 +845,11 @@ layout: null
     function generateProblems() {
       var cfg = LEVELS[level];
       const list = [];
-      for (let i = 0; i < TOTAL; i++) {
+      var seen = {}; // track unique problems
+      var maxAttempts = 200;
+      var attempts = 0;
+      while (list.length < TOTAL && attempts < maxAttempts) {
+        attempts++;
         let a, b, op, answer;
         if (cfg.type === 'mul') {
           a = randInt(cfg.minA || 1, cfg.maxA);
@@ -864,6 +868,9 @@ layout: null
           op = '\u00f7';
           answer = Math.floor(a / b);
           var remainder = a % b;
+          var key = a + '\u00f7' + b;
+          if (seen[key]) continue;
+          seen[key] = true;
           list.push({ a: a, b: b, op: op, answer: answer, remainder: remainder });
           continue;
         } else {
@@ -873,6 +880,16 @@ layout: null
           if (op === '-' && b > a) { [a, b] = [b, a]; }
           answer = op === '+' ? a + b : a - b;
         }
+        // Build dedup key: commutative for + and ×, ordered for − and ÷
+        var key;
+        if (op === '+' || op === '\u00d7') {
+          var lo = Math.min(a, b), hi = Math.max(a, b);
+          key = lo + op + hi;
+        } else {
+          key = a + op + b;
+        }
+        if (seen[key]) continue;
+        seen[key] = true;
         list.push({ a: a, b: b, op: op, answer: answer });
       }
       return list;
