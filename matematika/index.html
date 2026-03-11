@@ -530,7 +530,7 @@ layout: null
     <div id="solo-ai-generate-wrap" style="display:none; margin-top:20px;">
       <button onclick="generateAITest(mode === 'comp' ? playerNames[0] : soloName)" style="background:#055585;">Generate test based on your previous results</button>
       <div style="margin-top:8px;">
-        <a href="#" id="ai-request-toggle" onclick="event.preventDefault(); var w=document.getElementById('ai-request-field'); var v=w.style.display==='none'; w.style.display=v?'block':'none'; this.textContent=v?'\u25B2 Hide request':'\u25BC Add a request for the AI';" style="font-size:0.9rem; color:#055585; text-decoration:none;">\u25BC Add a request for the AI</a>
+        <a href="#" id="ai-request-toggle" onclick="event.preventDefault(); var w=document.getElementById('ai-request-field'); var v=w.style.display==='none'; w.style.display=v?'block':'none'; this.textContent=v?'\u25B2 Hide request':'\u25BC Add a request for the AI';" style="font-size:0.9rem; color:#055585; text-decoration:none;">&#x25BC; Add a request for the AI</a>
         <div id="ai-request-field" style="display:none; margin-top:6px;">
           <textarea id="ai-request-text" rows="2" placeholder="e.g. Focus on multiplication by 7 and 8" style="width:100%; max-width:400px; font-size:0.95rem; padding:6px; border:1px solid #ccc; border-radius:4px; resize:vertical;"></textarea>
         </div>
