@@ -660,7 +660,7 @@ layout: null
     // Time limits per level in seconds (hard baseline). Medium = +2s, Easy = +4s.
     var TIME_LIMITS = {
       add10: 2, add50: 3, add200: 4,
-      mul5x5: 2, mul10x10: 3, mul12x12: 4, mul12x12h: 5, mul12x50: 5, mul20x100: 8,
+      mul5x5: 2, mul10x10: 3, mul12x12: 4, mul12x12h: 5, mul12x12t: 6, mul12x50: 5, mul20x100: 8,
       div50d5: 3, div100d10: 4, div200d10: 5,
       divmod50d5: 4, divmod100d10: 5, divmod200d10: 6
     };
@@ -732,6 +732,7 @@ layout: null
         { id: 'mul10x10',    label: '1\u201310 \u00d7 1\u201310',     type: 'mul', minA: 1, maxA: 10, minB: 1, maxB: 10 },
         { id: 'mul12x12',    label: '1\u201312 \u00d7 1\u201312',     type: 'mul', minA: 1, maxA: 12, minB: 1, maxB: 12 },
         { id: 'mul12x12h',  label: '6\u201312 \u00d7 7\u201312',     type: 'mul', minA: 6, maxA: 12, minB: 7, maxB: 12 },
+        { id: 'mul12x12t',  label: '6\u201312 \u00d7 11\u201312',    type: 'mul', minA: 6, maxA: 12, minB: 11, maxB: 12 },
         { id: 'mul12x50',    label: '2\u201312 \u00d7 11\u201350',    type: 'mul', minA: 2, maxA: 12, minB: 11, maxB: 50 },
         { id: 'mul20x100',   label: '2\u201320 \u00d7 10\u2013100',   type: 'mul', minA: 2, maxA: 20, minB: 10, maxB: 100 },
       ]},
