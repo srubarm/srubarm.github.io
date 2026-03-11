@@ -528,7 +528,13 @@ layout: null
     </div>
     <div id="level-buttons-container"></div>
     <div id="solo-ai-generate-wrap" style="display:none; margin-top:20px;">
-      <button onclick="generateAITest(soloName)" style="background:#055585;">Generate test based on your previous results</button>
+      <button onclick="generateAITest(mode === 'comp' ? playerNames[0] : soloName)" style="background:#055585;">Generate test based on your previous results</button>
+      <div style="margin-top:8px;">
+        <a href="#" id="ai-request-toggle" onclick="event.preventDefault(); var w=document.getElementById('ai-request-field'); var v=w.style.display==='none'; w.style.display=v?'block':'none'; this.textContent=v?'\u25B2 Hide request':'\u25BC Add a request for the AI';" style="font-size:0.9rem; color:#055585; text-decoration:none;">\u25BC Add a request for the AI</a>
+        <div id="ai-request-field" style="display:none; margin-top:6px;">
+          <textarea id="ai-request-text" rows="2" placeholder="e.g. Focus on multiplication by 7 and 8" style="width:100%; max-width:400px; font-size:0.95rem; padding:6px; border:1px solid #ccc; border-radius:4px; resize:vertical;"></textarea>
+        </div>
+      </div>
     </div>
     <div style="margin-top:25px; border-top:1px solid #ddd; padding-top:15px;">
       <button onclick="document.getElementById('custom-test-file').click()" style="font-size:0.9em; padding:6px 14px; background:#888;">Load Custom Test</button>
@@ -1457,7 +1463,7 @@ layout: null
       return lines.join('\n');
     }
 
-    function buildPromptText(userName) {
+    function buildPromptText(userName, userRequest) {
       var context = buildStudentContext(userName);
       if (!context) return null;
 
@@ -1474,10 +1480,35 @@ layout: null
         lines.push('');
       }
 
+      if (userRequest) {
+        lines.push('## User Request');
+        lines.push('The parent/teacher has made this specific request: "' + userRequest + '"');
+        lines.push('');
+        lines.push('IMPORTANT: You must first evaluate whether this request is compatible with this app\'s capabilities.');
+        lines.push('This app ONLY supports basic arithmetic problems with integer operands:');
+        lines.push('- Addition (+) and subtraction (-) of integers');
+        lines.push('- Multiplication (*) of integers');
+        lines.push('- Exact division (/) where a/b has no remainder, with integer operands');
+        lines.push('- Division with remainder (/r) with integer operands');
+        lines.push('Each problem is in the form: a [op] b = ? (the student types the answer)');
+        lines.push('The app does NOT support: fractions, decimals, algebra, geometry, word problems, equations, multiple operations in one problem, exponents, roots, percentages, or any other math concepts.');
+        lines.push('');
+        lines.push('If the request asks for something this app cannot do, respond with ONLY this JSON:');
+        lines.push('{ "incompatible": true, "explanation": "<brief, friendly explanation of why the request cannot be fulfilled and what the app can do instead>" }');
+        lines.push('');
+        lines.push('If the request IS compatible, incorporate it into the test generation below.');
+        lines.push('');
+      }
+
       lines.push('## Instructions');
       lines.push('Create a custom test that:');
-      lines.push('1. Focuses on problem types where the student struggled (made mistakes or was slow)');
-      lines.push('2. Includes a mix of easier problems for confidence and harder problems for growth');
+      if (userRequest) {
+        lines.push('1. Incorporates the user\'s specific request as the primary focus');
+        lines.push('2. Also considers the student\'s recent performance for appropriate difficulty');
+      } else {
+        lines.push('1. Focuses on problem types where the student struggled (made mistakes or was slow)');
+        lines.push('2. Includes a mix of easier problems for confidence and harder problems for growth');
+      }
       lines.push('3. Adjusts difficulty appropriately for the student\'s age and skill level');
       lines.push('4. Contains 10-15 problems');
       lines.push('');
@@ -1574,7 +1605,9 @@ layout: null
         alert('No API key configured. Please set your Google AI API key in the Data screen.');
         return;
       }
-      var promptText = buildPromptText(userName);
+      var userRequest = (document.getElementById('ai-request-text').value || '').trim();
+      var savedMode = mode; // remember if we're in comp or solo
+      var promptText = buildPromptText(userName, userRequest || null);
       if (!promptText) { alert('User not found.'); return; }
 
       // Show loading state
@@ -1623,26 +1656,58 @@ layout: null
           throw new Error('Could not parse AI response as JSON.');
         }
 
+        // Check if AI flagged the request as incompatible
+        if (testData.incompatible) {
+          document.getElementById('handoff-msg').innerHTML =
+            '<div style="max-width:400px; margin:0 auto; text-align:left;">' +
+            '<b style="color:#c57600;">Request not compatible</b><br><br>' +
+            testData.explanation +
+            '</div>';
+          document.getElementById('handoff-btn').style.display = '';
+          document.getElementById('handoff-btn').textContent = 'OK';
+          document.getElementById('handoff-btn').onclick = function() {
+            document.getElementById('handoff-btn').textContent = 'Ready';
+            showMenu();
+          };
+          return;
+        }
+
         var validationError = validateCustomTest(testData);
         if (validationError) throw new Error('AI generated invalid test: ' + validationError);
 
         var convertedProblems = convertCustomProblems(testData);
         var testName = testData.name.trim();
 
-        // Set up solo game with this test
-        mode = 'solo';
-        soloName = userName;
         level = 'custom:' + testName;
         problems = convertedProblems;
         aiGeneratedTest = true;
 
-        // Show ready screen
-        document.getElementById('handoff-msg').innerHTML =
-          'AI test ready: <b>' + testName + '</b><br>' +
-          '(' + problems.length + ' problems)<br><br>' +
-          'Hand the device to <b>' + userName + '</b> and press Ready.';
-        document.getElementById('handoff-btn').style.display = '';
-        document.getElementById('handoff-btn').onclick = function() { runGame(''); };
+        if (savedMode === 'comp') {
+          // Competition mode: both players use the same AI-generated problems
+          mode = 'comp';
+          compSessionId = 'comp-' + new Date().toISOString();
+          document.getElementById('handoff-msg').innerHTML =
+            'AI test ready: <b>' + testName + '</b><br>' +
+            '(' + problems.length + ' problems)<br><br>' +
+            'Hand the device to <b>' + playerNames[0] + '</b> and press Ready.';
+          document.getElementById('handoff-btn').style.display = '';
+          document.getElementById('handoff-btn').onclick = function() { startPlayer(0); };
+        } else {
+          // Solo mode
+          mode = 'solo';
+          soloName = userName;
+          document.getElementById('handoff-msg').innerHTML =
+            'AI test ready: <b>' + testName + '</b><br>' +
+            '(' + problems.length + ' problems)<br><br>' +
+            'Hand the device to <b>' + userName + '</b> and press Ready.';
+          document.getElementById('handoff-btn').style.display = '';
+          document.getElementById('handoff-btn').onclick = function() { runGame(''); };
+        }
+
+        // Clear the request field for next time
+        document.getElementById('ai-request-text').value = '';
+        document.getElementById('ai-request-field').style.display = 'none';
+        document.getElementById('ai-request-toggle').textContent = '\u25BC Add a request for the AI';
       })
       .catch(function(err) {
         document.getElementById('handoff-msg').innerHTML =
@@ -2316,6 +2381,8 @@ layout: null
       hideAll();
       document.getElementById('difficulty').style.display = 'block';
       document.querySelector('.time-trial-wrap').style.display = 'none';
+      var soloAI = document.getElementById('solo-ai-generate-wrap');
+      if (soloAI) soloAI.style.display = isAIEnabled() ? 'block' : 'none';
       setBackArrow(function() { showCompSetup(); });
     }
 
