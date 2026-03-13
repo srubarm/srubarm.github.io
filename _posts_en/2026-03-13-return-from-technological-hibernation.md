@@ -1,7 +1,7 @@
 ---
 layout: post-en
 title: "Return from Technological Hibernation: Why My Sense of Scientific Stagnation Was Completely Wrong"
-date: 2026-03-13 20:00:00
+date: 2026-03-13 16:00:00
 categories: [Personal]
 ---
 
