@@ -1,7 +1,7 @@
 ---
 layout: post-en
 title: "From Average to Obsolete: What AI Means for Human Skills and Software Companies"
-date: 2026-03-13
+date: 2026-03-13 20:00:00
 categories: [AI]
 ---
 
