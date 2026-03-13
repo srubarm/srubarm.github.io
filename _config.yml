@@ -89,6 +89,11 @@ plugins:
 
 include: ['_pages']
 
+collections:
+  posts_en:
+    output: true
+    permalink: /en/:title.html
+
 paginate: 6
 paginate_path: /page:num/
 
