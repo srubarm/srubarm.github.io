@@ -12,9 +12,9 @@ V prosinci roku 2011 jsem napsal [článek](/osobni/osme-vyroci-techblogcz.html)
 
 Svůj tehdejší článek jsem zakončil otázkou: *"Zaspal jsem něco, nebo se dostáváme do oblasti vývoje lidstva, kde se již nic převratného neděje a pouze se učíme využívat plný potenciál současných technologií?"*
 
-Dnes, v roce 2026, na to mám jasnou odpověď. Ano, zaspal jsem. A se mnou dost možná i velká část veřejnosti. Zatímco jsem měl tehdy pocit, že věda tak trochu znuděně přešlapuje na místě, stála ve skutečnosti na prahu pravděpodobně nejexplozivnější éry objevů v novodobé lidské historii.
+Dnes, v roce 2026, na to mám jasnou odpověď. Ano, zaspal jsem. A se mnou dost možná i velká část veřejnosti. Zatímco jsem měl tehdy pocit, že věda tak trochu znuděně přešlapuje na místě, stála ve skutečnosti na prahu éry velkých objevů.
 
-Kde se tedy v mém tehdejším úsudku stala chyba? Proč se pohled "nic se neděje" tak dramaticky liší od dnešní reality, kdy každé ráno otevíráme zprávy s pocitem, že žijeme ve sci-fi románu? K tomuto optickému klamu přispělo několik faktorů:
+Kde se tedy v mém tehdejším úsudku stala chyba? Proč se pohled "nic se neděje" tak dramaticky liší od dnešní reality? K tomuto optickému klamu přispělo několik faktorů:
 
 *   Zejména jsem vědu a techniku nesledoval, jak jeden ze čtenářů správně uvedl v komentářích. Kdybych si nyní chtěl z patra něco vybavit, tak bych si asi jen vzpomněl na nástup AI.
 *   Doba sadby a doba sklizně mohou mít mezi sebou několik desetiletí. Zkoumání Saturnu sondou Cassini probíhalo až do roku 2017, i když Cassini odstartovala v roce 1997, mise byla schválena v roce 1990 a první návrh na tuto misi je z roku 1982. Nelze tedy hodnotit, jak moc se věda posouvá kupředu dnes, pouze podle toho, kolik poznatků a výdobytků dnes sklízíme.
