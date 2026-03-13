@@ -4,7 +4,6 @@ title: "From Average to Obsolete: What AI Means for Human Skills and Software Co
 date: 2026-03-13
 categories: [AI]
 ---
-# From Average to Obsolete: What AI Means for Human Skills and Software Companies
 
 <img src='/images/specialista-manager-zbytek-se-topi.jpeg' width='480' alt='Specialist and manager stay afloat, the rest are drowning' />  
 There's a book from the pre-AI era called *"Be Obsessed or Be Average."* Back then, it sounded like a motivational catchphrase. Today, it sounds more like a warning. Artificial intelligence is rapidly erasing the line between "average" and "unnecessary" — for both people and software.
