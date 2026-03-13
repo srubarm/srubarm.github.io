@@ -17,8 +17,7 @@ And it's not just about people. Think of all those video-to-MP3 converters, simp
 
 More broadly, every product or service whose output isn't a physical object is at risk. Publications, consulting, analytics, software tools — anything that can be expressed in words, numbers, or code is entering direct competition with AI.
 
-## What Determines Whether AI Will Replace You
-
+## Will AI Replace You?
 Think about it — there's a fairly simple test: can your work be documented? If so, it can be automated.
 
 This isn't abstract theory. If your company has workers whose job consists of applying knowledge prepared by someone else — people working with internal procedures, manuals, knowledge bases — AI can replace them. Under one condition: that knowledge must be written down. AI can then not only make that knowledge accessible but actively apply it — faster and more consistently than a person who has to study it first.
@@ -42,7 +41,6 @@ Notice: this is nothing new. The world has always worked this way. It's just tha
 The same goes for software. The tools that survive will either create new value in ways AI cannot replicate, or serve as platforms for AI orchestration. Everything in between is at risk.
 
 ## What to Do About It
-
 If you're reading this article thinking you belong to that middle layer — I have good news: realizing it is the first step. The question you need to ask yourself is simple: am I creating new knowledge, or applying existing knowledge?
 
 If you're applying — move. Either toward creation: deepen your expertise where AI still struggles — in strategic thinking, in understanding context, in solving problems no one has solved before. Or toward orchestration: learn to effectively manage AI in your field, not as a toy, but as a tool that multiplies your productivity and decision-making ability.
@@ -50,7 +48,6 @@ If you're applying — move. Either toward creation: deepen your expertise where
 The same applies to software companies. If your product is easily replicable, you have a problem. But if you can integrate AI into your solution and offer customers something they can't generate on their own, you have an opportunity, not a threat.
 
 ## Be Obsessed or Be Obsolete
-
 The era when you could make a good living by applying others' knowledge is ending. The future belongs to those who create knowledge, or to those who can orchestrate it. The middle is hollowing out.
 
 *Be Obsessed or be Obsolete.*
