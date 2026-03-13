@@ -1,11 +1,11 @@
 ---
 layout: post-en
 title: "Return from Technological Hibernation: Why My Sense of Scientific Stagnation Was Completely Wrong"
-date: 2026-03-13
+date: 2026-03-13 20:00:00
 categories: [Personal]
 ---
 
-<img src='/images/zaba-v-kadince-billboard.jpg' width='480' alt='Frog in a beaker' />
+<img src='/images/zaba-v-kadince-billboard.jpg' width='480' alt='Frog in a beaker' />  
 In December 2011, I wrote an [article](/osobni/osme-vyroci-techblogcz.html) for the eighth anniversary of this blog. It was a rather melancholy piece. I lamented that since 2003, nothing truly groundbreaking had happened in science and technology. Off the top of my head, I could only name the rise of flat and touchscreen displays, which felt more like industrialization of already known ideas than a genuine revolution. I was waiting for the mass adoption of carbon nanotubes, for revolutionary materials... and nothing came.
 
 I ended that article with a question: *"Did I sleep through something, or are we entering a phase of human development where nothing revolutionary happens anymore, and we're merely learning to use the full potential of existing technologies?"*
