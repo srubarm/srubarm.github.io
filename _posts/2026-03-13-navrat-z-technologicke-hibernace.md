@@ -6,7 +6,7 @@ permalink: /osobni/navrat-z-technologicke-hibernace.html
 ---
 # Návrat z technologické hibernace: Proč byl můj pocit vědecké stagnace naprostý omyl
 
-<img src='/images/zaba-v-kadince-billboard.jpg' width='480' alt='Žába v kádince' />
+<img src='/images/zaba-v-kadince-billboard.jpg' width='480' alt='Žába v kádince' />  
 V prosinci roku 2011 jsem napsal [článek](/osobni/osme-vyroci-techblogcz.html) k osmému výročí tohoto blogu. Byl to docela smutný text. Povzdechl jsem si v něm, že od roku 2003 se ve vědě a technice vlastně nic moc zásadního nestalo. Z patra jsem tehdy vyjmenoval jen nástup plochých a dotykových obrazovek, což mi připadalo spíš jako industrializace už známých nápadů než skutečná revoluce. Čekal jsem na masové využití uhlíkových nanotrubek, na převratné materiály... a ono nic.
 
 Svůj tehdejší článek jsem zakončil otázkou: *"Zaspal jsem něco, nebo se dostáváme do oblasti vývoje lidstva, kde se již nic převratného neděje a pouze se učíme využívat plný potenciál současných technologií?"*
