@@ -29,7 +29,7 @@ Hranice nahraditelnosti tedy neprochází mezi lidmi a stroji ani mezi softwarem
 
 ## Nová definice výjimečnosti
 
-A tady se dostáváme k tomu nejzajímavějšímu. Podívejte se dnes na nejlépe placené profese. Na špičce najdete dva typy lidí: specialisty, kteří vytvářejí nové znalosti – výzkumníky, specialisté se znalostmi na špici svého oboru – a manažery na vysoké úrovni, kteří z existujících znalostí a zdrojů dokážou vytěžit maximální hodnotu. Tyto dvě skupiny lidí tvoří špičky hodnotové křivky. Mezi nimi je široká střední vrstva lidí, kteří existující znalosti aplikují.
+A tady se dostáváme k tomu nejzajímavějšímu. Podívejte se dnes na nejlépe placené profese. Na špičce najdete dva typy lidí: specialisty, kteří vytvářejí nové znalosti – výzkumníky v komerční sféře a jakékoiv specialisty se znalostmi na špici svého oboru – a manažery na vysoké úrovni, kteří z existujících znalostí a zdrojů dokážou vytěžit maximální hodnotu. Tyto dvě skupiny lidí tvoří špičky hodnotové křivky. Mezi nimi je široká střední vrstva lidí, kteří existující znalosti aplikují.
 
 AI právě tu střední vrstvu maže. A tím dělá ty dvě špičky jedinou cestou, jak zůstat nenahraditelný.
 
