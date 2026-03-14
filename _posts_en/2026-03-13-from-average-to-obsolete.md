@@ -27,7 +27,7 @@ The boundary of replaceability doesn't run between humans and machines, nor betw
 
 ## A New Definition of Exceptional
 
-And here's where it gets most interesting. Look at the highest-paid professions today. At the top, you'll find two types of people: specialists who create new knowledge — researchers, experts at the cutting edge of their field — and high-level managers who can extract maximum value from existing knowledge and resources. These two groups form the peaks of the value curve. Between them lies a broad middle layer of people who apply existing knowledge.
+And here's where it gets most interesting. Look at the highest-paid professions today. At the top, you'll find two types of people: specialists who create new knowledge — commercial researchers, experts at the cutting edge of their field — and high-level managers who can extract maximum value from existing knowledge and resources. These two groups form the peaks of the value curve. Between them lies a broad middle layer of people who apply existing knowledge.
 
 AI is erasing that middle layer. And in doing so, it makes those two peaks the only path to staying irreplaceable.
 
