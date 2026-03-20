@@ -5,7 +5,7 @@ date: 2026-03-20
 categories: [AI]
 ---
 
-<img src='/images/IMG_1194.jpeg' width='480' alt='Should I pay my kid to learn?' />
+<img src='/images/IMG_1194.jpeg' width='480' alt='Should I pay my kid to learn?' />. 
 It started with a podcast. I was listening to Joe Liemandt on the [Peter Attia Drive](https://peterattiamd.com/joeliemandt/) — a tech billionaire who'd built enterprise software for decades, poured a billion dollars into reinventing how children learn, and was now running a chain of private schools in Texas with no teachers, no homework, and no textbooks. His creation, [Alpha School](https://alpha.school/), replaces traditional instruction with AI-driven apps. Students complete their entire academic curriculum in two hours each morning, then spend the rest of the day on workshops in entrepreneurship, public speaking, fitness, and financial literacy. The adults in the room aren't called teachers — they're guides and coaches, focused on motivation and emotional support rather than instruction.
 
 The results, at least as reported by the school, are striking. Students score in the top 1% nationally on standardised tests. Ninety-six percent say they love school. Forty to sixty percent say they'd rather be at school than on holiday. The [first graduating class](https://www.cnn.com/2026/01/29/politics/alpha-school-trump-ai-teaching) last year sent students to Stanford, Vanderbilt, and Northeastern.
