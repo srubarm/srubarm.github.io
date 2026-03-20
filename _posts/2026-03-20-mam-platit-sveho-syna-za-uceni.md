@@ -27,7 +27,7 @@ Syn ji párkrát vyzkoušel. A pak… přestal. Ne proto, že by byla špatná. 
 
 A v tu chvíli mi ten tisíc dolarů docvakl.
 
-Odsoudil finanční pobídky žákům v Alpha School. Ale já, rodič, který podobný nástroj vytvořil, který vidí, že funguje, který ví, že by mohl pomoct — a nedokážu přimět vlastní dítě, aby ho používalo. Alpha neplatí žákům tisíc dolarů proto, že by byli líní. Platí jim proto, že vybudovali nejúčinnější vzdělávací systém na světě a *pořád* museli vyřešit problém, jak přimět dítě, aby se do něj zapojilo. Narazili na stejnou zeď jako já. Jen našli přímější cestu přes ni.
+Odsoudil jsem finanční pobídky žákům v Alpha School. Ale já, rodič, který podobný nástroj vytvořil, který vidí, že funguje, který ví, že by mohl pomoct — nedokážu přimět vlastní dítě, aby ho používalo. Alpha neplatí žákům tisíc dolarů proto, že by byli líní. Platí jim proto, že vybudovali nejúčinnější vzdělávací systém na světě a *pořád* musí vyřešit problém, jak přimět dítě, aby se do něj zapojilo. Narazili na stejnou zeď jako já. Jen našli přímější cestu přes ni.
 
 ## Co umělá inteligence zvládá
 
@@ -37,15 +37,15 @@ Není to žádný nový poznatek. V roce 1984 publikoval pedagogický psycholog 
 
 O čtyřicet let později by odpovědí mohla být právě umělá inteligence. Adaptivní systém dokáže přesně určit, kde porozumění dítěti chybí, vyplnit mezeru, znovu otestovat a posunout dál teprve tehdy, když žák skutečně zvládl prerekvizitu. Žádné dítě nezůstane pozadu — ne jako politické heslo, ale jako mechanický princip fungování softwaru.
 
-Princip Alpha je prostý a přesvědčivý: buďte rychlí v malé násobilce, než se pustíte do dělení víceciferným číslem. Zvládněte základy tak důkladně, aby další úroveň působila zvládnutelně, ne nemožně. Líbí se mi na tom, že to respektuje skutečné porozumění dítěte, ne jeho věk. Bystrý devítiletý, kterému unikl nějaký stavební kámen ve druhé třídě, by neměl být nucen tápat v učivu čtvrté třídy — měl by se vrátit, rychle mezeru uzavřít a pak zrychlit.
+Princip Alpha je prostý a přesvědčivý: buďte rychlí v malé násobilce, než se pustíte do dělení víceciferným číslem. Zvládněte základy tak důkladně, aby další úroveň působila zvládnutelně, ne nemožně. Líbí se mi na tom, že to respektuje skutečné porozumění dítěte, ne jeho věk. Bystrý devítiletý kluk, kterému unikl nějaký stavební kámen ve druhé třídě, by neměl být nucen tápat v učivu čtvrté třídy — měl by se vrátit a rychle mezeru uzavřít a pak pokračovat. 
 
 Pokud dítě dokáže učivo jednoho ročníku z daného předmětu skutečně zvládnout za [20–30 soustředěných hodin](https://alpha.school/the-program/) — a data z adaptivních vzdělávacích platforem naznačují, že je to reálné, i když v širokém měřítku to ještě není dokázáno — proč je držet v učebnách šest hodin denně? Uvolněný čas by mohl jít na věci, na které v osnovách nikdy není místo: naučit se vést firmu, procvičovat veřejné vystupování, trénovat na triatlon nebo si prostě hrát.
 
 ## AI vyřešila problém obsahu. Problém motivace nevyřešila.
 
-Tady se mé uvažování posunulo. Umělá inteligence dnes dokáže vygenerovat dokonale přizpůsobené vzdělávćní pro jakékoli dítě, v jakémkoli předmětu, na jakékoli úrovni. Problém předávání obsahu je, ne-li zcela vyřešen, tak rychle řešen. Khan Academy [Khanmigo](https://blog.khanacademy.org/khanmigo-top-ai-in-education-moments-of-2023-the-year-artificial-intelligence-dominated-education-news-kl/) používá GPT-4 pro sókratovské doučování. Čínská [Squirrel AI](https://www.technologyreview.com/2019/08/02/131198/china-squirrel-has-started-a-grand-experiment-in-ai-education-it-could-reshape-how-the/) rozložila matematiku pro střední stupeň na přes 10 000 dílčích znalostních bodů a provozuje 1 700 výukových center. Duolingo pomocí AI vytváří adaptivní jazykový trénink v reálném čase. Nástroje existují a každým měsícem se zlepšují.
+Tady se mé uvažování posunulo. Umělá inteligence dnes dokáže vygenerovat dokonale přizpůsobené vzdělávání pro jakékoli dítě, v jakémkoli předmětu, na jakékoli úrovni. Problém obsahu je v podstatě vyřešen. Khan Academy [Khanmigo](https://blog.khanacademy.org/khanmigo-top-ai-in-education-moments-of-2023-the-year-artificial-intelligence-dominated-education-news-kl/) používá GPT-4 pro sókratovské doučování. Čínská [Squirrel AI](https://www.technologyreview.com/2019/08/02/131198/china-squirrel-has-started-a-grand-experiment-in-ai-education-it-could-reshape-how-the/) rozložila matematiku pro střední stupeň na přes 10 000 dílčích znalostních bodů a provozuje 1 700 výukových center. Duolingo pomocí AI vytváří adaptivní jazykový trénink v reálném čase. Nástroje existují a každým měsícem se zlepšují.
 
-Jenže ukázalo se, že vytvořit dokonalý vzdělávací zdroj je jen polovina výzvy — a pravděpodobně ta snazší. Ta těžší, kterou samotná technologie vyřešit nedokáže, zní: jak přimět dítě, aby se do toho smysluplně zapojilo?
+Jenže ukázalo se, že vytvořit dokonalý vzdělávací stroj je jen polovina problému — a pravděpodobně ta snazší. Ta těžší, kterou samotná technologie vyřešit nedokáže, zní: jak přimět dítě, aby se do toho smysluplně zapojilo?
 
 Tohle je poznatek, který Alpha School zřejmě pochopila jasněji než většina edtech firem. Joe Liemandt říká, že motivace tvoří „90 % řešení”. Celý jeho model je kolem ní vystavěn — samotný dvouhodinový den je motivačním nástrojem (dokonči práci a odpoledne je tvé), průvodci se soustředí na povzbuzování místo výkladu, workshopy dávají žákům na co se těšit.
 
@@ -59,13 +59,13 @@ Alpha nabízí žákům středních škol 1 000 dolarů za dosažení nejlepší
 
 Fryerovy závěry jsou nuancované a stojí za pochopení. Platit žákům za *výstupy* — lepší výsledky v testech — nemělo v podstatě žádný efekt. Ale platit žákům za *vstupy* — čtení knih, plnění konkrétních úkolů — fungovalo, alespoň u některých skupin. Tento rozdíl je podstatný: když žáci přesně vědí, co mají dělat, pobídky je dokážou přimět, aby to udělali. Když cesta není jasná, peníze samy o sobě nepomohou.
 
-Argument Alpha School je, že jejich AI cestu jasně vytyčuje — tady jsou přesné lekce, které potřebuješ splnit, systém ti řekne přesně, co studovat — že i pobídky založené na výstupech začnou fungovat. Je to šikovné přerámování. A podle jejich vlastních údajů to funguje: žáci, kteří věřili, že „matematiku neumí”, dosahují špičkových výsledků, a co je důležitější, mění svůj vlastní obraz o sobě. Liemandt popisuje tuto proměnu identity jako cennější než samotné akademické znalosti.
+Argument Alpha School je, že jejich AI cestu jasně vytyčuje — tady jsou přesné lekce, které potřebuješ splnit, systém ti řekne přesně, co studovat — že i pobídky založené na výstupech začnou fungovat. Je to šikovně vymyšlené. A podle jejich vlastních údajů to funguje: žáci, kteří věřili, že „matematiku neumí”, dosahují špičkových výsledků, a co je důležitější, mění svůj vlastní obraz o sobě. Liemandt popisuje tuto proměnu identity jako cennější než samotné akademické znalosti.
 
 Chápu tu logiku. A vidím, jak to pro mnohé děti funguje. Těch 1 000 dolarů ve skutečnosti není o penězích — jde o to ukázat dítěti, že je schopné něčeho, o čem si myslelo, že to nedokáže. Jakmile se toto přesvědčení změní, vnější odměna se stává méně potřebnou.
 
 Ale výzkum motivace mě nutí k obezřetnosti. [Teorie sebeurčení](https://journals.sagepub.com/doi/10.3102/00346543071001001) — dominantní rámec v pedagogické psychologii — tvrdí, že trvalá motivace pramení z autonomie, kompetence a sounáležitosti. [Metaanalýza](https://www.sciencedirect.com/science/article/abs/pii/S0272775716303478) od Deciho, Koestnera a Ryana zjistila, že hmatatelné odměny mají „negativní účinek” na vnitřní motivaci. Když dětem za něco platíte, mohou přestat chtít dělat to samé pro radost z věci samé. Odměna se stane smyslem, a když zmizí, zmizí i motivace.
 
-Je tu i osobnější obava. Chci, aby moje děti vnímaly učení samo o sobě jako odměnu — aby zažívaly ten tichý pocit uspokojení, když porozumí něčemu, co jim včera bylo záhadou. Pokud jim budu platit za výsledky, neučím je náhodou vnímat vzdělání jako transakci?
+Je tu i osobnější obava. Chci, aby moje děti vnímaly učení samo o sobě jako odměnu — aby zažívaly ten tichý pocit uspokojení, když porozumí něčemu, co jim včera bylo záhadou. Pokud jim budu platit za výsledky, neučím je  vnímat vzdělání jako transakci?
 
 Finanční odměny souvisí s mou obecnější obavou z gamifikace. Herní designéři vědí, že optimální bod — kde je hra nejpoutavější — leží přibližně na 85% úspěšnosti. Uspějete dost na to, abyste se cítili kompetentní, ale selháváte dost na to, abyste cítili výzvu. To se přesně překrývá s [Vygotského zónou nejbližšího vývoje](https://en.wikipedia.org/wiki/Mastery_learning), dobře zavedeným pedagogickým konceptem. Alpha a další AI systémy v podstatě tento princip implementují.
 
