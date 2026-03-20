@@ -140,4 +140,4 @@ Will I pay my son to learn? I'll let you know.
 
 -----
 
-*If this topic interests you, the [Peter Attia Drive podcast Episode #366 with Joe Liemandt](https://peterattiamd.com/joeliemandt/) is the best deep dive I've found on the Alpha School model. Sal Khan's book "[Brave New Words](https://www.barnesandnoble.com/w/brave-new-words-salman-khan/1143928512)" offers a different and complementary vision. And if you're a parent wondering whether to experiment with AI learning tools — just start. The worst that happens is you end up practising maths yourself.*
+*If this topic interests you, the [Peter Attia Drive podcast Episode #366 with Joe Liemandt](https://peterattiamd.com/joeliemandt/) is the best deep dive I've found on the Alpha School model. And if you're a parent wondering whether to experiment with AI learning tools — just start. The worst that happens is you end up practising maths yourself.*
