@@ -10,7 +10,7 @@ It started with a podcast. I was listening to Joe Liemandt on the [Peter Attia D
 
 The results, at least as reported by the school, are striking. Students score in the top 1% nationally on standardised tests. Ninety-six percent say they love school. Forty to sixty percent say they'd rather be at school than on holiday. The [first graduating class](https://www.cnn.com/2026/01/29/politics/alpha-school-trump-ai-teaching) last year sent students to Stanford, Vanderbilt, and Northeastern.
 
-I found myself nodding along. The model made sense. The focus on mastery — not advancing until you truly understand the current material — aligned with everything I believed about learning. But then Liemandt mentioned that Alpha offers students $1,000 if they score above the 99th percentile. And something snagged. *Paying children to learn?* That felt wrong. I filed it away as the one part of an otherwise compelling model that I didn't like, and moved on.
+I found myself nodding along. The model made sense. The [focus on mastery](https://en.wikipedia.org/wiki/Mastery_learning) — not advancing until you truly understand the current material — aligned with everything I believed about learning. But then Liemandt mentioned that Alpha offers students $1,000 if they score above the 99th percentile. And something snagged. *Paying children to learn?* That felt wrong. I filed it away as the one part of an otherwise compelling model that I didn't like, and moved on.
 
 Then life provided a lesson of its own.
 
