@@ -43,7 +43,7 @@ Pokud dítě dokáže učivo jednoho ročníku z daného předmětu skutečně z
 
 ## AI vyřešila problém obsahu. Problém motivace nevyřešila.
 
-Tady se mé uvažování posunulo. Umělá inteligence dnes dokáže vygenerovat dokonale přizpůsobené vzdělávání pro jakékoli dítě, v jakémkoli předmětu, na jakékoli úrovni. Problém obsahu je v podstatě vyřešen. Khan Academy [Khanmigo](https://blog.khanacademy.org/khanmigo-top-ai-in-education-moments-of-2023-the-year-artificial-intelligence-dominated-education-news-kl/) používá GPT-4 pro sókratovské doučování. Čínská [Squirrel AI](https://www.technologyreview.com/2019/08/02/131198/china-squirrel-has-started-a-grand-experiment-in-ai-education-it-could-reshape-how-the/) rozložila matematiku pro střední stupeň na přes 10 000 dílčích znalostních bodů a provozuje 1 700 výukových center. Duolingo pomocí AI vytváří adaptivní jazykový trénink v reálném čase. Nástroje existují a každým měsícem se zlepšují.
+Tady se mé uvažování posunulo. Umělá inteligence dnes dokáže vygenerovat dokonale přizpůsobené vzdělávání pro jakékoli dítě, v jakémkoli předmětu, na jakékoli úrovni. Problém obsahu je v podstatě vyřešen. Khan Academy [Khanmigo](https://www.khanmigo.ai/) pomáhá učitelům i studentům. Čínská [Squirrel AI](https://www.technologyreview.com/2019/08/02/131198/china-squirrel-has-started-a-grand-experiment-in-ai-education-it-could-reshape-how-the/) rozložila matematiku pro střední stupeň na přes 10 000 dílčích znalostních bodů a provozuje 1 700 výukových center. Duolingo pomocí AI vytváří adaptivní jazykový trénink v reálném čase. Nástroje existují a každým měsícem se zlepšují.
 
 Jenže ukázalo se, že vytvořit dokonalý vzdělávací stroj je jen polovina problému — a pravděpodobně ta snazší. Ta těžší, kterou samotná technologie vyřešit nedokáže, zní: jak přimět dítě, aby se do toho smysluplně zapojilo?
 
@@ -55,7 +55,7 @@ A přesto nabízejí i finanční pobídky.
 
 Tohle je otázka, ke které se jako rodič stále vracím, a nemyslím si, že odpověď je jednoduchá.
 
-Alpha nabízí žákům středních škol 1 000 dolarů za dosažení nejlepšího 1 % v celostátním měřítku. Provozuje i menší motivační programy — 100 dolarů za plný počet bodů ve státních standardizovaných testech. Liemandt navazuje na práci harvardského ekonoma [Rolanda Fryera, který provedl rozsáhlé experimenty](https://scholar.harvard.edu/files/fryer/files/financial_incentives_and_student_achievement_evidence_from_randomized_trials.pdf) s placením žáků ve více než 200 městských školách v Dallasu, New Yorku a Chicagu.
+Alpha nabízí žákům středních škol 1 000 dolarů za dosažení nejlepšího 1 % v celostátním měřítku. Provozuje i menší motivační programy — 100 dolarů za plný počet bodů ve státních standardizovaných testech. Liemandt navazuje na práci harvardského ekonoma [Rolanda Fryera, který provedl rozsáhlé experimenty](https://academic.oup.com/qje/article-abstract/126/4/1755/1924375?redirectedFrom=fulltext&login=false) s placením žáků ve více než 200 městských školách v Dallasu, New Yorku a Chicagu.
 
 Fryerovy závěry jsou nuancované a stojí za pochopení. Platit žákům za *výstupy* — lepší výsledky v testech — nemělo v podstatě žádný efekt. Ale platit žákům za *vstupy* — čtení knih, plnění konkrétních úkolů — fungovalo, alespoň u některých skupin. Tento rozdíl je podstatný: když žáci přesně vědí, co mají dělat, pobídky je dokážou přimět, aby to udělali. Když cesta není jasná, peníze samy o sobě nepomohou.
 
@@ -63,11 +63,11 @@ Argument Alpha School je, že jejich AI cestu jasně vytyčuje — tady jsou př
 
 Chápu tu logiku. A vidím, jak to pro mnohé děti funguje. Těch 1 000 dolarů ve skutečnosti není o penězích — jde o to ukázat dítěti, že je schopné něčeho, o čem si myslelo, že to nedokáže. Jakmile se toto přesvědčení změní, vnější odměna se stává méně potřebnou.
 
-Ale výzkum motivace mě nutí k obezřetnosti. [Teorie sebeurčení](https://journals.sagepub.com/doi/10.3102/00346543071001001) — dominantní rámec v pedagogické psychologii — tvrdí, že trvalá motivace pramení z autonomie, kompetence a sounáležitosti. [Metaanalýza](https://www.sciencedirect.com/science/article/abs/pii/S0272775716303478) od Deciho, Koestnera a Ryana zjistila, že hmatatelné odměny mají „negativní účinek” na vnitřní motivaci. Když dětem za něco platíte, mohou přestat chtít dělat to samé pro radost z věci samé. Odměna se stane smyslem, a když zmizí, zmizí i motivace.
+Ale výzkum motivace mě nutí k obezřetnosti. [Teorie sebeurčení](https://en.wikipedia.org/wiki/Self-determination_theory) — dominantní rámec v pedagogické psychologii — tvrdí, že trvalá motivace pramení z autonomie, kompetence a sounáležitosti. [Metaanalýza](https://www.sciencedirect.com/science/article/abs/pii/S0272775716303478) od Deciho, Koestnera a Ryana zjistila, že hmatatelné odměny mají [„negativní účinek” na vnitřní motivaci](https://www.sciencedirect.com/science/article/abs/pii/S0272775716303478). Když dětem za něco platíte, mohou přestat chtít dělat to samé pro radost z věci samé. Odměna se stane smyslem, a když zmizí, zmizí i motivace.
 
 Je tu i osobnější obava. Chci, aby moje děti vnímaly učení samo o sobě jako odměnu — aby zažívaly ten tichý pocit uspokojení, když porozumí něčemu, co jim včera bylo záhadou. Pokud jim budu platit za výsledky, neučím je  vnímat vzdělání jako transakci?
 
-Finanční odměny souvisí s mou obecnější obavou z gamifikace. Herní designéři vědí, že optimální bod — kde je hra nejpoutavější — leží přibližně na 85% úspěšnosti. Uspějete dost na to, abyste se cítili kompetentní, ale selháváte dost na to, abyste cítili výzvu. To se přesně překrývá s [Vygotského zónou nejbližšího vývoje](https://en.wikipedia.org/wiki/Mastery_learning), dobře zavedeným pedagogickým konceptem. Alpha a další AI systémy v podstatě tento princip implementují.
+Finanční odměny souvisí s mou obecnější obavou z gamifikace. Herní designéři vědí, že optimální bod — kde je hra nejpoutavější — leží přibližně na 85% úspěšnosti. Uspějete dost na to, abyste se cítili kompetentní, ale selháváte dost na to, abyste cítili výzvu. To se přesně překrývá s [Vygotského zónou nejbližšího vývoje](https://cs.wikipedia.org/wiki/Z%C3%B3na_nejbli%C5%BE%C5%A1%C3%ADho_v%C3%BDvoje), dobře zavedeným pedagogickým konceptem. Alpha a další AI systémy v podstatě tento princip implementují.
 
 Ale je rozdíl mezi dítětem, které vnímá *samotné učení* jako odměnu (vnitřní motivace), a dítětem, které vnímá *gamifikovanou zpětnou vazbu* jako odměnu (vnější motivace). Obě se budou zapojovat. Ale co se stane, když herní prvky zmizí? Co se stane na univerzitě nebo v práci, kde vám nikdo nedává body za splnění úkolu? Dítě, které se naučilo nacházet uspokojení v porozumění, je na to připravené lépe než dítě, které se naučilo honit další odměnu.
 
@@ -99,7 +99,7 @@ Začíná být jasné, že „AI ve vzdělávání” není jedna věc — je to
 
 **Něco úplně nového.** Variace napříč mnoha osami — doma vs. škola, individuálně vs. ve skupině, pevné osnovy vs. vedené zájmy, kouč vs. učitel — které jsme si ještě plně nepředstavili. Možná školy, které vyhodnotí motivační profil dítěte a přiřadí ho ke správnému modelu. Možná AI, která přizpůsobuje nejen *obsah*, ale i *motivační strategii* každému jednotlivému dítěti.
 
-Celosvětově experimentování zrychluje. Čínská [Squirrel AI](https://squirrelai.com/) provozuje přes 1 700 výukových center s hypergranulární adaptivní technologií. [Singapur začlenil AI](https://crpe.org/shockwaves-and-innovations-how-nations-worldwide-are-dealing-with-ai-in-education/) do své národní vzdělávací platformy. Khanmigo od Khan Academy [je pilotně testováno](https://standtogether.org/newsroom/education/khan-academy-and-stand-together-trust-partner-on-education) ve více než 40 školních obvodech ve Spojených státech.
+Experimentuje se celosvětově. 
 
 ## Nepříjemné otázky
 
@@ -136,7 +136,3 @@ Ale zároveň vím, že svět, ve kterém vyrůstá, od něj bude vyžadovat ví
 Otázka, na kterou zatím nedokážu odpovědět, zní: kdo zajistí, že ty dvě hodiny opravdu proběhnou, a co jsme ochotni udělat — jako rodiče, jako společnost — aby byly smysluplné. Technologie je připravena. My ne. Zatím ne.
 
 Budu synovi za učení platit? Dám vám vědět.
-
------
-
-*Pokud vás tohle téma zajímá, [epizoda #366 podcastu Peter Attia Drive s Joem Liemandtem](https://peterattiamd.com/joeliemandt/) je nejlepší hluboký ponor do modelu Alpha School, jaký jsem našel. A pokud jste rodič a přemýšlíte, jestli experimentovat s AI nástroji pro učení — prostě začněte. To nejhorší, co se může stát, je, že nakonec budete sami procvičovat matiku.*
