@@ -11,7 +11,7 @@ Všechno to začalo podcastem. Poslouchal jsem Joea Liemandta v [Peter Attia Dri
 
 Výsledky, alespoň podle údajů samotné školy, jsou pozoruhodné. Žáci dosahují v celostátních standardizovaných testech výsledků v nejlepším jednom procentu. Šestadevadesát procent z nich říká, že školu miluje. Čtyřicet až šedesát procent tvrdí, že by raději byli ve škole než na prázdninách.  [Z prvního absolventského ročníku](https://www.cnn.com/2026/01/29/politics/alpha-school-trump-ai-teaching) loni zamířili studenti na univerzity Stanford, Vanderbilt a Northeastern.
 
-Přistihl jsem se, jak přikyvuji. Ten model dával smysl. Důraz na [skutečné zvládnutí látky](https://cs.wikipedia.org/wiki/Mastery_learning) — nepokračovat dál, dokud aktuální učivo opravdu neovládáte — odpovídal všemu, čemu o učení věřím. Pak ale Liemandt zmínil, že Alpha nabízí žákům 1 000 dolarů, pokud se dostanou nad 99. percentil. Něco mi na tom nesedělo *Platit dětem za učení?* To mi přišlo špatně. Zařadil jsem si to jako jedinou část jinak přesvědčivého modelu, která se mi nelíbila, a šel dál.
+Přistihl jsem se, jak přikyvuji. Ten model dával smysl. Důraz na [skutečné zvládnutí látky](https://cs.wikipedia.org/wiki/Mastery_learning) — nepokračovat dál, dokud aktuální učivo opravdu neovládáte — odpovídal všemu, čemu o učení věřím. Pak ale Liemandt zmínil, že Alpha nabízí žákům 1 000 dolarů, pokud se dostanou nad 99. percentil. Něco mi na tom nesedělo. *Platit dětem za učení?* To mi přišlo špatně. Zařadil jsem si to jako jedinou část jinak přesvědčivého modelu, která se mi nelíbila, a šel dál.
 
 ## Písemné dělení, písemka a aplikace, kterou nikdo nepoužívá
 
