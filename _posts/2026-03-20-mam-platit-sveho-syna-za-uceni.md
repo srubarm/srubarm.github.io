@@ -9,9 +9,9 @@ permalink: /ai/2026-03-20-mam-platit-sveho-syna-za-uceni.html
 <img src='/images/IMG_1194.jpeg' width='480' alt='Třída s žákem u tabule, učitelkou a spoustou peněz.' />  
 Všechno to začalo podcastem. Poslouchal jsem Joea Liemandta v [Peter Attia Drive](https://peterattiamd.com/joeliemandt/) — technologického miliardáře, který desítky let budoval podnikový software, teď investuje miliardu dolarů do vzdělávání a provozuje síť soukromých škol v Texasu bez učitelů, domácích úkolů a učebnic. Jeho výtvor, [Alpha School](https://alpha.school/), nahrazuje tradiční výuku aplikacemi řízenými umělou inteligencí. Žáci zvládnou celé akademické učivo za dvě hodiny ráno a zbytek dne tráví workshopy z podnikání, veřejného vystupování, fitness a finanční gramotnosti. Dospělí ve třídě se nenazývají učitelé — jsou to průvodci a koučové, kteří se soustředí na motivaci a emoční podporu, ne na výklad látky.
 
-Výsledky, alespoň podle údajů samotné školy, jsou pozoruhodné. Žáci dosahují v celostátních standardizovaných testech výsledků v nejlepším jednom procentu. Šestadevadesát procent z nich říká, že školu miluje. Čtyřicet až šedesát procent tvrdí, že by raději byli ve škole než na prázdninách. [První absolventský ročník](https://www.cnn.com/2026/01/29/politics/alpha-school-trump-ai-teaching) loni vyslal studenty na univerzity Stanford, Vanderbilt a Northeastern.
+Výsledky, alespoň podle údajů samotné školy, jsou pozoruhodné. Žáci dosahují v celostátních standardizovaných testech výsledků v nejlepším jednom procentu. Šestadevadesát procent z nich říká, že školu miluje. Čtyřicet až šedesát procent tvrdí, že by raději byli ve škole než na prázdninách.  [Z prvního absolventského ročníku](https://www.cnn.com/2026/01/29/politics/alpha-school-trump-ai-teaching) loni zamířili studenti na univerzity Stanford, Vanderbilt a Northeastern.
 
-Přistihnú jsem se, jak přikyvuji. Ten model dával smysl. Důraz na [skutečné zvládnutí látky](https://cs.wikipedia.org/wiki/Mastery_learning) — nepokračovat dál, dokud aktuální učivo opravdu neovládáte — odpovídal všemu, čemu o učení věřím. Pak ale Liemandt zmínil, že Alpha nabízí žákům 1 000 dolarů, pokud se dostanou nad 99. percentil. A něco ve mně zaškobrtlo. *Platit dětem za učení?* To mi přišlo špatně. Zařadil jsem si to jako jedinou část jinak přesvědčivého modelu, která se mi nelíbila, a šel dál.
+Přistihl jsem se, jak přikyvuji. Ten model dával smysl. Důraz na [skutečné zvládnutí látky](https://cs.wikipedia.org/wiki/Mastery_learning) — nepokračovat dál, dokud aktuální učivo opravdu neovládáte — odpovídal všemu, čemu o učení věřím. Pak ale Liemandt zmínil, že Alpha nabízí žákům 1 000 dolarů, pokud se dostanou nad 99. percentil. Něco mi na tom nesedělo *Platit dětem za učení?* To mi přišlo špatně. Zařadil jsem si to jako jedinou část jinak přesvědčivého modelu, která se mi nelíbila, a šel dál.
 
 ## Písemné dělení, písemka a aplikace, kterou nikdo nepoužívá
 
@@ -21,11 +21,11 @@ Výsledky testu dobré vůbec nebyly.
 
 Bolelo to — jeho i mě. Věděl jsem, že problém není v nadání. Šlo o opakování, procvičování, o zvládnutí základů dřív, než se po vás chce jejich aplikace. A napadlo mě: tohle dokážu napravit. Dokážu vytvořit něco lepšího než pracovní list.
 
-Tak jsem postavil jednoduchou aplikaci poháněnou umělou inteligencí. Generuje příklady přizpůsobené jeho úrovni v matematice. Upravuje obtížnost podle výsledků. Sleduje, co už ovládá a kde má ještě mezery. Je to opravdu dobrá — vím to, protože sám si v ní procvičuji matiku. Je poutavá, přehledná a adaptivní způsobem, jakým žádná učebnice být nedokáže.
+Tak jsem postavil jednoduchou aplikaci poháněnou umělou inteligencí. Generuje příklady přizpůsobené jeho úrovni v matematice. Upravuje obtížnost podle výsledků. Sleduje, co už ovládá a kde má ještě mezery. Je opravdu dobrá — vím to, protože sám si v ní procvičuji matiku. Je poutavá, přehledná a adaptivní způsobem, jakým žádná učebnice být nedokáže.
 
 Syn ji párkrát vyzkoušel. A pak… přestal. Ne proto, že by byla špatná. Ne proto, že by to nezvládal. Prostě si k ní sám od sebe nesedne. Aplikace tam je, připravená, schopná, přizpůsobená přesně jeho potřebám — a nepoužívaná.
 
-A v tu chvíli mi ten tisíc dolarů docvakl.
+A v tu chvíli mi těch tisíc dolarů docvaklo.
 
 Odsoudil jsem finanční pobídky žákům v Alpha School. Ale já, rodič, který podobný nástroj vytvořil, který vidí, že funguje, který ví, že by mohl pomoct — nedokážu přimět vlastní dítě, aby ho používalo. Alpha neplatí žákům tisíc dolarů proto, že by byli líní. Platí jim proto, že vybudovali nejúčinnější vzdělávací systém na světě a *pořád* musí vyřešit problém, jak přimět dítě, aby se do něj zapojilo. Narazili na stejnou zeď jako já. Jen našli přímější cestu přes ni.
 
@@ -37,13 +37,13 @@ Není to žádný nový poznatek. V roce 1984 publikoval pedagogický psycholog 
 
 O čtyřicet let později by odpovědí mohla být právě umělá inteligence. Adaptivní systém dokáže přesně určit, kde porozumění dítěti chybí, vyplnit mezeru, znovu otestovat a posunout dál teprve tehdy, když žák skutečně zvládl prerekvizitu. Žádné dítě nezůstane pozadu — ne jako politické heslo, ale jako mechanický princip fungování softwaru.
 
-Princip Alpha je prostý a přesvědčivý: buďte rychlí v malé násobilce, než se pustíte do dělení víceciferným číslem. Zvládněte základy tak důkladně, aby další úroveň působila zvládnutelně, ne nemožně. Líbí se mi na tom, že to respektuje skutečné porozumění dítěte, ne jeho věk. Bystrý devítiletý kluk, kterému unikl nějaký stavební kámen ve druhé třídě, by neměl být nucen tápat v učivu čtvrté třídy — měl by se vrátit a rychle mezeru uzavřít a pak pokračovat. 
+Princip Alpha je prostý a přesvědčivý: zautomatizujte si malou násobilku, než se pustíte do dělení víceciferným číslem. Zvládněte základy tak důkladně, aby další úroveň působila zvládnutelně, ne nemožně. Líbí se mi na tom, že to respektuje skutečné porozumění dítěte, ne jeho věk. Bystrý devítiletý kluk, kterému unikl nějaký stavební kámen ve druhé třídě, by neměl být nucen tápat v učivu čtvrté třídy — měl by se vrátit a rychle mezeru uzavřít a pak pokračovat. 
 
 Pokud dítě dokáže učivo jednoho ročníku z daného předmětu skutečně zvládnout za [20–30 soustředěných hodin](https://alpha.school/the-program/) — a data z adaptivních vzdělávacích platforem naznačují, že je to reálné, i když v širokém měřítku to ještě není dokázáno — proč je držet v učebnách šest hodin denně? Uvolněný čas by mohl jít na věci, na které v osnovách nikdy není místo: naučit se vést firmu, procvičovat veřejné vystupování, trénovat na triatlon nebo si prostě hrát.
 
 ## AI vyřešila problém obsahu. Problém motivace nevyřešila.
 
-Tady se mé uvažování posunulo. Umělá inteligence dnes dokáže vygenerovat dokonale přizpůsobené vzdělávání pro jakékoli dítě, v jakémkoli předmětu, na jakékoli úrovni. Problém obsahu je v podstatě vyřešen. Khan Academy [Khanmigo](https://www.khanmigo.ai/) pomáhá učitelům i studentům. Čínská [Squirrel AI](https://www.technologyreview.com/2019/08/02/131198/china-squirrel-has-started-a-grand-experiment-in-ai-education-it-could-reshape-how-the/) rozložila matematiku pro střední stupeň na přes 10 000 dílčích znalostních bodů a provozuje 1 700 výukových center. Duolingo pomocí AI vytváří adaptivní jazykový trénink v reálném čase. Nástroje existují a každým měsícem se zlepšují.
+Tady se mé uvažování posunulo. Umělá inteligence dnes dokáže vygenerovat dokonale přizpůsobené vzdělávání pro jakékoli dítě, v jakémkoli předmětu, na jakékoli úrovni. Problém obsahu je v podstatě vyřešen. Khan Academy [Khanmigo](https://www.khanmigo.ai/) pomáhá učitelům i studentům. Čínská [Squirrel AI](https://www.technologyreview.com/2019/08/02/131198/china-squirrel-has-started-a-grand-experiment-in-ai-education-it-could-reshape-how-the/) rozložila matematiku pro druhý stupeň základních škol na zhruba 10 000 dílčích znalostních bodů a provozuje 1 700 výukových center. Duolingo pomocí AI vytváří adaptivní jazykový trénink v reálném čase. Nástroje existují a každým měsícem se zlepšují.
 
 Jenže ukázalo se, že vytvořit dokonalý vzdělávací stroj je jen polovina problému — a pravděpodobně ta snazší. Ta těžší, kterou samotná technologie vyřešit nedokáže, zní: jak přimět dítě, aby se do toho smysluplně zapojilo?
 
@@ -81,13 +81,13 @@ Upřímně nevím. A mám podezření, že odpověď zní: záleží na dítěti
 
 Je tu ještě jedna dimenze, o které jsem moc diskuzí nezaznamenal. Tradiční třídy při veškeré své neefektivitě poskytují něco, co AI na obrazovce nedokáže: sociální dynamiku učení po boku vrstevníků.
 
-Když dítě vidí dalších dvacet dětí, jak procvičují malou násobilku, něco se děje — a není to v žádných osnovách. Vstřebávají sdělení: *takhle to tu děláme.* Sociální srovnávání, tlak vrstevníků, prostý fakt, že kolem nich jsou všichni zapojeni — to jsou silné motivační síly, které fungují z velké části pod prahem vědomí. Děti přirozeně kalibrují své úsilí podle prostředí.
+Když dítě vidí dalších dvacet dětí, jak procvičují malou násobilku, něco se děje — a není to v žádných osnovách. Vstřebávají sdělení: *takhle to tu děláme.* Sociální srovnávání, tlak vrstevníků, prostě, že se všichni kolem nich se také učí — to jsou silné motivační síly, které fungují z velké části pod prahem vědomí. Děti přirozeně kalibrují své úsilí podle prostředí.
 
 Dítě samo s iPadem a AI tutorem tohle nemá. Má obsah. Možná má i průvodce, který se na něj občas podívá. Ale nemá ten okolní sociální signál, který normalizuje úsilí a dělá z učení sdílený podnik, ne osamělý úkol.
 
 ## Nové modely, které se vynořují
 
-Začíná být jasné, že „AI ve vzdělávání” není jedna věc — je to spektrum přístupů a pravděpodobně směřujeme ke světu, kde bude koexistovat více modelů. Takhle je momentáně vidím:
+Začíná být jasné, že „AI ve vzdělávání” není jedna věc — je to spektrum přístupů a pravděpodobně směřujeme ke světu, kde bude koexistovat více modelů. Takhle je momentálně vidím:
 
 **Rozšířené klasické třídy.** AI se postará o známkování, hodnocení a personalizovanou zpětnou vazbu. Učitelé zůstávají v centru, ale jsou osvobozeni od administrativní zátěže. Tohle je nejméně disruptivní model a pravděpodobně nejpravděpodobnější ve veřejném školství. Khanmigo od Khan Academy je navrženo přesně pro tohle — tutor pro žáky a asistent pro učitele.
 
@@ -111,7 +111,7 @@ Co to formuje? Především výchova. [Studie ukazují](https://pmc.ncbi.nlm.nih
 
 Zamyslete se, co to znamená v praxi. Dítě, které smí obracet kameny na zahradě a žasnout nad tím, co je pod nimi, dostává posilování své zvídavosti. Dítě, které dostane vynadáno za to, že se umazalo a nesmí se dotýkat brouků, se učí, že prozkoumávání má následky. Dítě, které se nechá potrápit s puzzle, si buduje vytrvalost; dítě, kterému dobře míněný rodič neustále „pomáhá” — nebo ho pokárá pokaždé, když dá dílek špatně — se učí, že jde o správnou odpověď, ne o proces. [Nedávný výzkum](https://pmc.ncbi.nlm.nih.gov/articles/PMC12837912/) naznačuje, že zvídavost může být formována spíše kontextem než věkem, což podtrhuje potřebu vytvářet prostředí, které chrání a podporuje vnitřní zájem dětí, jak rostou.
 
-To znamená, že vzdělávací prostředí, které pro naše děti vybereme, aktivně formuje, jakými se z nich stanou žáci. To je velká zodpovědnost. Pokud dám dítě do gamifikovaného AI systému, možná ho trénuji k potřebě vnějších odměn. Pokud ho nechám v tradiční třídě, možná ho tréniki k pasivnímu učení. Ta volba není neutrální.
+To znamená, že vzdělávací prostředí, které pro naše děti vybereme, aktivně formuje, jakými se z nich stanou žáci. To je velká zodpovědnost. Pokud dám dítě do gamifikovaného AI systému, možná ho trénuji k potřebě vnějších odměn. Pokud ho nechám v tradiční třídě, možná ho vedu k pasivnímu učení. Ta volba není neutrální.
 
 **Jak se přizpůsobí vysokoškolské vzdělávání?** Vstupujeme do potenciálně velmi dlouhého přechodného období, kdy někteří studenti přijdou na univerzitu s mimořádně vysokou úrovní vzdělání a jiní projdou tradičním systémem. Jak budou univerzity tuto variabilitu zvládat? Přežije model přednáškových sálů, když někteří prváci už budou ovládat látku, se kterou se ostatní setkají až ve druhém ročníku?
 
@@ -123,7 +123,7 @@ Pokud jste rodič jako já, bezprostřední akce je jednoduchá: požádejte AI,
 
 Problém motivace je na vás. Blížící se test ve škole je rozumná motivace pro některé děti, ale ne pro všechny. Udělat z toho společnou aktivitu — sednout si s dítětem a počítat příklady společně — pomáhá. Ale nedá se to dělat každý večer a vyžaduje to míru zapojení, kterou ne každý rodič dokáže udržet.
 
-Pokud se sami vzdělávate — třeba jako dospělý, který se chce naučit nové dovednosti — příležitost je mimořádná. Využijte AI, aby vás učila, testovala a zpochybňovala vaše porozumění. Požádejte ji, aby identifikovala mezery ve vašich znalostech. Nechte ji klást hloubkové otázky i chytáky. Nástroje, které dnes existují, mnohé z nich zdarma, by byly před pěti lety nepředstavitelné.
+Pokud se sami vzděláváte — třeba jako dospělý, který se chce naučit nové dovednosti — příležitost je mimořádná. Využijte AI, aby vás učila, testovala a zpochybňovala vaše porozumění. Požádejte ji, aby identifikovala mezery ve vašich znalostech. Nechte ji klást hloubkové otázky i chytáky. Nástroje, které dnes existují, mnohé z nich zdarma, by byly před pěti lety nepředstavitelné.
 
 Pokud jste podnikatel, řeknu vám tohle: strana osnov a obsahu vzdělávání se rychle stává komoditou. AI dokáže generovat, personalizovat a hodnotit učební materiál. Ale firma, která vyřeší *motivaci* ve velkém měřítku — která přijde na to, jak přimět děti, aby se skutečně zapojily do AI-řízeného vzdělávání bez finančních pobídek nebo neustálého rodičovského dohledu — ta firma změní vzdělávání. Obsah je ta snadná část. Ta lidská je ta těžká a vždycky byla.
 
