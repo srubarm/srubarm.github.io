@@ -44,7 +44,7 @@ The efficiency gains are what create the time. If a child can genuinely complete
 
 ## AI has solved the content problem. It has not solved the motivation problem.
 
-Here's where my thinking shifted. AI can now generate a perfectly tailored learning experience for any child, in any subject, at any level. The content delivery problem is, if not fully solved, rapidly being solved. Khan Academy's [Khanmigo](https://blog.khanacademy.org/khanmigo-top-ai-in-education-moments-of-2023-the-year-artificial-intelligence-dominated-education-news-kl/) uses GPT-4 to provide Socratic tutoring. China's [Squirrel AI](https://www.technologyreview.com/2019/08/02/131198/china-squirrel-has-started-a-grand-experiment-in-ai-education-it-could-reshape-how-the/) has broken middle school maths into over 10,000 discrete knowledge points and serves 1,700 learning centres. Duolingo's AI creates adaptive language practice in real time. The tools exist and they're getting better every month.
+Here's where my thinking shifted. AI can now generate a perfectly tailored learning experience for any child, in any subject, at any level. The content delivery problem is, if not fully solved, rapidly being solved. Khan Academy's [Khanmigo](https://www.khanmigo.ai/) helps teachers and students in the classroom. China's [Squirrel AI](https://www.technologyreview.com/2019/08/02/131198/china-squirrel-has-started-a-grand-experiment-in-ai-education-it-could-reshape-how-the/) has broken middle school maths into over 10,000 discrete knowledge points and serves 1,700 learning centres. Duolingo's AI creates adaptive language practice in real time. The tools exist and they're getting better every month.
 
 But building the perfect learning resource turns out to be only half the challenge — and arguably the easier half. The harder half, the one that technology alone cannot solve, is this: how do you get a child to meaningfully engage with it?
 
@@ -56,7 +56,7 @@ And yet, even with all of that, they still offer financial incentives.
 
 This is the question I keep coming back to as a parent, and I don't think the answer is simple.
 
-Alpha offers middle schoolers $1,000 for reaching the top 1% nationally. They also run smaller incentive programmes — $100 for a perfect score on state standardised tests. Liemandt draws on the work of Harvard economist [Roland Fryer, who ran large-scale experiments](https://scholar.harvard.edu/files/fryer/files/financial_incentives_and_student_achievement_evidence_from_randomized_trials.pdf) paying students in over 200 urban schools across Dallas, New York, and Chicago.
+Alpha offers middle schoolers $1,000 for reaching the top 1% nationally. They also run smaller incentive programmes — $100 for a perfect score on state standardised tests. Liemandt draws on the work of Harvard economist [Roland Fryer, who ran large-scale experiments](https://academic.oup.com/qje/article-abstract/126/4/1755/1924375?redirectedFrom=fulltext&login=false) paying students in over 200 urban schools across Dallas, New York, and Chicago.
 
 Fryer's findings are nuanced and worth understanding. Paying students for *outputs* — higher test scores — had essentially zero effect. But paying students for *inputs* — reading books, completing specific tasks — worked, at least for some groups. The distinction matters: when students know exactly what to do, incentives can push them to do it. When the path is unclear, money alone doesn't help.
 
@@ -64,11 +64,11 @@ Alpha's argument is that their AI makes the path so clear — here are the exact
 
 I see the logic. And I can see how, for many children, this works. The $1,000 isn't really about the money — it's about showing a child that they're capable of something they didn't think possible. Once that belief shifts, the external reward becomes less necessary.
 
-But the research on motivation gives me pause. [Self-determination theory](https://journals.sagepub.com/doi/10.3102/00346543071001001) — the dominant framework in educational psychology — holds that lasting motivation comes from autonomy, competence, and relatedness. A [landmark meta-analysis](https://www.sciencedirect.com/science/article/abs/pii/S0272775716303478) by Deci, Koestner, and Ryan found that tangible rewards have a "substantial undermining effect" on intrinsic motivation. When you pay children to do something, they may stop wanting to do it for its own sake. The reward becomes the point, and when it's removed, so is the engagement.
+But the research on motivation gives me pause. [Self-determination theory](https://en.wikipedia.org/wiki/Self-determination_theory) — the dominant framework in educational psychology — holds that lasting motivation comes from autonomy, competence, and relatedness. A [landmark meta-analysis](https://journals.sagepub.com/doi/10.3102/00346543071001001) by Deci, Koestner, and Ryan found that tangible rewards have a ["substantial undermining effect" on intrinsic motivation](https://www.sciencedirect.com/science/article/abs/pii/S0272775716303478). When you pay children to do something, they may stop wanting to do it for its own sake. The reward becomes the point, and when it's removed, so is the engagement.
 
 There's also a more personal concern. I want my children to find learning itself rewarding — to experience the quiet satisfaction of understanding something that was confusing yesterday. If I pay them to achieve, am I training them to see education as a transaction?
 
-Monetary rewards connect to my broader concern about gamification. Game designers know that the optimal challenge point — where a game is most engaging — sits at roughly an 85% success rate. You're succeeding enough to feel competent but failing enough to feel challenged. This maps neatly onto [Vygotsky's Zone of Proximal Development](https://en.wikipedia.org/wiki/Mastery_learning), a well-established educational concept. Alpha and other AI systems essentially implement this principle.
+Monetary rewards connect to my broader concern about gamification. Game designers know that the optimal challenge point — where a game is most engaging — sits at roughly an 85% success rate. You're succeeding enough to feel competent but failing enough to feel challenged. This maps neatly onto [Vygotsky's Zone of Proximal Development](https://en.wikipedia.org/wiki/Zone_of_proximal_development), a well-established educational concept. Alpha and other AI systems essentially implement this principle.
 
 But there's a difference between a child who finds the *learning itself* rewarding (intrinsic) and a child who finds the *gamified feedback* rewarding (extrinsic). Both will engage. But what happens when the game elements are removed? What happens in university, or in a job, where nobody gives you points for completing a task? The child who learned to find satisfaction in understanding is better prepared than the child who learned to chase the next reward.
 
@@ -100,7 +100,7 @@ What's becoming clear is that "AI in education" isn't one thing — it's a spect
 
 **Something entirely new.** Variations across multiple axes — home vs. school, individual vs. group, fixed curriculum vs. interest-led, coach vs. teacher — that we haven't fully imagined yet. Perhaps schools that assess a child's motivational profile and match them to the right model. Perhaps AI that adapts not just the *content* but the *motivational strategy* to each individual child.
 
-Globally, the experimentation is accelerating. China's [Squirrel AI](https://squirrelai.com/) operates over 1,700 learning centres using hyper-granular adaptive technology. [Singapore has embedded AI](https://crpe.org/shockwaves-and-innovations-how-nations-worldwide-are-dealing-with-ai-in-education/) into its national learning platform. Khan Academy's [Khanmigo is being piloted](https://standtogether.org/newsroom/education/khan-academy-and-stand-together-trust-partner-on-education) in over 40 school districts in the United States.
+Globally, the experimentation is accelerating.
 
 ## The uncomfortable questions
 
@@ -137,7 +137,3 @@ But I also know that the world he's growing up in will demand more of him than t
 The question I can't yet answer is who ensures that those two hours actually happen, and what we're willing to do — as parents, as a society — to make them meaningful. The technology is ready. We are not. Not yet.
 
 Will I pay my son to learn? I'll let you know.
-
------
-
-*If this topic interests you, the [Peter Attia Drive podcast Episode #366 with Joe Liemandt](https://peterattiamd.com/joeliemandt/) is the best deep dive I've found on the Alpha School model. And if you're a parent wondering whether to experiment with AI learning tools — just start. The worst that happens is you end up practising maths yourself.*
