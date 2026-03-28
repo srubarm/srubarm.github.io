@@ -5,8 +5,7 @@ date: 2026-03-28
 categories: [AI]
 ---
 
-<img src='/images/ai-and-i-difference.jpeg' width='480' alt='The Difference Between AI and I' />
-
+<img src='/images/ai-and-i-difference.jpeg' width='480' alt='The Difference Between AI and I' />  
 Every year, someone publishes a definitive list of things AI cannot do. And every year, the list gets shorter.
 
 In 2023, the consensus was that LLMs couldn't reason, couldn't do math reliably, couldn't write code that actually works. By 2025, reasoning models like Gemini and Claude were solving problems that would have seemed impossible two years earlier. Coding assistants went from parlour trick to genuine productivity tool. Mathematical benchmarks that once stumped every model started falling.
@@ -19,19 +18,19 @@ The list does still exist though. As of early 2026, the research literature poin
 
 **Creativity is capped at the population average.** A [2026 study comparing divergent thinking](https://www.nature.com/articles/s41598-025-25157-3) in LLMs and 100,000 humans found that while several LLMs now exceed average human creativity scores, the most creative humans still significantly outperform every model tested. A [separate mathematical analysis](https://futurism.com/artificial-intelligence/large-language-models-willnever-be-intelligent) concluded that probabilistic systems are fundamentally capped at average creative output under current design principles — they can remix and recombine, but not break genuinely new ground.
 
-**Models can't tell what they don't know.** LLMs are trained to produce the most statistically likely answer, not to assess their own confidence. A 2025 study in [*Nature Machine Intelligence*](https://www.nature.com/articles/s42256-025-00957-y) found they cannot reliably distinguish belief from knowledge and fact. They [hallucinate](https://blogs.library.duke.edu/blog/2026/01/05/its-2026-why-are-llms-still-hallucinating/). They agree with you when you're wrong ([sycophancy](https://arxiv.org/html/2505.23840v4)). And when they take a wrong turn in a multi-turn conversation, they don't recover — a [2025 Microsoft/Salesforce study](https://arxiv.org/abs/2505.06120) found a 39% accuracy drop across all models in multi-turn settings compared to single-turn.
+**Models can't tell what they don't know.** LLMs are trained to produce the most statistically likely answer, not to assess their own confidence. [A 2025 study in Nature Machine Intelligence](https://www.nature.com/articles/s42256-025-01113-8) found they cannot reliably distinguish belief from knowledge and fact. They [hallucinate](https://blogs.library.duke.edu/blog/2026/01/05/its-2026-why-are-llms-still-hallucinating/). They agree with you when you're wrong ([sycophancy](https://arxiv.org/html/2505.23840v4)). And when they take a wrong turn in a multi-turn conversation, they don't recover — a [2025 Microsoft/Salesforce study](https://arxiv.org/abs/2505.06120) found a 39% accuracy drop across all models in multi-turn settings compared to single-turn.
 
 **They have no persistent memory.** Every conversation starts from scratch. The engineering workarounds (RAG, vector databases, [memory frameworks](https://research.ibm.com/blog/memory-augmented-LLMs)) create the illusion of continuity, but the underlying architecture is fundamentally stateless. No current system can accumulate experience over time the way a human expert does across years of practice.
 
 These are real limitations. But before asking whether they're permanent, it's worth questioning an assumption that underpins most of the debate.
 
-## The provocation: you're a parrot too
+## You are a parrot too
 
 "Stochastic parrot" is the favourite insult hurled at LLMs — the accusation that they're merely predicting the next most likely token, not actually understanding anything. It's meant to be a devastating critique. But let's turn the lens around.
 
 Consider what a human brain actually does. It's a biological neural network, processing inputs and producing outputs based on patterns learned from data. The architecture is different — persistent memory, emotional weighting, embodied sensory processing — but the fundamental mechanism is the same: pattern recognition and probabilistic inference over accumulated experience.
 
-You don't choose your thoughts any more than Claude chooses its tokens. As Robert Sapolsky argues in [*Determined*](https://www.penguinrandomhouse.com/books/733936/determined-by-robert-m-sapolsky/), every human decision is the inevitable product of prior causes — your genetics, your neurochemistry, and crucially, every single experience you've ever had, including the ones you weren't consciously aware of. There's no ghost in the machine pulling the levers. There's just a neural network that's been training continuously since birth.
+You don't choose your thoughts any more than Claude chooses its tokens. As Robert Sapolsky argues in [*Determined*](https://en.wikipedia.org/wiki/Determined:_A_Science_of_Life_Without_Free_Will), every human decision is the inevitable product of prior causes — your genetics, your neurochemistry, and crucially, every single experience you've ever had, including the ones you weren't consciously aware of. There's no ghost in the machine pulling the levers. There's just a neural network that's been training continuously since birth.
 
 This isn't a fringe position. It's the logical consequence of our best neuroscience. We experience something we call "understanding" and "intuition" and "creativity," but these may be subjective labels for a process that is, at its core, doing exactly what LLMs are accused of: sophisticated pattern matching over accumulated data.
 
@@ -42,7 +41,7 @@ If that's uncomfortable, consider the comparison side by side:
 |**Architecture**   |Biological neural network, ~86 billion neurons                                                        |Artificial neural network, billions of parameters                               |
 |**Training data**  |Decades of continuous multimodal sensory input (vision, sound, touch, smell, emotion, social feedback)|Primarily text, some images                                                     |
 |**Memory**         |Persistent, associative, emotionally weighted, consolidated during sleep                              |Stateless per session; memory bolted on externally                              |
-|**Training method**|Unsupervised, continuous, from birth, including unconscious inputs                                    |Pre-training on corpus, fine-tuning, RLHF                                       |
+|**Training method**|Continuous, from birth, including unconscious inputs, reinformcement learning (touching hot stove), supervised learning (parental feedback)                                    |Pre-training on corpus, fine-tuning, RLHF                                       |
 |**"Creativity"**   |Recombination of experiences, occasionally producing something genuinely novel                        |Recombination of training data, occasionally producing something genuinely novel|
 |**"Intuition"**    |Compressed pattern recognition from years of domain-specific experience                               |Not yet achieved — no mechanism for long-term experiential compression          |
 
@@ -76,7 +75,7 @@ If you accept the documentability thesis, it leads somewhere interesting and sli
 
 If I had a complete record of every sensory input a person received from birth — every image, sound, touch, social interaction, emotional state — and I had an architecture capable of processing it the same way their brain does, would I have replicated that person? Not a copy of their knowledge, but *them*?
 
-Sapolsky would say yes. If human cognition is entirely the product of neural architecture plus the sum of inputs, then a perfect simulation is a perfect replica. There's no residual "self" that exists outside the computation.
+I think Sapolsky would say yes. If human cognition is entirely the product of neural architecture plus the sum of inputs, then a perfect simulation is a perfect replica. There's no residual "self" that exists outside the computation.
 
 This isn't just a thought experiment. It defines the theoretical ceiling of AI. If the answer is yes, then every AI limitation is an engineering problem — a matter of getting the data and building the right architecture. If the answer is no, then there's something outside the computational framework that we don't understand yet — call it consciousness, free will, or something we don't have a name for.
 
@@ -84,13 +83,11 @@ We don't need to resolve this to be practical. But it's worth noticing that ever
 
 ## What this means in practice
 
-Whether or not everything is *theoretically* documentable, we live in a world where most expert knowledge is *practically* undocumented. Current research suggests AI-assisted methods can codify roughly [60–80% of expert tacit knowledge](https://lukeford.net/blog/?p=175851) in domains where observable artifacts exist (documents, recordings, logs, sensor data). The remaining 20–40% — pure situated judgment, embodied intuition, cultural sensitivity — stays human for now.
-
-But that 60–80% represents an enormous amount of untapped value. And the gap between "documented" and "documentable" is where the real opportunity lies.
+We don’t need to solve the mysteries of human consciousness to extract economic value today. Even if we can't capture the 100% required to simulate a human, capturing the actionable tacit knowledge fundamentally changes how useful AI can become even at today's "intelligence" level.
 
 Here's what I think the implications are:
 
-**The meta-skill of the AI age is knowledge elicitation.** Not prompt engineering. Not "learning to use AI tools." The bottleneck isn't AI capability — it's our ability to extract what's in people's heads and encode it in a form AI can work with. Research shows that experts spontaneously [omit 40–70% of their key decision steps](https://www.modsimworld.org/papers/2025/MODSIM_2025_paper_11.pdf) when teaching without structured elicitation methods. That's not an AI problem. That's a human-to-human knowledge transfer problem that predates AI entirely — AI just makes it the binding constraint.
+**The meta-skill of the AI age is knowledge elicitation.** Not prompt engineering. Not "learning to use AI tools." The bottleneck isn't AI capability — it's our ability to extract what's in people's heads and encode it in a form AI can work with. Research shows that experts spontaneously [omit 40–70% of their key decision steps](https://www.modsimworld.org/papers/2025/MODSIM_2025_paper_11.pdf) when teaching without structured elicitation methods. Already in 1966 Polanyi discovered that ["we can know more than we can tell"](https://en.wikipedia.org/wiki/Polanyi%27s_paradox) None of it is an AI problem. That's a caputure and human-to-human knowledge transfer problem that predates AI entirely — AI just makes it the binding constraint.
 
 **If you're an expert, document your thinking now.** Not just what you do, but why. What alternatives you considered and rejected. What edge cases you handle without thinking about it. What subtle signals change your approach. This "meta-cognitive documentation" is the highest-leverage activity most professionals aren't doing. You don't need to become an AI expert. You need to become an [expert at explaining your expertise](https://medium.com/@shashwatabhattacharjee9/the-uncodifiable-advantage-tacit-knowledge-as-the-strategic-bottleneck-in-ai-systems-d359dfe3967b).
 
