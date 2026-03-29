@@ -1216,3 +1216,264 @@ article p {
 //@import "highlights";
 @import "darcula";
 @import "svg-icons";
+
+/**************/
+/* DARK THEME */
+/**************/
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a1a2e;
+    color: #d0d0d0;
+    background-image: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #7b9fd4;
+  }
+
+  h4 {
+    color: #b0b0b0;
+  }
+
+  a {
+    color: #6ab0f3;
+    &:hover, &:active {
+      color: #8ec4f6;
+    }
+  }
+
+  .masthead {
+    border-bottom-color: #2e2e44;
+  }
+
+  .site-name {
+    color: #d0d0d0;
+  }
+
+  .site-description {
+    color: #8888a0;
+  }
+
+  nav a {
+    color: #d0d0d0;
+
+    @include mobile {
+      color: #6ab0f3;
+    }
+  }
+
+  .date {
+    color: #8888a0;
+  }
+
+  .author_title, .post_date {
+    color: #8888a0;
+  }
+
+  // Tables
+  table tr {
+    border-top-color: #3a3a50;
+    background-color: #22223a;
+  }
+
+  table tr:nth-child(2n) {
+    background-color: #1e1e34;
+  }
+
+  table tr th, table tr td {
+    border-color: #3a3a50;
+  }
+
+  // Posts
+  .posts > .post {
+    border-bottom-color: #2e2e44;
+  }
+
+  .post blockquote {
+    background-color: #2a2040;
+    color: #a0a0b8;
+  }
+
+  .post .you-may-like {
+    background-color: #1e3020;
+    color: #a0a0b8;
+  }
+
+  // Search
+  #search-input {
+    background-color: #22223a;
+    border-color: #3a3a50;
+    color: #d0d0d0;
+  }
+
+  // Share box
+  .share-box {
+    color: #d0d0d0;
+  }
+
+  // Pullquote
+  span[data-pullquote]:before {
+    color: #5bba5b;
+  }
+
+  // Selection
+  ::-moz-selection {
+    color: #fff;
+    background: #3a3a60;
+  }
+  ::selection {
+    color: #fff;
+    background: #3a3a60;
+  }
+
+  // Footer
+  .wrapper-footer {
+    background-color: #16162a;
+  }
+
+  // Top gradient bar
+  body:after {
+    background: linear-gradient(to right, #1a1a2e 0, #2196F3 33%, #E91E63 66%, #d0d0d0 100%);
+  }
+
+  // Progress bar
+  #bar {
+    background: #4a6a9a;
+  }
+
+  // H2 decorative lines
+  @media (min-width: 769px) {
+    .post h2::before, .post h2::after {
+      background: #3a4a60;
+    }
+  }
+
+  // Pagination
+  .pagination a, .pagination span {
+    background-color: #22223a;
+    border-color: #3a3a50;
+    color: #d0d0d0;
+  }
+
+  .pagination a:hover {
+    background-color: #2e2e44;
+    color: #e0e0e0;
+  }
+
+  // Chips / tags
+  .chip {
+    background-color: #2e2e44;
+    color: #b0b0c8;
+  }
+
+  .yellow.lighten-2 {
+    background-color: #2a2040 !important;
+  }
+
+  .post-tags a {
+    background-color: #2d7a30;
+    color: #e0e0e0;
+  }
+
+  // Inline code
+  .highlighter-rouge {
+    background-color: #22223a;
+    color: #ff7b72;
+  }
+
+  // Subscribe / newsletter
+  .tlemail {
+    background-color: #22223a;
+    border-color: #3a3a50;
+    color: #d0d0d0;
+  }
+
+  .subscribeBtn {
+    background-color: #2d7a30;
+  }
+
+  .tinyletterForm {
+    background: #22223a;
+    border-color: #3a3a50;
+  }
+
+  .btn-subscribe {
+    background: #ffffff15;
+    color: #d0d0d0;
+  }
+
+  .btn-subscribe:hover {
+    color: #e0e0e0;
+  }
+
+  // Text link
+  .text-link {
+    color: #d0d0d0;
+    border-bottom-color: #d0d0d0;
+  }
+
+  // Carbon ads
+  #carbonads {
+    background-color: #22223a;
+    border-color: #3a3a50;
+  }
+
+  // CD Timeline
+  #cd-timeline::before {
+    background: #3a3a50;
+  }
+
+  .cd-timeline-content {
+    background: #22223a;
+    box-shadow: 0 3px 0 #2e2e44;
+  }
+
+  .cd-timeline-content h2 {
+    color: #d0d0d0;
+  }
+
+  .cd-timeline-content::before {
+    border-right-color: #22223a;
+  }
+
+  .cd-container a {
+    color: #d0d0d0;
+  }
+
+  .cd-timeline-img {
+    box-shadow: 0 0 0 4px #1a1a2e, inset 0 2px 0 rgba(0, 0, 0, 0.2), 0 3px 0 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media only screen and (min-width: 1170px) {
+    .cd-timeline-content::before {
+      border-left-color: #22223a;
+      border-right-color: transparent;
+    }
+    .cd-timeline-block:nth-child(even) .cd-timeline-content::before {
+      border-right-color: #22223a;
+      border-left-color: transparent;
+    }
+  }
+
+  // Logo - hide light background image, use filter
+  #logo {
+    background-image: url(/images/logo1.gif);
+    filter: brightness(1.5) contrast(0.9);
+  }
+
+  // Comments section
+  .commentsheader {
+    color: #d0d0d0;
+  }
+
+  // Images - subtle rounding to blend better on dark
+  img {
+    border-radius: 2px;
+  }
+
+  // GH latest
+  #gh-latest {
+    color: #d0d0d0;
+  }
+}
