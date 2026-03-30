@@ -3,6 +3,7 @@ layout: post-en
 title: "The Difference Between AI and I"
 date: 2026-03-28
 categories: [AI]
+image: /images/ai-and-i-difference.jpeg
 ---
 
 <img src='/images/ai-and-i-difference.jpeg' width='480' alt='The Difference Between AI and I' />  
