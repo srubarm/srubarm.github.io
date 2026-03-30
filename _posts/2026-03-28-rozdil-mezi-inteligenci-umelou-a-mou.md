@@ -3,6 +3,7 @@ layout: post
 title: "Rozdíl mezi inteligencí umělou a mou"
 date: 2026-03-28
 categories: [AI]
+image: /images/ai-and-i-difference.jpeg
 ---
 <img src='/images/ai-and-i-difference.jpeg' width='480' alt='Rozdíl mezi AI a mnou' />  
 Každý rok někdo publikuje definitivní seznam věcí, které AI neumí. A každý rok je ten seznam kratší.
