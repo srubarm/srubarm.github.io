@@ -1167,7 +1167,7 @@ position: relative;
     width: 23em;
     height: 5em;
     float: left;
-    background: url(/images/logo1.gif) left center no-repeat;
+    background: url(/images/logo1.png) left center no-repeat;
     z-index: 9;
 }
 
@@ -1225,7 +1225,7 @@ article p {
   body {
     background-color: #1a1a2e;
     color: #d0d0d0;
-    background-image: none;
+    background-image: url(/images/hlpozadi-dark.jpg);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -1456,10 +1456,9 @@ article p {
     }
   }
 
-  // Logo - hide light background image, use filter
+  // Logo - swap to dark variant
   #logo {
-    background-image: url(/images/logo1.gif);
-    filter: brightness(1.5) contrast(0.9);
+    background-image: url(/images/logo1-dark.png);
   }
 
   // Comments section
