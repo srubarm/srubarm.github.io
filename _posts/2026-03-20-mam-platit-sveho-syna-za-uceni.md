@@ -4,6 +4,7 @@ title: Mám platit svého syna za učení?
 date: 2026-03-20
 categories: [AI]
 permalink: /ai/2026-03-20-mam-platit-sveho-syna-za-uceni.html
+image: /images/IMG_1194.jpeg
 ---
 
 <img src='/images/IMG_1194.jpeg' width='480' alt='Třída s žákem u tabule, učitelkou a spoustou peněz.' />  
