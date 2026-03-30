@@ -3,6 +3,7 @@ layout: post-en
 title: "Should I Pay My Kid to Learn?"
 date: 2026-03-20
 categories: [AI]
+image: /images/IMG_1194.jpeg
 ---
 
 <img src='/images/IMG_1194.jpeg' width='480' alt='Should I pay my kid to learn?' />  
