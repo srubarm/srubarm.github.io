@@ -12,6 +12,14 @@ layout: default
           <p class="post_date">{{ post.date | date: "%-e. %-m. %Y" }}</p>
         </div>
       </a>
+      {% if post.categories.size > 0 %}
+      <div class="post-tags">
+        {% for category in post.categories %}
+          <a href="{{ site.baseurl }}/rubriky/#{{ category | slugize }}">{{ category }}</a>
+          {% unless forloop.last %}&nbsp;{% endunless %}
+        {% endfor %}
+      </div>
+      {% endif %}
       <div class="entry">
         {{ post.excerpt }}
       </div>
@@ -24,9 +32,9 @@ layout: default
   {% if paginator.total_pages > 1 %}
   <div class="pagination">
     {% if paginator.previous_page %}
-      <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Prev</a>
+      <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Novější</a>
     {% else %}
-      <span>&laquo; Prev</span>
+      <span>&laquo; Novější</span>
     {% endif %}
 
     {% for page in (1..paginator.total_pages) %}
@@ -40,9 +48,9 @@ layout: default
     {% endfor %}
 
     {% if paginator.next_page %}
-      <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Next &raquo;</a>
+      <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Starší &raquo;</a>
     {% else %}
-      <span>Next &raquo;</span>
+      <span>Starší &raquo;</span>
     {% endif %}
   </div>
   {% endif %}

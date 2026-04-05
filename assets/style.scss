@@ -56,14 +56,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 34px;
   a {
     color: inherit;
   }
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 26px;
 }
 
 @media (min-width: 769px){
@@ -83,8 +83,9 @@ h3 {
 }
 
 h4 {
-  font-size: 18px;
-  color: #222;
+  font-size: 17px;
+  color: #555;
+  font-weight: 600;
 }
 
 p {
@@ -151,7 +152,7 @@ table tr td :last-child {
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 18px;
-  background-color: #fff3ff;
+  background-color: #f8f9fb;
 }
 
 .share-box {
@@ -175,7 +176,7 @@ span[data-pullquote]:before {
   padding: 0 -5% 0 0;
   font-size: 1.3em;
   font-style: italic;
-  color: green;
+  color: #47629A;
   text-align: center;
 }
 
@@ -184,7 +185,8 @@ a {
   text-decoration: none;
 	cursor: pointer;
   &:hover, &:active {
-    color: $blue;
+    color: darken($blue, 12%);
+    text-decoration: underline;
   }
 }
 
@@ -386,9 +388,9 @@ nav {
     /*border-left: 2px solid $gray;*/
     padding: 0.1em 1em;
     color: $gray;
-    font-size: 22px;
+    font-size: 1em;
     font-style: italic;
-    background-color: #ede1ff;
+    background-color: #f3effa;
   }
 
   .you-may-like{
@@ -396,9 +398,9 @@ nav {
     /*border-left: 2px solid $gray;*/
     padding: 0.1em 1em;
     color: $gray;
-    font-size: 22px;
+    font-size: 1em;
     font-style: italic;
-    background-color: #ddffb5;;
+    background-color: #eef7e5;
   }
 
   .comments {
@@ -433,25 +435,14 @@ footer {
   text-align: center;
 }
 
-body:after {
-    background: linear-gradient(to right, #ffffff   0, #2196F3   33%, #E91E63   66%, #000 100%);
-    width: 100%;
-    height: 5px;
-    top: 0;
-    position: absolute;
-    left: 0;
-    content: '';
-}
+/* Rainbow gradient bar removed — single accent bar retained */
 
 #bar {
-    background: #8ea5d1;
-    height: 7px;
-    background-size: cover;
-    background-position: left 60%;
+    background: #47629A;
+    height: 3px;
     position: fixed;
     top: 0;
     width: 100%;
-    overflow: hidden;
     z-index: 1000;
 }
 
@@ -1187,7 +1178,7 @@ position: relative;
 }
 
 article p {
-    margin: 5px 0;
+    margin: 15px 0;
 }
 
 .commentsheader {
@@ -1216,6 +1207,23 @@ article p {
 //@import "highlights";
 @import "darcula";
 @import "svg-icons";
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #47629A;
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 1001;
+  font-size: 14px;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+  color: #fff;
+}
 
 /**************/
 /* DARK THEME */
@@ -1333,13 +1341,10 @@ article p {
   }
 
   // Top gradient bar
-  body:after {
-    background: linear-gradient(to right, #1a1a2e 0, #2196F3 33%, #E91E63 66%, #d0d0d0 100%);
-  }
 
   // Progress bar
   #bar {
-    background: #4a6a9a;
+    background: #7b9fd4;
   }
 
   // H2 decorative lines
