@@ -1,0 +1,32 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.name }} – English</title>
+  <subtitle>Science, technology, health, AI</subtitle>
+  <link href="{{ site.url }}/en/feed.xml" rel="self" type="application/atom+xml"/>
+  <link href="{{ site.url }}/en/" rel="alternate" type="text/html"/>
+  <updated>{% assign sorted = site.posts_en | sort: "date" | reverse %}{{ sorted.first.date | date_to_xmlschema }}</updated>
+  <id>{{ site.url }}/en/feed.xml</id>
+  <author>
+    <name>{{ site.author }}</name>
+  </author>
+  {% for post in sorted limit:20 %}
+  <entry>
+    <title type="html">{{ post.title | xml_escape }}</title>
+    <link href="{{ site.url }}{{ post.url }}" rel="alternate" type="text/html" title="{{ post.title | xml_escape }}"/>
+    <published>{{ post.date | date_to_xmlschema }}</published>
+    <updated>{% if post.last_modified_at %}{{ post.last_modified_at | date_to_xmlschema }}{% else %}{{ post.date | date_to_xmlschema }}{% endif %}</updated>
+    <id>{{ site.url }}{{ post.url }}</id>
+    <content type="html" xml:base="{{ site.url }}{{ post.url }}">{{ post.content | xml_escape }}</content>
+    <author>
+      <name>{{ site.author }}</name>
+    </author>
+    {% for category in post.categories %}
+    <category term="{{ category | xml_escape }}"/>
+    {% endfor %}
+    <summary type="html">{{ post.excerpt | strip_html | xml_escape | truncate: 300 }}</summary>
+  </entry>
+  {% endfor %}
+</feed>
