@@ -6,7 +6,7 @@ categories: [AI]
 image: /images/pro-cyclist-vs-learning-from-book.jpeg
 ---
 
-<img src='/images/pro-cyclist-vs-learning-from-book.jpeg' width='480' alt='A professional cyclist racing confidently next to someone wobbling on a bike while reading a Bike Manual' />
+<img src='/images/pro-cyclist-vs-learning-from-book.jpeg' width='480' alt='A professional cyclist racing confidently next to someone wobbling on a bike while reading a Bike Manual' />  
 I've been using both Claude and Gemini for coding work — building an app that processes Microsoft Word documents. In chat mode, the two models performed comparably at the general coding tasks. One was better at some things, the other at others. But one step required sophisticated manipulation of raw OOXML — the underlying markup inside a Word document — and Gemini was consistently better at it. Not marginally. Noticeably. Across a range of related tasks, it handled the well-defined, specialist-knowledge challenge more precisely. I've since seen the same pattern with other complex but tightly scoped problems. When the task is clearly defined and the domain knowledge is what matters, Gemini often has the edge.
 
 Then I switched to Claude Code and the picture inverted. Claude could successfully complete far larger, more ambitious tasks than Gemini with similar tooling. Multi-file projects, ambiguous requirements, error recovery, the orchestration of many steps toward a goal. Not because it was smarter at any individual step, but because it could hold the whole thing together.
