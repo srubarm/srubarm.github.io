@@ -1,6 +1,6 @@
 ---
 layout: post
-title: “Nepoznané vědění, které my máme, ale AI chybí”
+title: "Nepoznané vědění, které my máme, ale AI chybí"
 date: 2026-04-08
 categories: [AI]
 image: /images/pro-cyclist-vs-learning-from-book.jpeg
